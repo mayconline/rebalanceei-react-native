@@ -1,0 +1,27 @@
+export default {
+  color: {
+    primary: '#2D9B28',
+    secondary: '#FFF',
+    info: '#232525',
+    success: '#75BF72',
+    warning: '#db8818',
+    danger: '#f44336',
+    bgTabs: '#31AD2C',
+    borderTabs: 'rgba(255,255,255,0.2)',
+    activeTabs: '#fff',
+    inactiveTabs: '#D9D9D9',
+    inactiveAdd: '#EDF1F9',
+    bgContent: '#FFF',
+    iconHeader: '#FFF',
+    bgHeaderEmpty: '#76AD74',
+    bgHeader: '#31AD2C',
+    titleCard: '#0D1F3C',
+    descriptionCard: '#485068',
+    inputPlaceholder: '#3D4C63',
+    inputLabel: '#B5BBC9',
+  },
+  gradient: {
+    darkToLightGreen: ['#2D9B28', '#31AD2C'],
+    darkToLightBlue: ['#347AF0', '#5C8FE5'],
+  },
+};
