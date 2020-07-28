@@ -63,10 +63,10 @@ const Navigation: React.FC = () => {
       })}
       tabBarOptions={{
         style: {
-          backgroundColor: color.bgTabs,
+          backgroundColor: color.primary,
           borderTopColor: color.borderTabs,
         },
-        activeTintColor: color.activeTabs,
+        activeTintColor: color.secondary,
         inactiveTintColor: color.inactiveTabs,
       }}
     >

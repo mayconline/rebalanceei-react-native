@@ -11,17 +11,17 @@ const Header: React.FC = () => {
     <Wrapper colors={gradient.darkToLightGreen}>
       <Wallet>
         <Title>Ações</Title>
-        <Entypo name="chevron-thin-down" size={20} color={color.iconHeader} />
+        <Entypo name="chevron-thin-down" size={20} color={color.secondary} />
       </Wallet>
       <Icons>
         <Visibled>
-          <Entypo name="eye-with-line" size={20} color={color.iconHeader} />
+          <Entypo name="eye-with-line" size={20} color={color.secondary} />
         </Visibled>
         <Menu>
           <Entypo
             name="dots-three-vertical"
             size={20}
-            color={color.iconHeader}
+            color={color.secondary}
           />
         </Menu>
       </Icons>

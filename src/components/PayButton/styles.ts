@@ -14,5 +14,5 @@ export const Button = styled(LinearGradient)<PayButtonProps>`
   justify-content: center;
   border: 3px solid
     ${({ focused, theme }) =>
-      focused ? theme.color.activeTabs : theme.color.inactiveAdd};
+      focused ? theme.color.secondary : theme.color.blueLight};
 `;

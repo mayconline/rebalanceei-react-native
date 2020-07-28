@@ -18,7 +18,7 @@ const PayButton: React.FC<PayButtonProps> = ({ onPress, focused }) => {
         <Feather
           name="plus"
           size={30}
-          color={focused ? color.activeTabs : color.inactiveAdd}
+          color={focused ? color.secondary : color.blueLight}
         />
       </Button>
     </TouchableWithoutFeedback>
