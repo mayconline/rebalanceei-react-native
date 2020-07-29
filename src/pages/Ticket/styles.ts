@@ -10,9 +10,9 @@ export const Wrapper = styled.View`
   background-color: ${({ theme }) => theme.color.primary};
 `;
 
-export const Content = styled.ScrollView`
+export const SubHeader = styled.SafeAreaView`
   background-color: ${({ theme }) => theme.color.secondary};
-  padding: 24px;
+  padding: 20px 20px 4px;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
 `;
@@ -49,17 +49,31 @@ export const TextFilter = styled.Text<filtersProps>`
   font-family: 'TitilliumWeb_600SemiBold';
 `;
 
+export const List = styled.SafeAreaView`
+  background-color: ${({ theme }) => theme.color.secondary};
+  flex: 1;
+`;
+
+export const Content = styled.SafeAreaView`
+  background-color: ${({ theme }) => theme.color.secondary};
+  padding: 4px 12px 0;
+  flex: 1;
+`;
+
 export const Card = styled.TouchableOpacity`
   background-color: ${({ theme }) => theme.color.blueLight};
   flex: 1;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   flex-direction: row;
   margin: 4px 0;
   border-radius: 30px;
-  padding: 8px 24px;
+  padding: 8px 20px;
 `;
-export const CardContent = styled.View``;
+export const CardContent = styled.View`
+  flex: 1;
+  padding: 0 16px;
+`;
 export const CardTitle = styled.Text`
   color: ${({ theme }) => theme.color.title};
   font-size: 16px;

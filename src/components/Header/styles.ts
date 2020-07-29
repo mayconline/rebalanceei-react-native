@@ -2,7 +2,7 @@ import styled from 'styled-components/native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export const Wrapper = styled(LinearGradient)`
-  height: 128px;
+  height: 100px;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
