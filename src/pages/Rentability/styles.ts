@@ -1,4 +1,5 @@
 import styled from 'styled-components/native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 interface filtersProps {
   onPress?(): void;
@@ -65,8 +66,7 @@ export const Content = styled.SafeAreaView`
   flex: 1;
 `;
 
-export const Card = styled.View`
-  background-color: ${({ theme }) => theme.color.blueLight};
+export const Card = styled(LinearGradient)<any>`
   flex: 1;
   justify-content: flex-start;
   align-items: center;
@@ -74,6 +74,13 @@ export const Card = styled.View`
   margin: 4px 0;
   border-radius: 30px;
   padding: 8px 20px;
+  border-left-color: ${({ theme, variation }) =>
+    variation > 0
+      ? theme.color.success
+      : variation < 0
+      ? theme.color.danger
+      : theme.color.subtitle};
+  border-left-width: 2px;
 `;
 export const CardContent = styled.View`
   flex: 1;

@@ -87,7 +87,7 @@ const CARD_LIST = [
 ];
 
 const Rentability: React.FC = () => {
-  const { color } = useContext(ThemeContext);
+  const { color, gradient } = useContext(ThemeContext);
   const scrollViewRef = useRef<ScrollView>(null);
 
   return (
@@ -131,7 +131,7 @@ const Rentability: React.FC = () => {
           keyExtractor={item => item.ticket}
           renderItem={({ item }) => (
             <Content>
-              <Card>
+              <Card colors={gradient.lightToGray} variation={item.variation}>
                 <CardContent>
                   <CardTitleContainer>
                     <Ticket>{item.ticket}</Ticket>
