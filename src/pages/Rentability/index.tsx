@@ -1,18 +1,13 @@
-import React, { useContext, useRef } from 'react';
-import { FlatList, ScrollView } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { FlatList } from 'react-native';
 import { ThemeContext } from 'styled-components/native';
 
 import {
   Wrapper,
-  SubHeader,
   List,
   Content,
   CardTitleContainer,
   Ticket,
-  Title,
-  FiltersContainer,
-  Filter,
-  TextFilter,
   Card,
   CardContent,
   CardTitle,
@@ -27,6 +22,7 @@ import {
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import Header from '../../components/Header';
+import SubHeader from '../../components/SubHeader';
 import { formatNumber } from '../../utils/format';
 
 const CARD_LIST = [
@@ -86,45 +82,46 @@ const CARD_LIST = [
   },
 ];
 
+const initialFilter = [
+  {
+    name: 'Ativo',
+    focused: false,
+  },
+  {
+    name: 'Saldo Aplicado',
+    focused: false,
+  },
+  {
+    name: 'Saldo Atual',
+    focused: false,
+  },
+  {
+    name: 'Variação',
+    focused: true,
+  },
+];
+
 const Rentability: React.FC = () => {
   const { color, gradient } = useContext(ThemeContext);
-  const scrollViewRef = useRef<ScrollView>(null);
+  const [filters, setFilters] = useState(initialFilter);
+
+  const handleChangeFilter = (filterName: string) => {
+    setFilters(filters =>
+      filters.map(filter => ({
+        name: filter.name,
+        focused: filterName !== filter.name ? false : true,
+      })),
+    );
+  };
 
   return (
     <Wrapper>
       <Header />
-      <SubHeader>
-        <Title>Rentabilidade</Title>
-        <FiltersContainer>
-          <ScrollView
-            horizontal={true}
-            centerContent={true}
-            showsHorizontalScrollIndicator={false}
-            ref={scrollViewRef}
-            onContentSizeChange={() =>
-              scrollViewRef?.current?.scrollToEnd({ animated: true })
-            }
-          >
-            <Filter>
-              <TextFilter focused={false}>Ativo</TextFilter>
-            </Filter>
-            <Filter>
-              <TextFilter focused={false}>Saldo Aplicado</TextFilter>
-            </Filter>
-            <Filter>
-              <TextFilter focused={false}>Saldo Atual</TextFilter>
-            </Filter>
-            <Filter>
-              <TextFilter focused={true}>Variação</TextFilter>
-            </Filter>
-          </ScrollView>
-          <FontAwesome5
-            name="sort-amount-up"
-            size={24}
-            color={color.subtitle}
-          />
-        </FiltersContainer>
-      </SubHeader>
+      <SubHeader
+        title="Rentabilidade"
+        filters={filters}
+        onPress={handleChangeFilter}
+      />
       <List>
         <FlatList
           data={CARD_LIST}

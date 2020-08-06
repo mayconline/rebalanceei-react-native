@@ -1,12 +1,6 @@
 import styled from 'styled-components/native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-interface filtersProps {
-  onPress?(): void;
-  focused?: boolean;
-  status?: string;
-}
-
 interface IformatNumber {
   variation: number;
 }
@@ -14,45 +8,6 @@ interface IformatNumber {
 export const Wrapper = styled.View`
   flex: 1;
   background-color: ${({ theme }) => theme.color.primary};
-`;
-
-export const SubHeader = styled.SafeAreaView`
-  background-color: ${({ theme }) => theme.color.secondary};
-  padding: 20px 20px 4px;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-`;
-
-export const Title = styled.Text`
-  color: ${({ theme }) => theme.color.title};
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 600;
-  font-family: 'TitilliumWeb_600SemiBold';
-`;
-
-export const FiltersContainer = styled.View`
-  justify-content: flex-end;
-  align-items: center;
-  flex-direction: row;
-  margin: 8px 0;
-`;
-
-export const Filter = styled.TouchableOpacity`
-  margin-right: 8px;
-`;
-
-export const TextFilter = styled.Text<filtersProps>`
-  background-color: ${({ focused, theme }) =>
-    focused ? theme.color.bgFiltersActive : theme.color.secondary};
-  color: ${({ focused, theme }) =>
-    focused ? theme.color.blue : theme.color.subtitle};
-  padding: 4px 16px;
-  border-radius: 16px;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 600;
-  font-family: 'TitilliumWeb_600SemiBold';
 `;
 
 export const List = styled.SafeAreaView`
