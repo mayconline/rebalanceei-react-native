@@ -1,53 +1,12 @@
 import styled from 'styled-components/native';
 
-interface filtersProps {
-  onPress?(): void;
-  focused?: boolean;
+interface IFormatStatus {
   status?: string;
 }
 
 export const Wrapper = styled.View`
   flex: 1;
   background-color: ${({ theme }) => theme.color.primary};
-`;
-
-export const SubHeader = styled.SafeAreaView`
-  background-color: ${({ theme }) => theme.color.secondary};
-  padding: 20px 20px 4px;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-`;
-
-export const Title = styled.Text`
-  color: ${({ theme }) => theme.color.title};
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 600;
-  font-family: 'TitilliumWeb_600SemiBold';
-`;
-
-export const FiltersContainer = styled.View`
-  justify-content: flex-end;
-  align-items: center;
-  flex-direction: row;
-  margin: 8px 0;
-`;
-
-export const Filter = styled.TouchableOpacity`
-  margin-right: 8px;
-`;
-
-export const TextFilter = styled.Text<filtersProps>`
-  background-color: ${({ focused, theme }) =>
-    focused ? theme.color.bgFiltersActive : theme.color.secondary};
-  color: ${({ focused, theme }) =>
-    focused ? theme.color.blue : theme.color.subtitle};
-  padding: 4px 16px;
-  border-radius: 16px;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 600;
-  font-family: 'TitilliumWeb_600SemiBold';
 `;
 
 export const List = styled.SafeAreaView`
@@ -100,7 +59,7 @@ export const CurrentPercent = styled.Text`
   line-height: 16px;
   font-family: 'TitilliumWeb_600SemiBold';
 `;
-export const TargetPercent = styled.Text<filtersProps>`
+export const TargetPercent = styled.Text<IFormatStatus>`
   color: ${({ theme, status }) =>
     status === 'BUY'
       ? theme.color.success
@@ -120,7 +79,7 @@ export const AmountContainer = styled.View`
   margin-right: -12px;
 `;
 
-export const Amount = styled.Text<filtersProps>`
+export const Amount = styled.Text<IFormatStatus>`
   color: ${({ theme, status }) =>
     status === 'BUY'
       ? theme.color.success
@@ -133,7 +92,7 @@ export const Amount = styled.Text<filtersProps>`
   font-family: 'TitilliumWeb_600SemiBold';
 `;
 
-export const Status = styled.Text<filtersProps>`
+export const Status = styled.Text<IFormatStatus>`
   color: ${({ theme, status }) =>
     status === 'BUY'
       ? theme.color.success

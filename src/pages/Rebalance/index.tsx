@@ -1,16 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { FlatList } from 'react-native';
 import { ThemeContext } from 'styled-components/native';
 
 import {
   Wrapper,
-  SubHeader,
   List,
   Content,
-  Title,
-  FiltersContainer,
-  Filter,
-  TextFilter,
   Card,
   CardContent,
   CardTitle,
@@ -24,9 +19,8 @@ import {
   Status,
 } from './styles';
 
-import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
-
 import Header from '../../components/Header';
+import SubHeader from '../../components/SubHeader';
 import { formatNumber, formatStatus } from '../../utils/format';
 
 const CARD_LIST = [
@@ -86,28 +80,38 @@ const CARD_LIST = [
   },
 ];
 
+const initialFilter = [
+  {
+    name: 'Ativo',
+    focused: false,
+  },
+  {
+    name: 'Quantidade',
+    focused: true,
+  },
+];
+
 const Rebalance: React.FC = () => {
-  const { color } = useContext(ThemeContext);
+  const { color, gradient } = useContext(ThemeContext);
+  const [filters, setFilters] = useState(initialFilter);
+
+  const handleChangeFilter = (filterName: string) => {
+    setFilters(filters =>
+      filters.map(filter => ({
+        name: filter.name,
+        focused: filterName !== filter.name ? false : true,
+      })),
+    );
+  };
 
   return (
     <Wrapper>
       <Header />
-      <SubHeader>
-        <Title>Rebalancear</Title>
-        <FiltersContainer>
-          <Filter>
-            <TextFilter focused={false}>Ativo</TextFilter>
-          </Filter>
-          <Filter>
-            <TextFilter focused={true}>Quantidade</TextFilter>
-          </Filter>
-          <FontAwesome5
-            name="sort-amount-up"
-            size={24}
-            color={color.subtitle}
-          />
-        </FiltersContainer>
-      </SubHeader>
+      <SubHeader
+        title="Rentabilidade"
+        filters={filters}
+        onPress={handleChangeFilter}
+      />
       <List>
         <FlatList
           data={CARD_LIST}
