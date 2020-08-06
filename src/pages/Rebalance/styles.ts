@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-
+import { LinearGradient } from 'expo-linear-gradient';
 interface IFormatStatus {
   status?: string;
 }
@@ -20,8 +20,7 @@ export const Content = styled.SafeAreaView`
   flex: 1;
 `;
 
-export const Card = styled.View`
-  background-color: ${({ theme }) => theme.color.blueLight};
+export const Card = styled(LinearGradient)<any>`
   flex: 1;
   justify-content: flex-start;
   align-items: center;
@@ -29,16 +28,38 @@ export const Card = styled.View`
   margin: 4px 0;
   border-radius: 30px;
   padding: 8px 20px;
+  border-left-color: ${({ theme, status }) =>
+    status === 'BUY'
+      ? theme.color.success
+      : status === 'KEEP'
+      ? theme.color.warning
+      : theme.color.danger};
+  border-left-width: 2px;
 `;
+
 export const CardContent = styled.View`
   flex: 1;
 `;
-export const CardTitle = styled.Text`
-  color: ${({ theme }) => theme.color.title};
+
+export const CardTitleContainer = styled.View`
+  flex-direction: row;
+`;
+
+export const CardTicket = styled.Text`
+  color: ${({ theme }) => theme.color.subtitle};
   font-size: 16px;
   line-height: 24px;
   font-weight: 600;
   font-family: 'TitilliumWeb_600SemiBold';
+`;
+
+export const CardTitle = styled.Text`
+  color: ${({ theme }) => theme.color.subtitle};
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 600;
+  font-family: 'TitilliumWeb_600SemiBold';
+  align-self: flex-end;
 `;
 
 export const SubTitleContant = styled.View`
@@ -57,7 +78,7 @@ export const CurrentPercent = styled.Text`
   color: ${({ theme }) => theme.color.subtitle};
   font-size: 12px;
   line-height: 16px;
-  font-family: 'TitilliumWeb_600SemiBold';
+  font-family: 'TitilliumWeb_400Regular';
 `;
 export const TargetPercent = styled.Text<IFormatStatus>`
   color: ${({ theme, status }) =>

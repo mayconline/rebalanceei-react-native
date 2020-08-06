@@ -8,6 +8,8 @@ import {
   Content,
   Card,
   CardContent,
+  CardTitleContainer,
+  CardTicket,
   CardTitle,
   SubTitleContant,
   CardSubTitle,
@@ -108,7 +110,7 @@ const Rebalance: React.FC = () => {
     <Wrapper>
       <Header />
       <SubHeader
-        title="Rentabilidade"
+        title="Rebalancear"
         filters={filters}
         onPress={handleChangeFilter}
       />
@@ -118,11 +120,12 @@ const Rebalance: React.FC = () => {
           keyExtractor={item => item.ticket}
           renderItem={({ item }) => (
             <Content>
-              <Card>
+              <Card colors={gradient.lightToGray} status={item.status}>
                 <CardContent>
-                  <CardTitle>
-                    {item.title} ({item.ticket})
-                  </CardTitle>
+                  <CardTitleContainer>
+                    <CardTicket>{item.ticket}</CardTicket>
+                    <CardTitle> - {item.title}</CardTitle>
+                  </CardTitleContainer>
                   <SubTitleContant>
                     <CardSubTitle>
                       <CurrentPercent>% Atual</CurrentPercent>
