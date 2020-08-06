@@ -7,7 +7,7 @@ import {
   List,
   Content,
   CardTitleContainer,
-  Ticket,
+  CardTicket,
   Card,
   CardContent,
   CardTitle,
@@ -131,7 +131,7 @@ const Rentability: React.FC = () => {
               <Card colors={gradient.lightToGray} variation={item.variation}>
                 <CardContent>
                   <CardTitleContainer>
-                    <Ticket>{item.ticket}</Ticket>
+                    <CardTicket>{item.ticket}</CardTicket>
                     <CardTitle> - {item.title}</CardTitle>
                   </CardTitleContainer>
                   <SubTitleContant>

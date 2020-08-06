@@ -45,7 +45,7 @@ export const CardTitleContainer = styled.View`
   flex-direction: row;
 `;
 
-export const Ticket = styled.Text`
+export const CardTicket = styled.Text`
   color: ${({ theme }) => theme.color.subtitle};
   font-size: 16px;
   line-height: 24px;
