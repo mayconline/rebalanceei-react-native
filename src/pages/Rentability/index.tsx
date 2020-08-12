@@ -23,6 +23,9 @@ import { FontAwesome5 } from '@expo/vector-icons';
 
 import Header from '../../components/Header';
 import SubHeader from '../../components/SubHeader';
+import AmountWallet from '../../components/AmountWallet';
+import Divider from '../../components/Divider';
+
 import { formatNumber } from '../../utils/format';
 
 const CARD_LIST = [
@@ -121,7 +124,10 @@ const Rentability: React.FC = () => {
         title="Rentabilidade"
         filters={filters}
         onPress={handleChangeFilter}
-      />
+      >
+        <AmountWallet />
+        <Divider />
+      </SubHeader>
       <List>
         <FlatList
           data={CARD_LIST}

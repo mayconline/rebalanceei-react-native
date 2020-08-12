@@ -5,7 +5,7 @@ export default {
     success: '#75BF72',
     warning: '#db8818',
     danger: '#f44336',
-    borderTabs: '#AAA',
+    divider: '#CFD2D8',
     inactiveTabs: '#D9D9D9',
     blueLight: '#EDF1F9',
     bgHeaderEmpty: '#76AD74',

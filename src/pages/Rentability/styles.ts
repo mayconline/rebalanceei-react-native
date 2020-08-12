@@ -47,18 +47,12 @@ export const CardTitleContainer = styled.View`
 
 export const CardTicket = styled.Text`
   color: ${({ theme }) => theme.color.subtitle};
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 600;
-  font-family: 'TitilliumWeb_600SemiBold';
+  font: 600 16px/24px 'TitilliumWeb_600SemiBold';
 `;
 
 export const CardTitle = styled.Text`
   color: ${({ theme }) => theme.color.subtitle};
-  font-size: 12px;
-  line-height: 20px;
-  font-weight: 600;
-  font-family: 'TitilliumWeb_600SemiBold';
+  font: 600 12px/20px 'TitilliumWeb_600SemiBold';
   align-self: flex-end;
 `;
 
@@ -68,9 +62,7 @@ export const SubTitleContant = styled.View`
 
 export const CardSubTitle = styled.Text`
   color: ${({ theme }) => theme.color.subtitle};
-  font-size: 16px;
-  line-height: 24px;
-  font-family: 'TitilliumWeb_400Regular';
+  font: 400 16px/24px 'TitilliumWeb_400Regular';
 `;
 
 export const AmountContainer = styled.View`
@@ -84,10 +76,7 @@ export const Amount = styled.Text<IformatNumber>`
       : variation < 0
       ? theme.color.danger
       : theme.color.subtitle};
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 600;
-  font-family: 'TitilliumWeb_600SemiBold';
+  font: 600 16px/24px 'TitilliumWeb_600SemiBold';
 `;
 
 export const VariationContainer = styled.View`
@@ -102,9 +91,6 @@ export const Variation = styled.Text<IformatNumber>`
       : variation < 0
       ? theme.color.danger
       : theme.color.subtitle};
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 600;
-  font-family: 'TitilliumWeb_600SemiBold';
+  font: 600 16px/24px 'TitilliumWeb_600SemiBold';
   padding-right: 4px;
 `;

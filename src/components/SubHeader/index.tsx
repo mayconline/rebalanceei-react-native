@@ -16,14 +16,21 @@ interface IFilters {
   focused: boolean;
 }
 
-const SubHeader: React.FC<ISubHeaderProps> = ({ title, filters, onPress }) => {
+const SubHeader: React.FC<ISubHeaderProps> = ({
+  title,
+  filters,
+  onPress,
+  children,
+}) => {
   const { color } = useContext(ThemeContext);
 
   const scrollViewRef = useRef<ScrollView>(null);
 
   return (
     <Wrapper>
+      {children}
       <Title>{title}</Title>
+
       <FiltersContainer>
         <ScrollView
           horizontal={true}

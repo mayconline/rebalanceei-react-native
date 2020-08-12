@@ -2,10 +2,15 @@ import styled from 'styled-components/native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export const Wrapper = styled(LinearGradient)`
-  height: 100px;
+  min-height: 100px;
+`;
+
+export const MenuBar = styled.SafeAreaView`
+  flex: 1;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  padding-top: 12px;
 `;
 
 export const Wallet = styled.TouchableOpacity`
