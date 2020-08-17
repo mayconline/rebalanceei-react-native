@@ -121,7 +121,7 @@ const Rentability: React.FC = () => {
     <Wrapper>
       <Header />
       <SubHeader
-        title="Rentabilidade"
+        title="Variação da carteira"
         filters={filters}
         onPress={handleChangeFilter}
       >

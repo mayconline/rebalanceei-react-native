@@ -23,7 +23,7 @@ export const FiltersContainer = styled.View`
   justify-content: flex-end;
   align-items: center;
   flex-direction: row;
-  margin: 8px 0;
+  margin: 12px 0 8px;
 `;
 
 export const Filter = styled.TouchableOpacity`

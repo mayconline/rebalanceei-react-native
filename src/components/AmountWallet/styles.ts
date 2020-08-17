@@ -1,6 +1,8 @@
 import styled from 'styled-components/native';
 
-export const Wrapper = styled.SafeAreaView``;
+export const Wrapper = styled.SafeAreaView`
+  margin-top: 16px;
+`;
 
 export const WalletContainer = styled.View`
   justify-content: space-between;
@@ -8,16 +10,10 @@ export const WalletContainer = styled.View`
   flex-direction: row;
 `;
 
-export const Title = styled.Text`
-  color: ${({ theme }) => theme.color.title};
-  font: 600 16px/24px 'TitilliumWeb_600SemiBold';
-  margin-bottom: 8px;
-`;
-
 export const PreviousContainer = styled.View``;
 
 export const CurrentContainer = styled.View`
-  margin-right: 8px;
+  align-items: flex-end;
 `;
 
 export const PreviousTitle = styled.Text`
@@ -32,12 +28,18 @@ export const CurrentTitle = styled.Text`
 export const PreviousAmount = styled.Text`
   color: ${({ theme }) => theme.color.title};
   font: 400 16px/20px 'TitilliumWeb_400Regular';
-  padding-left: 20px;
+  padding-left: 8px;
   padding-top: 4px;
 `;
 export const CurrentAmount = styled.Text`
   color: ${({ theme }) => theme.color.title};
-  font: 600 16px/20px 'TitilliumWeb_600SemiBold';
-  padding-left: 20px;
+  font: 400 16px/20px 'TitilliumWeb_400Regular';
+  padding-left: 8px;
   padding-top: 4px;
+`;
+
+export const VariationAmount = styled.Text`
+  color: ${({ theme }) => theme.color.success};
+  font: 600 16px/20px 'TitilliumWeb_600SemiBold';
+  align-self: flex-end;
 `;

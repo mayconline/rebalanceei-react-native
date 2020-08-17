@@ -3,13 +3,13 @@ import React from 'react';
 import {
   Wrapper,
   WalletContainer,
-  Title,
   PreviousContainer,
   PreviousTitle,
   PreviousAmount,
   CurrentContainer,
   CurrentTitle,
   CurrentAmount,
+  VariationAmount,
 } from './styles';
 
 import { formatNumber } from '../../utils/format';
@@ -17,7 +17,6 @@ import { formatNumber } from '../../utils/format';
 const AmountWallet: React.FC = () => {
   return (
     <Wrapper>
-      <Title>Carteira</Title>
       <WalletContainer>
         <PreviousContainer>
           <PreviousTitle>Saldo Aplicado</PreviousTitle>
@@ -25,7 +24,10 @@ const AmountWallet: React.FC = () => {
         </PreviousContainer>
         <CurrentContainer>
           <CurrentTitle>Saldo Atual</CurrentTitle>
-          <CurrentAmount>{formatNumber(712351.08, 'BRL')}</CurrentAmount>
+          <CurrentAmount>
+            {formatNumber(712351.08, 'BRL')}
+            <VariationAmount> (+5.21%)</VariationAmount>
+          </CurrentAmount>
         </CurrentContainer>
       </WalletContainer>
     </Wrapper>

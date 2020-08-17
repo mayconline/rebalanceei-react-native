@@ -28,9 +28,8 @@ const SubHeader: React.FC<ISubHeaderProps> = ({
 
   return (
     <Wrapper>
-      {children}
       <Title>{title}</Title>
-
+      {children}
       <FiltersContainer>
         <ScrollView
           horizontal={true}
