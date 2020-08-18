@@ -14,6 +14,7 @@ export default {
     title: '#0D1F3C',
     subtitle: '#485068',
     blue: '#347AF0',
+    shadowBackdrop: '#000',
   },
   gradient: {
     darkToLightGreen: ['#31AD2C', '#2D9B28'],

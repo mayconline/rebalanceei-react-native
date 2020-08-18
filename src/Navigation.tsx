@@ -3,7 +3,7 @@ import { ThemeContext } from 'styled-components/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Entypo, Feather, FontAwesome } from '@expo/vector-icons';
 
-import PayButton from './components/PayButton';
+import AddButton from './components/AddButton';
 
 import Ticket from './pages/Ticket';
 import Rebalance from './pages/Rebalance';
@@ -50,7 +50,7 @@ const Navigation: React.FC = () => {
         tabBarIcon: ({ color, size, focused }) => {
           if (route.name === 'AddTicket') {
             return (
-              <PayButton
+              <AddButton
                 onPress={() => navigation.navigate('AddTicket')}
                 focused={focused}
                 size={60}

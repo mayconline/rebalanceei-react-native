@@ -3,9 +3,9 @@ import { TouchableWithoutFeedback } from 'react-native';
 import { ThemeContext } from 'styled-components/native';
 import { Feather } from '@expo/vector-icons';
 
-import { PayButtonProps, Button } from './styles';
+import { AddButtonProps, Button } from './styles';
 
-const PayButton: React.FC<PayButtonProps> = ({ onPress, focused, size }) => {
+const AddButton: React.FC<AddButtonProps> = ({ onPress, focused, size }) => {
   const { color, gradient } = useContext(ThemeContext);
 
   return (
@@ -26,4 +26,4 @@ const PayButton: React.FC<PayButtonProps> = ({ onPress, focused, size }) => {
   );
 };
 
-export default PayButton;
+export default AddButton;

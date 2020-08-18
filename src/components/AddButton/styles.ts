@@ -1,13 +1,13 @@
 import styled from 'styled-components/native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-export interface PayButtonProps {
+export interface AddButtonProps {
   onPress?(): void;
   focused?: boolean;
   size: number;
 }
 
-export const Button = styled(LinearGradient)<PayButtonProps>`
+export const Button = styled(LinearGradient)<AddButtonProps>`
   width: ${({ size }) => `${size}px`};
   height: ${({ size }) => `${size}px`};
   border-radius: 30px;

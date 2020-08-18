@@ -46,7 +46,12 @@ const Header: React.FC = () => {
         </MenuBar>
       </Wrapper>
 
-      <Modal animationType="slide" transparent={true} visible={openModal}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={openModal}
+        statusBarTranslucent={true}
+      >
         <WalletModal onClose={() => setOpenModal(false)} />
       </Modal>
     </>
