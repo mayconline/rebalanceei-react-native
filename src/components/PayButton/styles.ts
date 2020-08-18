@@ -3,12 +3,13 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 export interface PayButtonProps {
   onPress?(): void;
-  focused: boolean;
+  focused?: boolean;
+  size: number;
 }
 
 export const Button = styled(LinearGradient)<PayButtonProps>`
-  width: 60px;
-  height: 60px;
+  width: ${({ size }) => `${size}px`};
+  height: ${({ size }) => `${size}px`};
   border-radius: 30px;
   align-items: center;
   justify-content: center;

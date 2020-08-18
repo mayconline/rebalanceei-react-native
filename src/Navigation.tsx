@@ -53,6 +53,7 @@ const Navigation: React.FC = () => {
               <PayButton
                 onPress={() => navigation.navigate('AddTicket')}
                 focused={focused}
+                size={60}
               />
             );
           }

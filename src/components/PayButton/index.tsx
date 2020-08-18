@@ -5,7 +5,7 @@ import { Feather } from '@expo/vector-icons';
 
 import { PayButtonProps, Button } from './styles';
 
-const PayButton: React.FC<PayButtonProps> = ({ onPress, focused }) => {
+const PayButton: React.FC<PayButtonProps> = ({ onPress, focused, size }) => {
   const { color, gradient } = useContext(ThemeContext);
 
   return (
@@ -14,10 +14,11 @@ const PayButton: React.FC<PayButtonProps> = ({ onPress, focused }) => {
         colors={gradient.darkToLightBlue}
         start={[1, 0.5]}
         focused={focused}
+        size={size}
       >
         <Feather
           name="plus"
-          size={30}
+          size={size / 2}
           color={focused ? color.secondary : color.blueLight}
         />
       </Button>
