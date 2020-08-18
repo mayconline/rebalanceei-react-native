@@ -1,4 +1,5 @@
 import styled from 'styled-components/native';
+import { RectButton } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export const Wrapper = styled(LinearGradient)`
@@ -13,9 +14,11 @@ export const MenuBar = styled.SafeAreaView`
   padding-top: 12px;
 `;
 
-export const Wallet = styled.TouchableOpacity`
+export const Wallet = styled(RectButton)`
   flex-direction: row;
   align-items: center;
+  padding: 4px 16px;
+  margin-left: 8px;
 `;
 
 export const Title = styled.Text`
@@ -23,8 +26,8 @@ export const Title = styled.Text`
   font-size: 24px;
   font-weight: 600;
   line-height: 32px;
-  padding: 0 16px;
   font-family: 'TitilliumWeb_600SemiBold';
+  margin-right: 8px;
 `;
 
 export const Icons = styled.View`

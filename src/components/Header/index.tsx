@@ -23,8 +23,8 @@ const Header: React.FC = () => {
     <>
       <Wrapper colors={gradient.darkToLightGreen}>
         <MenuBar>
-          <Wallet>
-            <Title onPress={() => setOpenModal(true)}>Ações</Title>
+          <Wallet onPress={() => setOpenModal(true)}>
+            <Title>Ações</Title>
             <Entypo
               name="chevron-thin-down"
               size={20}
