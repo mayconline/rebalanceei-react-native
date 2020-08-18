@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-
+import { BorderlessButton } from 'react-native-gesture-handler';
 interface IFocused {
   focused: boolean;
 }
@@ -26,7 +26,7 @@ export const FiltersContainer = styled.View`
   margin: 12px 0 8px;
 `;
 
-export const Filter = styled.TouchableOpacity`
+export const Filter = styled(BorderlessButton)`
   margin-right: 8px;
 `;
 

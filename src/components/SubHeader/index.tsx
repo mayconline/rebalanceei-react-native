@@ -41,13 +41,8 @@ const SubHeader: React.FC<ISubHeaderProps> = ({
           }
         >
           {filters?.map(filter => (
-            <Filter key={filter.name}>
-              <TextFilter
-                onPress={() => onPress(filter.name)}
-                focused={filter.focused}
-              >
-                {filter.name}
-              </TextFilter>
+            <Filter key={filter.name} onPress={() => onPress(filter.name)}>
+              <TextFilter focused={filter.focused}>{filter.name}</TextFilter>
             </Filter>
           ))}
         </ScrollView>
