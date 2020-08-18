@@ -109,19 +109,20 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
 
                 <WalletRadioSelect selected={item.checked} />
               </Card>
+
               <Divider />
             </>
           )}
         />
 
         <AddWalletContainer>
-          <BackButtonContainer>
+          <BackButtonContainer onPress={onClose}>
             <Entypo
               name="chevron-small-left"
               size={16}
               color={color.subtitle}
             />
-            <BackButton onPress={onClose}>Voltar</BackButton>
+            <BackButton>Voltar</BackButton>
           </BackButtonContainer>
 
           <AddButtonContainer>

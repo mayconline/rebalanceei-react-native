@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { TouchableWithoutFeedback } from 'react-native';
+import { BorderlessButton } from 'react-native-gesture-handler';
 import { ThemeContext } from 'styled-components/native';
 import { Feather } from '@expo/vector-icons';
 
@@ -9,7 +9,7 @@ const AddButton: React.FC<AddButtonProps> = ({ onPress, focused, size }) => {
   const { color, gradient } = useContext(ThemeContext);
 
   return (
-    <TouchableWithoutFeedback onPress={onPress}>
+    <BorderlessButton onPress={onPress}>
       <Button
         colors={gradient.darkToLightBlue}
         start={[1, 0.5]}
@@ -22,7 +22,7 @@ const AddButton: React.FC<AddButtonProps> = ({ onPress, focused, size }) => {
           color={focused ? color.secondary : color.blueLight}
         />
       </Button>
-    </TouchableWithoutFeedback>
+    </BorderlessButton>
   );
 };
 
