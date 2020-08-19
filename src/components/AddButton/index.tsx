@@ -5,7 +5,12 @@ import { Feather } from '@expo/vector-icons';
 
 import { AddButtonProps, Button } from './styles';
 
-const AddButton: React.FC<AddButtonProps> = ({ onPress, focused, size }) => {
+const AddButton: React.FC<AddButtonProps> = ({
+  onPress,
+  focused,
+  size,
+  mb,
+}) => {
   const { color, gradient } = useContext(ThemeContext);
 
   return (
@@ -15,6 +20,7 @@ const AddButton: React.FC<AddButtonProps> = ({ onPress, focused, size }) => {
         start={[1, 0.5]}
         focused={focused}
         size={size}
+        mb={mb}
       >
         <Feather
           name="plus"

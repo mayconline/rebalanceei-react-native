@@ -1,10 +1,11 @@
-import styled from 'styled-components/native';
+import styled, { css } from 'styled-components/native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export interface AddButtonProps {
   onPress?(): void;
   focused?: boolean;
   size: number;
+  mb?: number;
 }
 
 export const Button = styled(LinearGradient)<AddButtonProps>`
@@ -16,4 +17,10 @@ export const Button = styled(LinearGradient)<AddButtonProps>`
   border: 3px solid
     ${({ focused, theme }) =>
       focused ? theme.color.secondary : theme.color.blueLight};
+
+  ${({ mb }) =>
+    mb &&
+    css`
+      margin-bottom: ${mb}px;
+    `}
 `;

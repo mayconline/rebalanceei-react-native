@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { ThemeContext } from 'styled-components/native';
+import styled, { ThemeContext } from 'styled-components/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Entypo, Feather, FontAwesome } from '@expo/vector-icons';
 
@@ -11,11 +11,24 @@ import AddTicket from './pages/AddTicket';
 import Rentability from './pages/Rentability';
 import Chart from './pages/Chart';
 
+interface labelProps {
+  focused: boolean;
+  color: string;
+}
+
+const Text = styled.Text<labelProps>`
+  color: ${({ color }) => color};
+  border-bottom-width: ${({ focused }) => (focused ? '2px' : 0)};
+  border-bottom-color: ${({ color }) => color};
+  font: 600 12px/16px 'TitilliumWeb_600SemiBold';
+`;
+
 const Tab = createBottomTabNavigator();
 
 interface propIcons {
   lib: any;
   name: string;
+  title: string;
 }
 
 type Icons = {
@@ -26,18 +39,22 @@ const icons: Icons = {
   Ticket: {
     lib: Entypo,
     name: 'wallet',
+    title: 'Ativos',
   },
   Rebalance: {
     lib: Feather,
     name: 'trending-up',
+    title: 'Rebalancear',
   },
   Rentability: {
     lib: Feather,
     name: 'activity',
+    title: 'Variação',
   },
   Chart: {
     lib: FontAwesome,
     name: 'pie-chart',
+    title: 'Gráficos',
   },
 };
 
@@ -54,6 +71,7 @@ const Navigation: React.FC = () => {
                 onPress={() => navigation.navigate('AddTicket')}
                 focused={focused}
                 size={60}
+                mb={24}
               />
             );
           }
@@ -61,11 +79,25 @@ const Navigation: React.FC = () => {
           const { lib: Icon, name } = icons[route.name];
           return <Icon name={name} size={size} color={color} />;
         },
+        tabBarLabel: ({ color, focused }) => {
+          if (route.name === 'AddTicket') {
+            return null;
+          }
+
+          const { title } = icons[route.name];
+
+          return (
+            <Text color={color} focused={focused}>
+              {title}
+            </Text>
+          );
+        },
       })}
       tabBarOptions={{
         style: {
           backgroundColor: color.primary,
           borderTopColor: color.divider,
+          padding: 4,
         },
         activeTintColor: color.secondary,
         inactiveTintColor: color.inactiveTabs,
