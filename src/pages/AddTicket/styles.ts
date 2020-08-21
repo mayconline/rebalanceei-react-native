@@ -5,12 +5,22 @@ export const Wrapper = styled.View`
   background-color: ${({ theme }) => theme.color.primary};
 `;
 
-export const Form = styled.SafeAreaView`
+export const Title = styled.Text`
+  color: ${({ theme }) => theme.color.titleNotImport};
+  font: 600 16px/24px 'TitilliumWeb_600SemiBold';
+  align-self: center;
+`;
+
+export const FormContainer = styled.KeyboardAvoidingView`
+  flex: 1;
+`;
+
+export const Form = styled.View`
   background-color: ${({ theme }) => theme.color.secondary};
   padding: 20px 20px 4px;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
-  flex: 1;
+  min-height: 500px;
 `;
 
 export const FormRow = styled.View`
