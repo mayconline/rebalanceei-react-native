@@ -1,14 +1,19 @@
 import styled from 'styled-components/native';
-import { RectButton } from 'react-native-gesture-handler';
+import { LinearGradient } from 'expo-linear-gradient';
+import { RectButton, BorderlessButton } from 'react-native-gesture-handler';
 
-export const Wrapper = styled.View`
+export const Wrapper = styled.SafeAreaView`
   flex: 1;
   background-color: ${({ theme }) => theme.color.primary};
 `;
 
+export const ContainerTitle = styled.View`
+  margin-top: 40px;
+`;
+
 export const Title = styled.Text`
-  color: ${({ theme }) => theme.color.titleNotImport};
-  font: 600 16px/24px 'TitilliumWeb_600SemiBold';
+  color: ${({ theme }) => theme.color.secondary};
+  font: 600 24px/32px 'TitilliumWeb_600SemiBold';
   align-self: center;
 `;
 
@@ -30,25 +35,35 @@ export const FormRow = styled.View`
   margin-bottom: 16px;
 `;
 
-export const InputGroup = styled.View``;
+export const InputGroup = styled.View`
+  align-self: center;
+`;
 
 export const Label = styled.Text`
   color: ${({ theme }) => theme.color.titleNotImport};
   font: 600 16px/24px 'TitilliumWeb_600SemiBold';
 `;
 export const Input = styled.TextInput`
-  color: ${({ theme }) => theme.color.title};
+  color: ${({ theme, editable = true }) =>
+    !editable ? theme.color.inactiveTabs : theme.color.title};
   height: 32px;
-  padding: 0 8px;
   font: 400 16px/24px 'TitilliumWeb_400Regular';
+  border-bottom-color: ${({ theme }) => theme.color.divider};
+  border-bottom-width: 1px;
 `;
 
 export const Button = styled(RectButton)`
   align-items: center;
-  background-color: ${({ theme }) => theme.color.blue};
-  padding: 12px 24px;
-  margin-top: 24px;
+  padding: 12px 20px;
 `;
+
+export const Gradient = styled(LinearGradient)`
+  justify-content: center;
+  margin-top: 24px;
+  border-radius: 24px;
+`;
+
 export const TextButton = styled.Text`
   color: ${({ theme }) => theme.color.secondary};
+  font: 600 20px/24px 'TitilliumWeb_600SemiBold';
 `;

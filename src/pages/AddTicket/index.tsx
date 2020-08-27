@@ -5,6 +5,7 @@ import { ThemeContext } from 'styled-components/native';
 import {
   Wrapper,
   FormContainer,
+  ContainerTitle,
   Title,
   Form,
   FormRow,
@@ -12,9 +13,10 @@ import {
   Label,
   Input,
   Button,
+  Gradient,
   TextButton,
 } from './styles';
-import Header from '../../components/Header';
+
 import ImageAddTicket from '../../../assets/svg/ImageAddTicket';
 
 interface ITicketForm {
@@ -24,37 +26,65 @@ interface ITicketForm {
   averagePrice: string;
 }
 
+const SUGGESTIONS = [
+  {
+    ticket: 'LREN3',
+    title: 'Lojas Renner',
+  },
+  {
+    ticket: 'MGLU3',
+    title: 'Magazine Luiza',
+  },
+  {
+    ticket: 'TRPL4',
+    title: 'Transmissão Paulista',
+  },
+];
+
 const AddTicket: React.FC = () => {
-  const { color } = useContext(ThemeContext);
+  const { color, gradient } = useContext(ThemeContext);
   const [ticketForm, setTicketForm] = useState<ITicketForm>({} as ITicketForm);
+
+  const handleSubmit = () => {
+    console.log(ticketForm);
+    setTicketForm({} as ITicketForm);
+  };
 
   return (
     <Wrapper>
+      <ContainerTitle>
+        <Title>Adicionar Ativo</Title>
+      </ContainerTitle>
+      <ImageAddTicket />
       <FormContainer behavior={Platform.OS == 'ios' ? 'padding' : 'position'}>
-        <Header />
-
-        <ImageAddTicket />
-
         <Form>
-          <Title>Adicionar Ativo</Title>
+          <FormRow>
+            <InputGroup>
+              <Label>Carteira Atual</Label>
+              <Input value={'Ações'} editable={false} />
+            </InputGroup>
+          </FormRow>
           <FormRow>
             <InputGroup>
               <Label>Ativo</Label>
               <Input
                 value={ticketForm.ticket}
+                autoCapitalize={'characters'}
+                returnKeyType={'next'}
                 placeholder="Busque e selecione o ativo"
                 placeholderTextColor={color.titleNotImport}
+                autoFocus={true}
                 maxLength={6}
                 onChangeText={ticket =>
                   setTicketForm(ticketForm => ({ ...ticketForm, ticket }))
                 }
               />
             </InputGroup>
-
             <InputGroup>
               <Label>Nota</Label>
               <Input
                 value={ticketForm.grade}
+                returnKeyType={'next'}
                 keyboardType="number-pad"
                 placeholder="0 a 100"
                 placeholderTextColor={color.titleNotImport}
@@ -70,6 +100,7 @@ const AddTicket: React.FC = () => {
               <Label>Quantidade</Label>
               <Input
                 value={ticketForm.quantity}
+                returnKeyType={'next'}
                 keyboardType="number-pad"
                 placeholder="Números de ativos"
                 placeholderTextColor={color.titleNotImport}
@@ -88,13 +119,14 @@ const AddTicket: React.FC = () => {
                 onChangeText={averagePrice =>
                   setTicketForm(ticketForm => ({ ...ticketForm, averagePrice }))
                 }
-                onEndEditing={e => console.log(ticketForm)}
               />
             </InputGroup>
           </FormRow>
-          <Button>
-            <TextButton>Adicionar Ativo</TextButton>
-          </Button>
+          <Gradient colors={gradient.darkToLightBlue} start={[1, 0.5]}>
+            <Button onPress={handleSubmit}>
+              <TextButton>Adicionar Ativo</TextButton>
+            </Button>
+          </Gradient>
         </Form>
       </FormContainer>
     </Wrapper>
