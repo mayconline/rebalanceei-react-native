@@ -1,4 +1,5 @@
 import styled from 'styled-components/native';
+import { RectButton } from 'react-native-gesture-handler';
 
 export const Wrapper = styled.View`
   flex: 1;
@@ -40,4 +41,14 @@ export const Input = styled.TextInput`
   height: 32px;
   padding: 0 8px;
   font: 400 16px/24px 'TitilliumWeb_400Regular';
+`;
+
+export const Button = styled(RectButton)`
+  align-items: center;
+  background-color: ${({ theme }) => theme.color.blue};
+  padding: 12px 24px;
+  margin-top: 24px;
+`;
+export const TextButton = styled.Text`
+  color: ${({ theme }) => theme.color.secondary};
 `;

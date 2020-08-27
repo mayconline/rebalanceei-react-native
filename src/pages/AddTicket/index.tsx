@@ -11,6 +11,8 @@ import {
   InputGroup,
   Label,
   Input,
+  Button,
+  TextButton,
 } from './styles';
 import Header from '../../components/Header';
 import ImageAddTicket from '../../../assets/svg/ImageAddTicket';
@@ -40,7 +42,7 @@ const AddTicket: React.FC = () => {
               <Label>Ativo</Label>
               <Input
                 value={ticketForm.ticket}
-                placeholder="Busque o ativo"
+                placeholder="Busque e selecione o ativo"
                 placeholderTextColor={color.titleNotImport}
                 maxLength={6}
                 onChangeText={ticket =>
@@ -48,12 +50,13 @@ const AddTicket: React.FC = () => {
                 }
               />
             </InputGroup>
+
             <InputGroup>
               <Label>Nota</Label>
               <Input
                 value={ticketForm.grade}
                 keyboardType="number-pad"
-                placeholder="Dê uma nota"
+                placeholder="0 a 100"
                 placeholderTextColor={color.titleNotImport}
                 maxLength={3}
                 onChangeText={grade =>
@@ -89,6 +92,9 @@ const AddTicket: React.FC = () => {
               />
             </InputGroup>
           </FormRow>
+          <Button>
+            <TextButton>Adicionar Ativo</TextButton>
+          </Button>
         </Form>
       </FormContainer>
     </Wrapper>
