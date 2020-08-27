@@ -63,6 +63,18 @@ const CARD_LIST = [
     subTitle: '30x PM R$ 70.00',
     grade: 3,
   },
+  {
+    title: 'Google',
+    ticket: 'GOOG',
+    subTitle: '30x PM R$ 70.00',
+    grade: 3,
+  },
+  {
+    title: 'Amazon BDR',
+    ticket: 'AMZN34',
+    subTitle: '30x PM R$ 70.00',
+    grade: 3,
+  },
 ];
 
 const initialFilter = [
@@ -104,7 +116,7 @@ const Ticket: React.FC = () => {
           renderItem={({ item }) => (
             <Content>
               <TouchableOpacity>
-                <Card colors={gradient.lightToGray} grade={item.grade}>
+                <Card colors={gradient.lightToGray} ticket={item.ticket}>
                   <MaterialCommunityIcons
                     name="circle-edit-outline"
                     size={28}

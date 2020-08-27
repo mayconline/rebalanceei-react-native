@@ -46,7 +46,6 @@ const AddTicket: React.FC = () => {
                 onChangeText={ticket =>
                   setTicketForm(ticketForm => ({ ...ticketForm, ticket }))
                 }
-                onEndEditing={e => console.log(ticketForm.ticket)}
               />
             </InputGroup>
             <InputGroup>

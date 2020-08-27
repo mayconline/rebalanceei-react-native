@@ -16,7 +16,7 @@ interface labelProps {
   color: string;
 }
 
-const Text = styled.Text<labelProps>`
+const Label = styled.Text<labelProps>`
   color: ${({ color }) => color};
   border-bottom-width: ${({ focused }) => (focused ? '2px' : 0)};
   border-bottom-color: ${({ color }) => color};
@@ -87,9 +87,9 @@ const Navigation: React.FC = () => {
           const { title } = icons[route.name];
 
           return (
-            <Text color={color} focused={focused}>
+            <Label color={color} focused={focused}>
               {title}
-            </Text>
+            </Label>
           );
         },
       })}
@@ -101,6 +101,7 @@ const Navigation: React.FC = () => {
         },
         activeTintColor: color.secondary,
         inactiveTintColor: color.inactiveTabs,
+        keyboardHidesTabBar: true,
       }}
     >
       <Tab.Screen

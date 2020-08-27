@@ -25,12 +25,16 @@ export const Card = styled(LinearGradient)<any>`
   margin: 4px 0;
   border-radius: 30px;
   padding: 8px 20px;
-  border-left-color: ${({ theme, grade }) =>
-    grade >= 8
-      ? theme.color.success
-      : grade <= 7 && grade >= 4
-      ? theme.color.subtitle
-      : theme.color.danger};
+  border-left-color: ${({ theme, ticket }) =>
+    ticket.slice(-2) === '34'
+      ? theme.color.ticketBDR
+      : ticket.slice(-1) === '3'
+      ? theme.color.ticketOn
+      : ticket.slice(-1) === '4'
+      ? theme.color.ticketPn
+      : ticket.slice(-2) === '11'
+      ? theme.color.ticketUnit
+      : theme.color.ticketAll};
   border-left-width: 2px;
 `;
 

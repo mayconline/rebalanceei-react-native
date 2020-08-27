@@ -16,7 +16,7 @@ import Navigation from './Navigation';
 
 const App: React.FC = () => {
   const deviceTheme = useColorScheme() as themeMode;
-  const theme: Theme = themes[deviceTheme] || themes.light;
+  const theme: Theme = themes[deviceTheme] ?? themes.light;
 
   let [fontsLoaded] = useFonts({
     TitilliumWeb_400Regular,
@@ -28,14 +28,12 @@ const App: React.FC = () => {
   }
 
   return (
-    <>
-      <ThemeProvider theme={theme}>
-        <StatusBar style={'inverted'} />
-        <NavigationContainer>
-          <Navigation />
-        </NavigationContainer>
-      </ThemeProvider>
-    </>
+    <ThemeProvider theme={theme}>
+      <StatusBar style={'inverted'} />
+      <NavigationContainer>
+        <Navigation />
+      </NavigationContainer>
+    </ThemeProvider>
   );
 };
 
