@@ -45,6 +45,10 @@ const AddTicket: React.FC = () => {
   const { color, gradient } = useContext(ThemeContext);
   const [ticketForm, setTicketForm] = useState<ITicketForm>({} as ITicketForm);
 
+  const selectTicket = (ticket: string) => {
+    setTicketForm(ticketForm => ({ ...ticketForm, ticket }));
+  };
+
   const handleSubmit = () => {
     console.log(ticketForm);
     setTicketForm({} as ITicketForm);
@@ -75,9 +79,7 @@ const AddTicket: React.FC = () => {
                 placeholderTextColor={color.titleNotImport}
                 autoFocus={true}
                 maxLength={6}
-                onChangeText={ticket =>
-                  setTicketForm(ticketForm => ({ ...ticketForm, ticket }))
-                }
+                onChangeText={ticket => selectTicket(ticket)}
               />
             </InputGroup>
             <InputGroup>
