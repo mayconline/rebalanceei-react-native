@@ -44,6 +44,7 @@ const SUGGESTIONS = [
 const AddTicket: React.FC = () => {
   const { color, gradient } = useContext(ThemeContext);
   const [ticketForm, setTicketForm] = useState<ITicketForm>({} as ITicketForm);
+  const [focus, setFocus] = useState(0);
 
   const selectTicket = (ticket: string) => {
     setTicketForm(ticketForm => ({ ...ticketForm, ticket }));
@@ -52,6 +53,7 @@ const AddTicket: React.FC = () => {
   const handleSubmit = () => {
     console.log(ticketForm);
     setTicketForm({} as ITicketForm);
+    setFocus(0);
   };
 
   return (
@@ -70,20 +72,23 @@ const AddTicket: React.FC = () => {
           </FormRow>
           <FormRow>
             <InputGroup>
-              <Label>Ativo</Label>
+              <Label>Busque e Selecione um Ativo</Label>
               <Input
                 value={ticketForm.ticket}
                 autoCapitalize={'characters'}
                 returnKeyType={'next'}
-                placeholder="Busque e selecione o ativo"
+                placeholder="RBLC3"
                 placeholderTextColor={color.titleNotImport}
-                autoFocus={true}
                 maxLength={6}
                 onChangeText={ticket => selectTicket(ticket)}
+                autoFocus={focus === 1}
+                onFocus={() => setFocus(1)}
+                onEndEditing={() => setFocus(2)}
+                autoCorrect={false}
               />
             </InputGroup>
             <InputGroup>
-              <Label>Nota</Label>
+              <Label>Dê uma Nota</Label>
               <Input
                 value={ticketForm.grade}
                 returnKeyType={'next'}
@@ -94,6 +99,9 @@ const AddTicket: React.FC = () => {
                 onChangeText={grade =>
                   setTicketForm(ticketForm => ({ ...ticketForm, grade }))
                 }
+                autoFocus={focus === 2}
+                onFocus={() => setFocus(2)}
+                onEndEditing={() => setFocus(3)}
               />
             </InputGroup>
           </FormRow>
@@ -104,11 +112,14 @@ const AddTicket: React.FC = () => {
                 value={ticketForm.quantity}
                 returnKeyType={'next'}
                 keyboardType="number-pad"
-                placeholder="Números de ativos"
+                placeholder="Números de Ativos"
                 placeholderTextColor={color.titleNotImport}
                 onChangeText={quantity =>
                   setTicketForm(ticketForm => ({ ...ticketForm, quantity }))
                 }
+                autoFocus={focus === 3}
+                onFocus={() => setFocus(3)}
+                onEndEditing={() => setFocus(4)}
               />
             </InputGroup>
             <InputGroup>
@@ -116,11 +127,14 @@ const AddTicket: React.FC = () => {
               <Input
                 value={ticketForm.averagePrice}
                 keyboardType="number-pad"
-                placeholder="Preço médio do ativo"
+                placeholder="Preço Médio de Compra"
                 placeholderTextColor={color.titleNotImport}
                 onChangeText={averagePrice =>
                   setTicketForm(ticketForm => ({ ...ticketForm, averagePrice }))
                 }
+                autoFocus={focus === 4}
+                onFocus={() => setFocus(4)}
+                onEndEditing={() => setFocus(0)}
               />
             </InputGroup>
           </FormRow>

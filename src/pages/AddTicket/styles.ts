@@ -43,13 +43,15 @@ export const Label = styled.Text`
   color: ${({ theme }) => theme.color.titleNotImport};
   font: 600 16px/24px 'TitilliumWeb_600SemiBold';
 `;
+
 export const Input = styled.TextInput`
-  color: ${({ theme, editable = true }) =>
-    !editable ? theme.color.inactiveTabs : theme.color.title};
+  color: ${({ theme }) => theme.color.title};
   height: 32px;
   font: 400 16px/24px 'TitilliumWeb_400Regular';
-  border-bottom-color: ${({ theme }) => theme.color.divider};
+  border-bottom-color: ${({ theme, autoFocus }) =>
+    !autoFocus ? theme.color.divider : theme.color.blue};
   border-bottom-width: 1px;
+  opacity: ${({ editable = true }) => (!editable ? 0.4 : 1)};
 `;
 
 export const Button = styled(RectButton)`
