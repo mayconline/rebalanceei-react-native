@@ -15,6 +15,11 @@ import {
   Button,
   Gradient,
   TextButton,
+  SuggestionContainer,
+  SuggestionList,
+  SuggestionItem,
+  SuggestionText,
+  SuggestionButton,
 } from './styles';
 
 import ImageAddTicket from '../../../assets/svg/ImageAddTicket';
@@ -37,7 +42,7 @@ const SUGGESTIONS = [
   },
   {
     ticket: 'TRPL4',
-    title: 'Transmissão Paulista',
+    title: 'Transmissão Paulista LTDA',
   },
 ];
 
@@ -45,9 +50,16 @@ const AddTicket: React.FC = () => {
   const { color, gradient } = useContext(ThemeContext);
   const [ticketForm, setTicketForm] = useState<ITicketForm>({} as ITicketForm);
   const [focus, setFocus] = useState(0);
+  const [hasSuggestions, setHasSuggestions] = useState(false);
 
-  const selectTicket = (ticket: string) => {
+  const handleSuggestionsAutoComplete = (ticket: string) => {
     setTicketForm(ticketForm => ({ ...ticketForm, ticket }));
+    setHasSuggestions(true);
+  };
+
+  const handleSelectTicket = (ticket: string) => {
+    setTicketForm(ticketForm => ({ ...ticketForm, ticket }));
+    setHasSuggestions(false);
   };
 
   const handleSubmit = () => {
@@ -80,12 +92,27 @@ const AddTicket: React.FC = () => {
                 placeholder="RBLC3"
                 placeholderTextColor={color.titleNotImport}
                 maxLength={6}
-                onChangeText={ticket => selectTicket(ticket)}
+                onChangeText={ticket => handleSuggestionsAutoComplete(ticket)}
                 autoFocus={focus === 1}
                 onFocus={() => setFocus(1)}
-                onEndEditing={() => setFocus(2)}
+                onEndEditing={() => setHasSuggestions(false)}
                 autoCorrect={false}
               />
+              <SuggestionContainer visibled={hasSuggestions}>
+                <SuggestionList>
+                  {SUGGESTIONS?.map(suggestion => (
+                    <SuggestionItem key={suggestion.ticket}>
+                      <SuggestionButton
+                        onPress={() => handleSelectTicket(suggestion.ticket)}
+                      >
+                        <SuggestionText numberOfLines={1} ellipsizeMode="tail">
+                          {suggestion.ticket}- {suggestion.title}
+                        </SuggestionText>
+                      </SuggestionButton>
+                    </SuggestionItem>
+                  ))}
+                </SuggestionList>
+              </SuggestionContainer>
             </InputGroup>
             <InputGroup>
               <Label>Dê uma Nota</Label>
