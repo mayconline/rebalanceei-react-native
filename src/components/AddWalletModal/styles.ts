@@ -1,10 +1,5 @@
 import styled from 'styled-components/native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { RectButton } from 'react-native-gesture-handler';
-
-interface ISuggestions {
-  visibled: boolean;
-}
 
 export const Wrapper = styled.SafeAreaView`
   flex: 1;
@@ -13,17 +8,30 @@ export const Wrapper = styled.SafeAreaView`
 
 export const ContainerTitle = styled.View`
   margin-top: 40px;
+  margin-bottom: 20px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+export const Icon = styled.TouchableOpacity`
+  padding: 0 24px 0 12px;
 `;
 
 export const Title = styled.Text`
   color: ${({ theme }) => theme.color.secondary};
   font: 600 24px/32px 'TitilliumWeb_600SemiBold';
-  align-self: center;
+  flex: 1;
+  padding: 0 24px;
 `;
 
 export const FormContainer = styled.KeyboardAvoidingView`
-  flex: 1;
-  max-height: 316px;
+  height: 300px;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  elevation: 5;
 `;
 
 export const Form = styled.View`
@@ -32,17 +40,19 @@ export const Form = styled.View`
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   min-height: 500px;
+  width: 100%;
 `;
 
 export const FormRow = styled.View`
   flex-direction: row;
   justify-content: space-between;
   margin-bottom: 16px;
+  width: 100%;
 `;
 
 export const InputGroup = styled.View`
   align-self: center;
-  max-width: 65%;
+  width: 100%;
 `;
 
 export const Label = styled.Text`
@@ -60,51 +70,18 @@ export const Input = styled.TextInput`
   opacity: ${({ editable = true }) => (!editable ? 0.4 : 1)};
 `;
 
-export const Button = styled(RectButton)`
+export const Gradient = styled(LinearGradient)`
+  justify-content: center;
+  margin-top: 44px;
+  border-radius: 24px;
+`;
+
+export const Button = styled.TouchableOpacity`
   align-items: center;
   padding: 12px 20px;
 `;
 
-export const Gradient = styled(LinearGradient)`
-  justify-content: center;
-  margin-top: 24px;
-  border-radius: 24px;
-`;
-
 export const TextButton = styled.Text`
   color: ${({ theme }) => theme.color.secondary};
-  font: 600 20px/24px 'TitilliumWeb_600SemiBold';
-`;
-
-export const SuggestionContainer = styled.View<ISuggestions>`
-  display: ${({ visibled }) => (!visibled ? 'none' : 'flex')};
-  elevation: 0.7;
-  margin-top: 4px;
-  position: relative;
-`;
-
-export const SuggestionList = styled.View`
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: ${({ theme }) => theme.color.secondary};
-  border-color: ${({ theme }) => theme.color.divider};
-  border-width: 0.7px;
-  border-radius: 4px;
-`;
-
-export const SuggestionItem = styled.View`
-  border-bottom-color: ${({ theme }) => theme.color.divider};
-  border-bottom-width: 0.7px;
-  border-radius: 4px;
-`;
-
-export const SuggestionButton = styled(RectButton)`
-  padding: 8px;
-  border-radius: 4px;
-`;
-
-export const SuggestionText = styled.Text`
-  color: ${({ theme }) => theme.color.title};
-  font: 400 16px/24px 'TitilliumWeb_400Regular';
+  font: 600 20px/28px 'TitilliumWeb_600SemiBold';
 `;

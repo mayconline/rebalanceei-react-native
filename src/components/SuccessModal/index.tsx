@@ -10,14 +10,22 @@ import {
   Gradient,
 } from './styles';
 import LottieView from 'lottie-react-native';
-import ImageSuccess from '../../../assets/svg/ImageSuccess';
 
 interface ISuccessModal {
-  onClose?(): void;
+  onClose(): void;
+  beforeModalClose(): void;
 }
 
-const SuccessModal: React.FC<ISuccessModal> = ({ onClose }) => {
+const SuccessModal: React.FC<ISuccessModal> = ({
+  onClose,
+  beforeModalClose,
+}) => {
   const { color, gradient } = useContext(ThemeContext);
+
+  const handleClose = () => {
+    beforeModalClose();
+    onClose();
+  };
 
   return (
     <Wrapper>
@@ -28,7 +36,7 @@ const SuccessModal: React.FC<ISuccessModal> = ({ onClose }) => {
       <LootieContainer>
         <LottieView
           style={{
-            backgroundColor: '#fff',
+            backgroundColor: color.secondary,
           }}
           source={require('../../../assets/looties/success-lootie.json')}
           autoPlay
@@ -37,7 +45,7 @@ const SuccessModal: React.FC<ISuccessModal> = ({ onClose }) => {
       </LootieContainer>
 
       <Gradient colors={gradient.lightToDarkGreen} start={[1, 0.5]}>
-        <BackButtonContainer onPress={onClose}>
+        <BackButtonContainer onPress={handleClose}>
           <BackButton>Voltar</BackButton>
         </BackButtonContainer>
       </Gradient>

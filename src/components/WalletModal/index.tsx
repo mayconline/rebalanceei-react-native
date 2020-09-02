@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, Modal } from 'react-native';
 import { ThemeContext } from 'styled-components/native';
 import { Entypo } from '@expo/vector-icons';
 
@@ -26,6 +26,7 @@ import {
 import Divider from '../Divider';
 import AddButton from '../AddButton';
 import ShadowBackdrop from '../ShadowBackdrop';
+import AddWalletModal from '../AddWalletModal';
 
 const WALLET_LIST = [
   {
@@ -69,6 +70,7 @@ interface WalletProps {
 const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
   const { color } = useContext(ThemeContext);
   const [selectWallet, setSelectWallet] = useState(WALLET_LIST);
+  const [openModal, setOpenModal] = useState(false);
 
   const handleSelectWallet = (walletID: string) => {
     setSelectWallet(wallets =>
@@ -125,12 +127,21 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
             <BackButton>Voltar</BackButton>
           </BackButtonContainer>
 
-          <AddButtonContainer>
+          <AddButtonContainer onPress={() => setOpenModal(true)}>
             <Label>Adicionar Carteira</Label>
             <AddButton size={40} />
           </AddButtonContainer>
         </AddWalletContainer>
       </Wrapper>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={openModal}
+        statusBarTranslucent={true}
+      >
+        <AddWalletModal onClose={() => setOpenModal(false)} />
+      </Modal>
     </>
   );
 };

@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
-import { Modal } from 'react-native';
-import { Platform } from 'react-native';
+import { Platform, Modal } from 'react-native';
 import { ThemeContext } from 'styled-components/native';
+import { useNavigation } from '@react-navigation/native';
 
 import {
   Wrapper,
@@ -54,6 +54,8 @@ const AddTicket: React.FC = () => {
   const [focus, setFocus] = useState(0);
   const [hasSuggestions, setHasSuggestions] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+
+  const navigation = useNavigation();
 
   const handleSuggestionsAutoComplete = (ticket: string) => {
     setTicketForm(ticketForm => ({ ...ticketForm, ticket }));
@@ -191,7 +193,10 @@ const AddTicket: React.FC = () => {
         visible={openModal}
         statusBarTranslucent={false}
       >
-        <SuccessModal onClose={() => setOpenModal(false)} />
+        <SuccessModal
+          onClose={() => setOpenModal(false)}
+          beforeModalClose={() => navigation.goBack()}
+        />
       </Modal>
     </>
   );
