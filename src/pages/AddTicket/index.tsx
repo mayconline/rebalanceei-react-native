@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import { Modal } from 'react-native';
 import { Platform } from 'react-native';
 import { ThemeContext } from 'styled-components/native';
 
@@ -23,6 +24,7 @@ import {
 } from './styles';
 
 import ImageAddTicket from '../../../assets/svg/ImageAddTicket';
+import SuccessModal from '../../components/SuccessModal';
 
 interface ITicketForm {
   ticket: string;
@@ -51,6 +53,7 @@ const AddTicket: React.FC = () => {
   const [ticketForm, setTicketForm] = useState<ITicketForm>({} as ITicketForm);
   const [focus, setFocus] = useState(0);
   const [hasSuggestions, setHasSuggestions] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
   const handleSuggestionsAutoComplete = (ticket: string) => {
     setTicketForm(ticketForm => ({ ...ticketForm, ticket }));
@@ -66,113 +69,131 @@ const AddTicket: React.FC = () => {
     console.log(ticketForm);
     setTicketForm({} as ITicketForm);
     setFocus(0);
+    setOpenModal(true);
   };
 
   return (
-    <Wrapper>
-      <ContainerTitle>
-        <Title>Adicionar Ativo</Title>
-      </ContainerTitle>
-      <ImageAddTicket />
-      <FormContainer behavior={Platform.OS == 'ios' ? 'padding' : 'position'}>
-        <Form>
-          <FormRow>
-            <InputGroup>
-              <Label>Carteira Atual</Label>
-              <Input value={'Ações'} editable={false} />
-            </InputGroup>
-          </FormRow>
-          <FormRow>
-            <InputGroup>
-              <Label>Busque e Selecione um Ativo</Label>
-              <Input
-                value={ticketForm.ticket}
-                autoCapitalize={'characters'}
-                returnKeyType={'next'}
-                placeholder="RBLC3"
-                placeholderTextColor={color.titleNotImport}
-                maxLength={6}
-                onChangeText={ticket => handleSuggestionsAutoComplete(ticket)}
-                autoFocus={focus === 1}
-                onFocus={() => setFocus(1)}
-                onEndEditing={() => setHasSuggestions(false)}
-                autoCorrect={false}
-              />
-              <SuggestionContainer visibled={hasSuggestions}>
-                <SuggestionList>
-                  {SUGGESTIONS?.map(suggestion => (
-                    <SuggestionItem key={suggestion.ticket}>
-                      <SuggestionButton
-                        onPress={() => handleSelectTicket(suggestion.ticket)}
-                      >
-                        <SuggestionText numberOfLines={1} ellipsizeMode="tail">
-                          {suggestion.ticket}- {suggestion.title}
-                        </SuggestionText>
-                      </SuggestionButton>
-                    </SuggestionItem>
-                  ))}
-                </SuggestionList>
-              </SuggestionContainer>
-            </InputGroup>
-            <InputGroup>
-              <Label>Dê uma Nota</Label>
-              <Input
-                value={ticketForm.grade}
-                returnKeyType={'next'}
-                keyboardType="number-pad"
-                placeholder="0 a 100"
-                placeholderTextColor={color.titleNotImport}
-                maxLength={3}
-                onChangeText={grade =>
-                  setTicketForm(ticketForm => ({ ...ticketForm, grade }))
-                }
-                autoFocus={focus === 2}
-                onFocus={() => setFocus(2)}
-                onEndEditing={() => setFocus(3)}
-              />
-            </InputGroup>
-          </FormRow>
-          <FormRow>
-            <InputGroup>
-              <Label>Quantidade</Label>
-              <Input
-                value={ticketForm.quantity}
-                returnKeyType={'next'}
-                keyboardType="number-pad"
-                placeholder="Números de Ativos"
-                placeholderTextColor={color.titleNotImport}
-                onChangeText={quantity =>
-                  setTicketForm(ticketForm => ({ ...ticketForm, quantity }))
-                }
-                autoFocus={focus === 3}
-                onFocus={() => setFocus(3)}
-                onEndEditing={() => setFocus(4)}
-              />
-            </InputGroup>
-            <InputGroup>
-              <Label>Preço Médio</Label>
-              <Input
-                value={ticketForm.averagePrice}
-                keyboardType="number-pad"
-                placeholder="Preço Médio de Compra"
-                placeholderTextColor={color.titleNotImport}
-                onChangeText={averagePrice =>
-                  setTicketForm(ticketForm => ({ ...ticketForm, averagePrice }))
-                }
-                autoFocus={focus === 4}
-                onFocus={() => setFocus(4)}
-                onEndEditing={() => setFocus(0)}
-              />
-            </InputGroup>
-          </FormRow>
-          <Gradient colors={gradient.darkToLightBlue} start={[1, 0.5]}>
-            <Button onPress={handleSubmit}>
-              <TextButton>Adicionar Ativo</TextButton>
-            </Button>
-          </Gradient>
-        </Form>
-      </FormContainer>
-    </Wrapper>
+    <>
+      <Wrapper>
+        <ContainerTitle>
+          <Title>Adicionar Ativo</Title>
+        </ContainerTitle>
+        <ImageAddTicket />
+        <FormContainer behavior={Platform.OS == 'ios' ? 'padding' : 'position'}>
+          <Form>
+            <FormRow>
+              <InputGroup>
+                <Label>Carteira Atual</Label>
+                <Input value={'Ações'} editable={false} />
+              </InputGroup>
+            </FormRow>
+            <FormRow>
+              <InputGroup>
+                <Label>Busque e Selecione um Ativo</Label>
+                <Input
+                  value={ticketForm.ticket}
+                  autoCapitalize={'characters'}
+                  returnKeyType={'next'}
+                  placeholder="RBLC3"
+                  placeholderTextColor={color.titleNotImport}
+                  maxLength={6}
+                  onChangeText={ticket => handleSuggestionsAutoComplete(ticket)}
+                  autoFocus={focus === 1}
+                  onFocus={() => setFocus(1)}
+                  onEndEditing={() => setHasSuggestions(false)}
+                  autoCorrect={false}
+                />
+                <SuggestionContainer visibled={hasSuggestions}>
+                  <SuggestionList>
+                    {SUGGESTIONS?.map(suggestion => (
+                      <SuggestionItem key={suggestion.ticket}>
+                        <SuggestionButton
+                          onPress={() => handleSelectTicket(suggestion.ticket)}
+                        >
+                          <SuggestionText
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                          >
+                            {suggestion.ticket}- {suggestion.title}
+                          </SuggestionText>
+                        </SuggestionButton>
+                      </SuggestionItem>
+                    ))}
+                  </SuggestionList>
+                </SuggestionContainer>
+              </InputGroup>
+              <InputGroup>
+                <Label>Dê uma Nota</Label>
+                <Input
+                  value={ticketForm.grade}
+                  returnKeyType={'next'}
+                  keyboardType="number-pad"
+                  placeholder="0 a 100"
+                  placeholderTextColor={color.titleNotImport}
+                  maxLength={3}
+                  onChangeText={grade =>
+                    setTicketForm(ticketForm => ({ ...ticketForm, grade }))
+                  }
+                  autoFocus={focus === 2}
+                  onFocus={() => setFocus(2)}
+                  onEndEditing={() => setFocus(3)}
+                />
+              </InputGroup>
+            </FormRow>
+            <FormRow>
+              <InputGroup>
+                <Label>Quantidade</Label>
+                <Input
+                  value={ticketForm.quantity}
+                  returnKeyType={'next'}
+                  keyboardType="number-pad"
+                  placeholder="Números de Ativos"
+                  placeholderTextColor={color.titleNotImport}
+                  onChangeText={quantity =>
+                    setTicketForm(ticketForm => ({ ...ticketForm, quantity }))
+                  }
+                  autoFocus={focus === 3}
+                  onFocus={() => setFocus(3)}
+                  onEndEditing={() => setFocus(4)}
+                />
+              </InputGroup>
+              <InputGroup>
+                <Label>Preço Médio</Label>
+                <Input
+                  value={ticketForm.averagePrice}
+                  keyboardType="number-pad"
+                  placeholder="Preço Médio de Compra"
+                  placeholderTextColor={color.titleNotImport}
+                  onChangeText={averagePrice =>
+                    setTicketForm(ticketForm => ({
+                      ...ticketForm,
+                      averagePrice,
+                    }))
+                  }
+                  autoFocus={focus === 4}
+                  onFocus={() => setFocus(4)}
+                  onEndEditing={() => setFocus(0)}
+                />
+              </InputGroup>
+            </FormRow>
+            <Gradient colors={gradient.darkToLightBlue} start={[1, 0.5]}>
+              <Button onPress={handleSubmit}>
+                <TextButton>Adicionar Ativo</TextButton>
+              </Button>
+            </Gradient>
+          </Form>
+        </FormContainer>
+      </Wrapper>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={openModal}
+        statusBarTranslucent={false}
+      >
+        <SuccessModal onClose={() => setOpenModal(false)} />
+      </Modal>
+    </>
   );
 };
 

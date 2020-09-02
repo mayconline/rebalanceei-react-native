@@ -25,5 +25,6 @@ export default {
     darkToLightGreen: ['#31AD2C', '#2D9B28'],
     darkToLightBlue: ['#347AF0', '#5C8FE5'],
     lightToGray: ['#FFF', '#EDF1F9'],
+    lightToDarkGreen: ['#359846', '#4CD964', '#F2F2F7'],
   },
 };
