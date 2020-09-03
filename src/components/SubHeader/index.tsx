@@ -7,7 +7,7 @@ import { Wrapper, Title, FiltersContainer, Filter, TextFilter } from './styles';
 
 interface ISubHeaderProps {
   title: string;
-  filters: IFilters[];
+  filters?: IFilters[];
   onPress(filter: string): void;
 }
 
