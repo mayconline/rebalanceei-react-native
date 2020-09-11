@@ -4,9 +4,7 @@ import { useAuth } from '../../../contexts/authContext';
 import { Wrapper, ButtonContainer, ButtonText } from './styles';
 
 const Login: React.FC = () => {
-  const { signed, user, handleSignIn } = useAuth();
-
-  console.log(user, signed);
+  const { handleSignIn } = useAuth();
 
   return (
     <Wrapper>

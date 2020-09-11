@@ -37,13 +37,17 @@ export const AuthProvider: React.FC = ({ children }) => {
   }, []);
 
   const handleSignIn = async () => {
+    setLoading(true);
     try {
       const response = await signIn();
       setUser(response.user);
 
       await AsyncStorage.setItem('@authUser', JSON.stringify(response.user));
       await AsyncStorage.setItem('@authToken', response.token);
+
+      setLoading(false);
     } catch (err) {
+      setLoading(false);
       throw new Error(`Failed save asyncStorage - ${err}`);
     }
   };
