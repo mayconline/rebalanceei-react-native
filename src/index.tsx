@@ -11,8 +11,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { useColorScheme } from 'react-native';
 import { ThemeProvider } from 'styled-components';
 import themes, { themeMode, Theme } from './themes';
+import { AuthProvider } from './contexts/authContext';
 
-import Navigation from './Navigation';
+import Routes from './routes';
 
 const App: React.FC = () => {
   const deviceTheme = useColorScheme() as themeMode;
@@ -28,12 +29,14 @@ const App: React.FC = () => {
   }
 
   return (
-    <ThemeProvider theme={theme}>
-      <StatusBar style={'inverted'} />
-      <NavigationContainer>
-        <Navigation />
-      </NavigationContainer>
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider theme={theme}>
+        <StatusBar style={'inverted'} />
+        <NavigationContainer>
+          <Routes />
+        </NavigationContainer>
+      </ThemeProvider>
+    </AuthProvider>
   );
 };
 

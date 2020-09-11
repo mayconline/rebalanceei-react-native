@@ -3,13 +3,13 @@ import styled, { ThemeContext } from 'styled-components/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Entypo, Feather, FontAwesome } from '@expo/vector-icons';
 
-import AddButton from './components/AddButton';
+import AddButton from '../components/AddButton';
 
-import Ticket from './pages/Ticket';
-import Rebalance from './pages/Rebalance';
-import AddTicket from './pages/AddTicket';
-import Rentability from './pages/Rentability';
-import Chart from './pages/Chart';
+import Ticket from '../pages/Ticket';
+import Rebalance from '../pages/Rebalance';
+import AddTicket from '../pages/AddTicket';
+import Rentability from '../pages/Rentability';
+import Chart from '../pages/Chart';
 
 interface labelProps {
   focused: boolean;
@@ -58,7 +58,7 @@ const icons: Icons = {
   },
 };
 
-const Navigation: React.FC = () => {
+const privateRoute: React.FC = () => {
   const { color } = useContext(ThemeContext);
 
   return (
@@ -142,4 +142,4 @@ const Navigation: React.FC = () => {
     </Tab.Navigator>
   );
 };
-export default Navigation;
+export default privateRoute;

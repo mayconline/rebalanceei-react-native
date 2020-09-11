@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Modal } from 'react-native';
 import { ThemeContext } from 'styled-components/native';
+import { useAuth } from '../../contexts/authContext';
 import { Entypo } from '@expo/vector-icons';
 
 import {
@@ -16,7 +17,9 @@ import {
 import WalletModal from '../WalletModal';
 
 const Header: React.FC = () => {
+  const { handleSignOut } = useAuth();
   const { color, gradient } = useContext(ThemeContext);
+
   const [openModal, setOpenModal] = useState(false);
 
   return (
@@ -35,7 +38,7 @@ const Header: React.FC = () => {
             <Visibled>
               <Entypo name="eye-with-line" size={20} color={color.secondary} />
             </Visibled>
-            <Menu>
+            <Menu onPress={handleSignOut}>
               <Entypo
                 name="dots-three-vertical"
                 size={20}
