@@ -2,8 +2,8 @@ import React from 'react';
 
 import { Wrapper } from './styles';
 
-const Login: React.FC = () => {
+const Register: React.FC = () => {
   return <Wrapper />;
 };
 
-export default Login;
+export default Register;

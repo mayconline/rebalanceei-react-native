@@ -1,5 +1,4 @@
 import styled from 'styled-components/native';
-import { RectButton } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export const Wrapper = styled.SafeAreaView`
