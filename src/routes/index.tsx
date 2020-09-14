@@ -1,19 +1,16 @@
 import React from 'react';
-import { View, ActivityIndicator } from 'react-native';
 import { useAuth } from '../contexts/authContext';
 
 import PrivateRoute from './privateRoute';
 import PublicRoute from './publicRoute';
 
+import Loading from '../components/Loading';
+
 const Routes: React.FC = () => {
   const { signed, loading } = useAuth();
 
   if (loading) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#666" />
-      </View>
-    );
+    return <Loading />;
   }
 
   return signed ? <PrivateRoute /> : <PublicRoute />;
