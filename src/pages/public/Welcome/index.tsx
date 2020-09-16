@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAuth } from '../../../contexts/authContext';
+import { useNavigation } from '@react-navigation/native';
 
 import {
   Wrapper,
@@ -16,7 +16,11 @@ import {
 import RebalanceeiLogo from '../../../../assets/svg/RebalanceeiLogo';
 
 const Welcome: React.FC = () => {
-  const { handleSignIn } = useAuth();
+  const navigation = useNavigation();
+
+  const HandleEnter = () => {
+    navigation.navigate('Register');
+  };
 
   return (
     <Wrapper>
@@ -30,7 +34,7 @@ const Welcome: React.FC = () => {
         </ContainerTitle>
       </Header>
       <Footer>
-        <ButtonContainer onPress={handleSignIn}>
+        <ButtonContainer onPress={HandleEnter}>
           <ButtonText>Entrar</ButtonText>
         </ButtonContainer>
       </Footer>
