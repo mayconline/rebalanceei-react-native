@@ -25,18 +25,18 @@ import {
   TextLink,
 } from './styles';
 
-import ImageRegister from '../../../../assets/svg/ImageRegister';
+import ImageLogin from '../../../../assets/svg/ImageLogin';
 
-interface IAccountRegister {
+interface IAccountLogin {
   email: string;
   password: string;
 }
 
-const Register: React.FC = () => {
+const Login: React.FC = () => {
   const { color, gradient } = useContext(ThemeContext);
   const [focus, setFocus] = useState(0);
   const [visiblePassword, setVisiblePassword] = useState(false);
-  const [account, setAccount] = useState({} as IAccountRegister);
+  const [account, setAccount] = useState({} as IAccountLogin);
 
   const { handleSignIn } = useAuth();
   const navigation = useNavigation();
@@ -53,11 +53,11 @@ const Register: React.FC = () => {
           <Entypo name="chevron-left" size={32} color={color.secondary} />
         </Icon>
         <ContainerTitle>
-          <Title>Criar Conta</Title>
+          <Title>Bem Vindo de Volta</Title>
         </ContainerTitle>
       </Header>
       <Image>
-        <ImageRegister />
+        <ImageLogin />
       </Image>
       <FormContainer behavior={'padding'}>
         <Form>
@@ -118,17 +118,13 @@ const Register: React.FC = () => {
 
           <Gradient colors={gradient.darkToLightBlue} start={[1, 0.5]}>
             <Button onPress={handleSubmit}>
-              <TextButton>Criar Conta</TextButton>
+              <TextButton>Entrar</TextButton>
             </Button>
           </Gradient>
-
-          <ContainerTextLink onPress={() => navigation.navigate('Login')}>
-            <TextLink>Já possui uma conta?</TextLink>
-          </ContainerTextLink>
         </Form>
       </FormContainer>
     </Wrapper>
   );
 };
 
-export default Register;
+export default Login;
