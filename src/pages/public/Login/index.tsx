@@ -21,8 +21,6 @@ import {
   Button,
   Gradient,
   TextButton,
-  ContainerTextLink,
-  TextLink,
 } from './styles';
 
 import ImageLogin from '../../../../assets/svg/ImageLogin';

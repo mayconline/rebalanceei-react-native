@@ -19,7 +19,7 @@ const Welcome: React.FC = () => {
   const navigation = useNavigation();
 
   const HandleEnter = () => {
-    navigation.navigate('Register');
+    navigation.navigate('StepOne');
   };
 
   return (
