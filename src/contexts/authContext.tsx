@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
+import { useNetInfo } from '@react-native-community/netinfo';
 import { signIn } from '../services/auth';
 
 interface IUser {
@@ -10,6 +11,7 @@ interface IUser {
 interface IAuthContext {
   signed: boolean;
   loading: boolean;
+  isConnected: boolean;
   user: IUser | null;
   handleSignIn(): Promise<void>;
   handleSignOut(): void;
@@ -20,6 +22,8 @@ const AuthContext = createContext<IAuthContext>({} as IAuthContext);
 export const AuthProvider: React.FC = ({ children }) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const { isConnected } = useNetInfo();
 
   useEffect(() => {
     async function loadStorageData() {
@@ -59,7 +63,14 @@ export const AuthProvider: React.FC = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ signed: !!user, user, handleSignIn, handleSignOut, loading }}
+      value={{
+        signed: !!user,
+        user,
+        handleSignIn,
+        handleSignOut,
+        loading,
+        isConnected,
+      }}
     >
       {children}
     </AuthContext.Provider>

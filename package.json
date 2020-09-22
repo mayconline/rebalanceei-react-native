@@ -11,6 +11,7 @@
     "@expo-google-fonts/titillium-web": "^0.1.0",
     "@react-native-community/async-storage": "~1.11.0",
     "@react-native-community/masked-view": "0.1.10",
+    "@react-native-community/netinfo": "5.9.2",
     "@react-navigation/bottom-tabs": "^5.7.1",
     "@react-navigation/native": "^5.7.0",
     "@react-navigation/stack": "^5.9.0",
