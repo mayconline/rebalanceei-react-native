@@ -19,6 +19,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import Header from '../../components/Header';
 import SubHeader from '../../components/SubHeader';
+import Empty from '../../components/Empty';
 
 const CARD_LIST = [
   {
@@ -104,38 +105,44 @@ const Ticket: React.FC = () => {
   return (
     <Wrapper>
       <Header />
-      <SubHeader
-        title="Meus Ativos"
-        filters={filters}
-        onPress={handleChangeFilter}
-      />
-      <List>
-        <FlatList
-          data={CARD_LIST}
-          keyExtractor={item => item.ticket}
-          renderItem={({ item }) => (
-            <Content>
-              <TouchableOpacity>
-                <Card colors={gradient.lightToGray} ticket={item.ticket}>
-                  <MaterialCommunityIcons
-                    name="circle-edit-outline"
-                    size={28}
-                    color={color.blue}
-                  />
-                  <CardContent>
-                    <CardTitleContainer>
-                      <CardTicket>{item.ticket}</CardTicket>
-                      <CardTitle> - {item.title}</CardTitle>
-                    </CardTitleContainer>
-                    <CardSubTitle>{item.subTitle}</CardSubTitle>
-                  </CardContent>
-                  <Grade>{item.grade}</Grade>
-                </Card>
-              </TouchableOpacity>
-            </Content>
-          )}
-        />
-      </List>
+      {!CARD_LIST?.length ? (
+        <Empty />
+      ) : (
+        <>
+          <SubHeader
+            title="Meus Ativos"
+            filters={filters}
+            onPress={handleChangeFilter}
+          />
+          <List>
+            <FlatList
+              data={CARD_LIST}
+              keyExtractor={item => item.ticket}
+              renderItem={({ item }) => (
+                <Content>
+                  <TouchableOpacity>
+                    <Card colors={gradient.lightToGray} ticket={item.ticket}>
+                      <MaterialCommunityIcons
+                        name="circle-edit-outline"
+                        size={28}
+                        color={color.blue}
+                      />
+                      <CardContent>
+                        <CardTitleContainer>
+                          <CardTicket>{item.ticket}</CardTicket>
+                          <CardTitle> - {item.title}</CardTitle>
+                        </CardTitleContainer>
+                        <CardSubTitle>{item.subTitle}</CardSubTitle>
+                      </CardContent>
+                      <Grade>{item.grade}</Grade>
+                    </Card>
+                  </TouchableOpacity>
+                </Content>
+              )}
+            />
+          </List>
+        </>
+      )}
     </Wrapper>
   );
 };
