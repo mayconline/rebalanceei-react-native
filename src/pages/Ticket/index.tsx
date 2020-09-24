@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { FlatList, TouchableOpacity } from 'react-native';
 import { ThemeContext } from 'styled-components/native';
+import { useQuery, gql } from '@apollo/client';
 
 import {
   Wrapper,
@@ -93,6 +94,12 @@ const Ticket: React.FC = () => {
   const { color, gradient } = useContext(ThemeContext);
   const [filters, setFilters] = useState(initialFilter);
 
+  const { data, loading, error } = useQuery(GET_WALLET_BY_USER, {
+    variables: { userID: '1' },
+  });
+
+  console.log({ data, loading, error });
+
   const handleChangeFilter = (filterName: string) => {
     setFilters(filters =>
       filters.map(filter => ({
@@ -146,5 +153,28 @@ const Ticket: React.FC = () => {
     </Wrapper>
   );
 };
+
+const GET_WALLET_BY_USER = gql`
+  query getWalletByUser($userID: ID!) {
+    getWalletByUser(userID: $userID) {
+      _id
+      description
+      sumCostWallet
+      sumAmountWallet
+      sumGradeWallet
+      user {
+        _id
+        email
+      }
+      ticket {
+        _id
+        symbol
+        quantity
+        averagePrice
+        grade
+      }
+    }
+  }
+`;
 
 export default Ticket;
