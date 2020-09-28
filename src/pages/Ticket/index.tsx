@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { FlatList, TouchableOpacity } from 'react-native';
 import { ThemeContext } from 'styled-components/native';
 import { useQuery, gql } from '@apollo/client';
-
+import { useAuth } from '../../contexts/authContext';
 import {
   Wrapper,
   List,
@@ -93,12 +93,13 @@ const initialFilter = [
 const Ticket: React.FC = () => {
   const { color, gradient } = useContext(ThemeContext);
   const [filters, setFilters] = useState(initialFilter);
+  const { user } = useAuth();
 
   const { data, loading, error } = useQuery(GET_WALLET_BY_USER, {
-    variables: { userID: '1' },
+    variables: { userID: user },
   });
 
-  console.log({ data, loading, error });
+  console.log(data);
 
   const handleChangeFilter = (filterName: string) => {
     setFilters(filters =>
@@ -112,7 +113,7 @@ const Ticket: React.FC = () => {
   return (
     <Wrapper>
       <Header />
-      {!CARD_LIST?.length ? (
+      {!data?.getWalletByUser?.length ? (
         <Empty />
       ) : (
         <>

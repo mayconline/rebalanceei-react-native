@@ -1,27 +1,48 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  SetStateAction,
+} from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
+import { useMutation, gql } from '@apollo/client';
 import { useNetInfo } from '@react-native-community/netinfo';
-import { signIn } from '../services/auth';
 
-interface IUser {
+interface IAccountRegister {
   email: string;
   password: string;
+  active: boolean;
+  checkTerms: boolean;
+}
+
+interface ISignIn {
+  login: {
+    _id: string;
+    token: string;
+  };
 }
 
 interface IAuthContext {
   signed: boolean;
   loading: boolean;
   isConnected: boolean;
-  user: IUser | null;
-  handleSignIn(): Promise<void>;
+  user: string | null;
+  handleSignUp(user: IAccountRegister): Promise<void>;
+  handleSignIn(user: ISignIn): Promise<void>;
   handleSignOut(): void;
 }
 
 const AuthContext = createContext<IAuthContext>({} as IAuthContext);
 
 export const AuthProvider: React.FC = ({ children }) => {
-  const [user, setUser] = useState<IUser | null>(null);
+  const [user, setUser] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const [
+    createUser,
+    { loading: mutationLoading, error: mutationError },
+  ] = useMutation(CREATE_USER);
 
   const { isConnected } = useNetInfo();
 
@@ -30,29 +51,54 @@ export const AuthProvider: React.FC = ({ children }) => {
       const storageUser = await AsyncStorage.getItem('@authUser');
       const storageToken = await AsyncStorage.getItem('@authToken');
 
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
       if (storageUser && storageToken) {
-        setUser(JSON.parse(storageUser));
+        setUser(storageUser);
       }
       setLoading(false);
     }
     loadStorageData();
   }, []);
 
-  const handleSignIn = async () => {
+  const handleSignUp = async (userRegister: IAccountRegister) => {
     setLoading(true);
-    try {
-      const response = await signIn();
-      setUser(response.user);
 
-      await AsyncStorage.setItem('@authUser', JSON.stringify(response.user));
-      await AsyncStorage.setItem('@authToken', response.token);
+    try {
+      const response = await createUser({
+        variables: { ...userRegister, active: true, checkTerms: true },
+      });
+
+      const { _id, token } =
+        !mutationLoading && !mutationError && response?.data?.createUser;
+
+      let userLogin = {
+        login: {
+          _id,
+          token,
+        },
+      };
+
+      await handleSignIn(userLogin);
+    } catch (err) {
+      await AsyncStorage.clear();
+      setLoading(false);
+    }
+  };
+
+  const handleSignIn = async (userLogin: ISignIn) => {
+    setLoading(true);
+
+    try {
+      const { _id, token } = userLogin?.login;
+
+      setUser(_id);
+
+      await AsyncStorage.setItem('@authUser', _id);
+      await AsyncStorage.setItem('@authToken', token);
 
       setLoading(false);
     } catch (err) {
+      await AsyncStorage.clear();
       setLoading(false);
-      throw new Error(`Failed save asyncStorage - ${err}`);
     }
   };
 
@@ -66,9 +112,11 @@ export const AuthProvider: React.FC = ({ children }) => {
       value={{
         signed: !!user,
         user,
+        handleSignUp,
         handleSignIn,
         handleSignOut,
         loading,
+
         isConnected,
       }}
     >
@@ -81,3 +129,24 @@ export function useAuth() {
   const context = useContext(AuthContext);
   return context;
 }
+
+const CREATE_USER = gql`
+  mutation createUser(
+    $email: String!
+    $password: String!
+    $active: Boolean!
+    $checkTerms: Boolean!
+  ) {
+    createUser(
+      input: {
+        email: $email
+        password: $password
+        active: $active
+        checkTerms: $checkTerms
+      }
+    ) {
+      _id
+      token
+    }
+  }
+`;

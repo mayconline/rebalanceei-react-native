@@ -30,6 +30,8 @@ import ImageRegister from '../../../../assets/svg/ImageRegister';
 interface IAccountRegister {
   email: string;
   password: string;
+  active: boolean;
+  checkTerms: boolean;
 }
 
 const Register: React.FC = () => {
@@ -38,12 +40,15 @@ const Register: React.FC = () => {
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [account, setAccount] = useState({} as IAccountRegister);
 
-  const { handleSignIn } = useAuth();
+  const { handleSignUp } = useAuth();
   const navigation = useNavigation();
 
   const handleSubmit = () => {
-    console.log(account);
-    handleSignIn();
+    try {
+      handleSignUp(account);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (

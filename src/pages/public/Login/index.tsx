@@ -1,4 +1,5 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../../contexts/authContext';
 import { ThemeContext } from 'styled-components/native';
@@ -21,9 +22,12 @@ import {
   Button,
   Gradient,
   TextButton,
+  TextError,
 } from './styles';
 
 import ImageLogin from '../../../../assets/svg/ImageLogin';
+
+import { useLazyQuery, gql } from '@apollo/client';
 
 interface IAccountLogin {
   email: string;
@@ -36,13 +40,24 @@ const Login: React.FC = () => {
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [account, setAccount] = useState({} as IAccountLogin);
 
-  const { handleSignIn } = useAuth();
+  const { handleSignIn, user } = useAuth();
   const navigation = useNavigation();
 
+  const [login, { data, loading, error }] = useLazyQuery(LOGIN, {
+    variables: account,
+  });
+
   const handleSubmit = () => {
-    console.log(account);
-    handleSignIn();
+    try {
+      login();
+    } catch (err) {
+      console.log(err);
+    }
   };
+
+  useEffect(() => {
+    if (!loading && data) handleSignIn(data);
+  }, [data]);
 
   return (
     <Wrapper>
@@ -116,7 +131,11 @@ const Login: React.FC = () => {
 
           <Gradient colors={gradient.darkToLightBlue} start={[1, 0.5]}>
             <Button onPress={handleSubmit}>
-              <TextButton>Entrar</TextButton>
+              {loading ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <TextButton>Entrar</TextButton>
+              )}
             </Button>
           </Gradient>
         </Form>
@@ -124,5 +143,14 @@ const Login: React.FC = () => {
     </Wrapper>
   );
 };
+
+const LOGIN = gql`
+  query login($email: String!, $password: String!) {
+    login(input: { email: $email, password: $password }) {
+      _id
+      token
+    }
+  }
+`;
 
 export default Login;
