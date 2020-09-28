@@ -1,8 +1,9 @@
 import React, { useContext, useState } from 'react';
-import { Platform, Modal } from 'react-native';
+import { Platform, Modal, ActivityIndicator } from 'react-native';
 import { ThemeContext } from 'styled-components/native';
 import { Entypo } from '@expo/vector-icons';
-
+import { useMutation, gql } from '@apollo/client';
+import { useAuth } from '../../contexts/authContext';
 import {
   Wrapper,
   FormContainer,
@@ -31,11 +32,28 @@ const AddWalletModal: React.FC<IAddWalletModal> = ({ onClose }) => {
   const [wallet, setWallet] = useState('');
   const [focus, setFocus] = useState(0);
   const [openModal, setOpenModal] = useState(false);
+  const { user, handleSetWallet } = useAuth();
 
-  const handleSubmit = () => {
-    setOpenModal(true);
-    console.log(wallet);
-    setWallet('');
+  const [createWallet, { loading, error: mutationError }] = useMutation(
+    CREATE_WALLET,
+  );
+
+  const handleSubmit = async () => {
+    try {
+      const response = await createWallet({
+        variables: {
+          userID: user,
+          description: wallet,
+        },
+      });
+
+      handleSetWallet(response?.data?.createWallet?._id);
+
+      setOpenModal(true);
+      setWallet('');
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -72,7 +90,11 @@ const AddWalletModal: React.FC<IAddWalletModal> = ({ onClose }) => {
 
             <Gradient colors={gradient.darkToLightBlue} start={[1, 0.5]}>
               <Button onPress={handleSubmit}>
-                <TextButton>Adicionar Carteira</TextButton>
+                {loading ? (
+                  <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                  <TextButton>Adicionar Carteira</TextButton>
+                )}
               </Button>
             </Gradient>
           </Form>
@@ -93,5 +115,28 @@ const AddWalletModal: React.FC<IAddWalletModal> = ({ onClose }) => {
     </>
   );
 };
+
+const CREATE_WALLET = gql`
+  mutation createWallet($userID: ID!, $description: String!) {
+    createWallet(input: { userID: $userID, description: $description }) {
+      _id
+      description
+      sumCostWallet
+      sumAmountWallet
+      sumGradeWallet
+      ticket {
+        _id
+        symbol
+        quantity
+        averagePrice
+        grade
+      }
+      user {
+        _id
+        email
+      }
+    }
+  }
+`;
 
 export default AddWalletModal;

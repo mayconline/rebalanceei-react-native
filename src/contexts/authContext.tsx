@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useState,
-  useEffect,
-  useContext,
-  SetStateAction,
-} from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 import { useMutation, gql } from '@apollo/client';
 import { useNetInfo } from '@react-native-community/netinfo';
@@ -28,6 +22,8 @@ interface IAuthContext {
   loading: boolean;
   isConnected: boolean;
   user: string | null;
+  wallet: string | null;
+  handleSetWallet(walletID: string): void;
   handleSignUp(user: IAccountRegister): Promise<void>;
   handleSignIn(user: ISignIn): Promise<void>;
   handleSignOut(): void;
@@ -37,6 +33,7 @@ const AuthContext = createContext<IAuthContext>({} as IAuthContext);
 
 export const AuthProvider: React.FC = ({ children }) => {
   const [user, setUser] = useState<string | null>(null);
+  const [wallet, setWallet] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const [
@@ -50,10 +47,14 @@ export const AuthProvider: React.FC = ({ children }) => {
     async function loadStorageData() {
       const storageUser = await AsyncStorage.getItem('@authUser');
       const storageToken = await AsyncStorage.getItem('@authToken');
+      const storageWallet = await AsyncStorage.getItem('@authWallet');
 
       if (storageUser && storageToken) {
         setUser(storageUser);
       }
+
+      if (storageWallet) setWallet(storageWallet);
+
       setLoading(false);
     }
     loadStorageData();
@@ -107,11 +108,20 @@ export const AuthProvider: React.FC = ({ children }) => {
     setUser(null);
   };
 
+  const handleSetWallet = async (walletID: string) => {
+    await AsyncStorage.setItem('@authWallet', walletID);
+    setWallet(walletID);
+  };
+
+  console.log(wallet);
+
   return (
     <AuthContext.Provider
       value={{
         signed: !!user,
         user,
+        wallet,
+        handleSetWallet,
         handleSignUp,
         handleSignIn,
         handleSignOut,

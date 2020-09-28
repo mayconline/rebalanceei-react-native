@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react';
-import { FlatList, TouchableOpacity } from 'react-native';
+import React, { useContext, useState, useEffect } from 'react';
+import { FlatList, TouchableOpacity, Modal } from 'react-native';
 import { ThemeContext } from 'styled-components/native';
 import { useQuery, gql } from '@apollo/client';
 import { useAuth } from '../../contexts/authContext';
@@ -21,6 +21,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Header from '../../components/Header';
 import SubHeader from '../../components/SubHeader';
 import Empty from '../../components/Empty';
+import AddWalletModal from '../../components/AddWalletModal';
 
 const CARD_LIST = [
   {
@@ -93,13 +94,26 @@ const initialFilter = [
 const Ticket: React.FC = () => {
   const { color, gradient } = useContext(ThemeContext);
   const [filters, setFilters] = useState(initialFilter);
-  const { user } = useAuth();
+  const { user, wallet, handleSetWallet } = useAuth();
+  const [openModal, setOpenModal] = useState(false);
 
   const { data, loading, error } = useQuery(GET_WALLET_BY_USER, {
     variables: { userID: user },
   });
 
-  console.log(data);
+  const hasWallet = !loading && !!data?.getWalletByUser?.length;
+  const WalletID = !loading && data?.getWalletByUser[0]?._id;
+  const hasTicket = !loading && !!data?.getWalletByUser[0]?.ticket?.length;
+
+  console.log({ hasWallet, hasTicket, WalletID });
+
+  useEffect(() => {
+    if (!loading && !hasWallet) setOpenModal(true);
+  }, [hasWallet, loading]);
+
+  useEffect(() => {
+    if (hasWallet) handleSetWallet(WalletID);
+  }, [WalletID]);
 
   const handleChangeFilter = (filterName: string) => {
     setFilters(filters =>
@@ -111,47 +125,58 @@ const Ticket: React.FC = () => {
   };
 
   return (
-    <Wrapper>
-      <Header />
-      {!data?.getWalletByUser?.length ? (
-        <Empty />
-      ) : (
-        <>
-          <SubHeader
-            title="Meus Ativos"
-            filters={filters}
-            onPress={handleChangeFilter}
-          />
-          <List>
-            <FlatList
-              data={CARD_LIST}
-              keyExtractor={item => item.ticket}
-              renderItem={({ item }) => (
-                <Content>
-                  <TouchableOpacity>
-                    <Card colors={gradient.lightToGray} ticket={item.ticket}>
-                      <MaterialCommunityIcons
-                        name="circle-edit-outline"
-                        size={28}
-                        color={color.blue}
-                      />
-                      <CardContent>
-                        <CardTitleContainer>
-                          <CardTicket>{item.ticket}</CardTicket>
-                          <CardTitle> - {item.title}</CardTitle>
-                        </CardTitleContainer>
-                        <CardSubTitle>{item.subTitle}</CardSubTitle>
-                      </CardContent>
-                      <Grade>{item.grade}</Grade>
-                    </Card>
-                  </TouchableOpacity>
-                </Content>
-              )}
+    <>
+      <Wrapper>
+        <Header />
+        {!hasTicket ? (
+          <Empty />
+        ) : (
+          <>
+            <SubHeader
+              title="Meus Ativos"
+              filters={filters}
+              onPress={handleChangeFilter}
             />
-          </List>
-        </>
-      )}
-    </Wrapper>
+            <List>
+              <FlatList
+                data={CARD_LIST}
+                keyExtractor={item => item.ticket}
+                renderItem={({ item }) => (
+                  <Content>
+                    <TouchableOpacity>
+                      <Card colors={gradient.lightToGray} ticket={item.ticket}>
+                        <MaterialCommunityIcons
+                          name="circle-edit-outline"
+                          size={28}
+                          color={color.blue}
+                        />
+                        <CardContent>
+                          <CardTitleContainer>
+                            <CardTicket>{item.ticket}</CardTicket>
+                            <CardTitle> - {item.title}</CardTitle>
+                          </CardTitleContainer>
+                          <CardSubTitle>{item.subTitle}</CardSubTitle>
+                        </CardContent>
+                        <Grade>{item.grade}</Grade>
+                      </Card>
+                    </TouchableOpacity>
+                  </Content>
+                )}
+              />
+            </List>
+          </>
+        )}
+      </Wrapper>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={openModal}
+        statusBarTranslucent={true}
+      >
+        <AddWalletModal onClose={() => setOpenModal(false)} />
+      </Modal>
+    </>
   );
 };
 
