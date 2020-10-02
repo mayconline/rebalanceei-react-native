@@ -22,6 +22,7 @@ import {
 
 import ImageAddTicket from '../../../assets/svg/ImageAddTicket';
 import SuccessModal from '../SuccessModal';
+import { GET_WALLET_BY_USER } from '../WalletModal';
 
 interface IAddWalletModal {
   onClose(): void;
@@ -45,6 +46,9 @@ const AddWalletModal: React.FC<IAddWalletModal> = ({ onClose }) => {
           userID: user,
           description: wallet,
         },
+        refetchQueries: [
+          { query: GET_WALLET_BY_USER, variables: { userID: user } },
+        ],
       });
 
       handleSetWallet(response?.data?.createWallet?._id);

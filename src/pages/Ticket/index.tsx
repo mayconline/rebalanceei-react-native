@@ -21,7 +21,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Header from '../../components/Header';
 import SubHeader from '../../components/SubHeader';
 import Empty from '../../components/Empty';
-import AddWalletModal from '../../components/AddWalletModal';
+import WalletModal from '../../components/WalletModal';
 
 const CARD_LIST = [
   {
@@ -94,26 +94,14 @@ const initialFilter = [
 const Ticket: React.FC = () => {
   const { color, gradient } = useContext(ThemeContext);
   const [filters, setFilters] = useState(initialFilter);
-  const { user, wallet, handleSetWallet } = useAuth();
+  const { user, wallet, loading } = useAuth();
   const [openModal, setOpenModal] = useState(false);
 
-  const { data, loading, error } = useQuery(GET_WALLET_BY_USER, {
-    variables: { userID: user },
-  });
-
-  const hasWallet = !loading && !!data?.getWalletByUser?.length;
-  const WalletID = !loading && data?.getWalletByUser[0]?._id;
-  const hasTicket = !loading && !!data?.getWalletByUser[0]?.ticket?.length;
-
-  console.log({ hasWallet, hasTicket, WalletID });
+  const hasTicket = false; //!loading && !!data?.getWalletByUser[0]?.ticket?.length;
 
   useEffect(() => {
-    if (!loading && !hasWallet) setOpenModal(true);
-  }, [hasWallet, loading]);
-
-  useEffect(() => {
-    if (hasWallet) handleSetWallet(WalletID);
-  }, [WalletID]);
+    if (!loading && !wallet) setOpenModal(true);
+  }, [wallet, loading]);
 
   const handleChangeFilter = (filterName: string) => {
     setFilters(filters =>
@@ -174,33 +162,10 @@ const Ticket: React.FC = () => {
         visible={openModal}
         statusBarTranslucent={true}
       >
-        <AddWalletModal onClose={() => setOpenModal(false)} />
+        <WalletModal onClose={() => setOpenModal(false)} />
       </Modal>
     </>
   );
 };
-
-const GET_WALLET_BY_USER = gql`
-  query getWalletByUser($userID: ID!) {
-    getWalletByUser(userID: $userID) {
-      _id
-      description
-      sumCostWallet
-      sumAmountWallet
-      sumGradeWallet
-      user {
-        _id
-        email
-      }
-      ticket {
-        _id
-        symbol
-        quantity
-        averagePrice
-        grade
-      }
-    }
-  }
-`;
 
 export default Ticket;

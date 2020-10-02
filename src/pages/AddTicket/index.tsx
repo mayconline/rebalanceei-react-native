@@ -68,7 +68,6 @@ const AddTicket: React.FC = () => {
   };
 
   const handleSubmit = () => {
-    console.log(ticketForm);
     setTicketForm({} as ITicketForm);
     setFocus(0);
     setOpenModal(true);

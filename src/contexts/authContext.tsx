@@ -80,7 +80,8 @@ export const AuthProvider: React.FC = ({ children }) => {
 
       await handleSignIn(userLogin);
     } catch (err) {
-      await AsyncStorage.clear();
+      console.log(err);
+      handleSignOut();
       setLoading(false);
     }
   };
@@ -98,7 +99,8 @@ export const AuthProvider: React.FC = ({ children }) => {
 
       setLoading(false);
     } catch (err) {
-      await AsyncStorage.clear();
+      console.log(err);
+      handleSignOut();
       setLoading(false);
     }
   };
@@ -106,14 +108,13 @@ export const AuthProvider: React.FC = ({ children }) => {
   const handleSignOut = async () => {
     await AsyncStorage.clear();
     setUser(null);
+    setWallet(null);
   };
 
   const handleSetWallet = async (walletID: string) => {
     await AsyncStorage.setItem('@authWallet', walletID);
     setWallet(walletID);
   };
-
-  console.log(wallet);
 
   return (
     <AuthContext.Provider

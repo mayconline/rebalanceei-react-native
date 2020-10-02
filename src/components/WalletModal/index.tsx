@@ -1,8 +1,16 @@
-import React, { useContext, useState } from 'react';
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react';
 import { FlatList, Modal } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { ThemeContext } from 'styled-components/native';
 import { Entypo } from '@expo/vector-icons';
-
+import { useLazyQuery, useQuery, gql } from '@apollo/client';
+import { useAuth } from '../../contexts/authContext';
 import {
   Wrapper,
   Title,
@@ -67,18 +75,62 @@ interface WalletProps {
   onClose?(): void;
 }
 
+interface IObjectWallet {
+  _id: string;
+  description: string;
+  sumCostWallet: number;
+  sumAmountWallet: number;
+  checked?: boolean;
+}
+
+interface IDataWallet {
+  getWalletByUser: IObjectWallet[];
+}
+
 const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
   const { color } = useContext(ThemeContext);
-  const [selectWallet, setSelectWallet] = useState(WALLET_LIST);
+  const { user, handleSetWallet, wallet } = useAuth();
   const [openModal, setOpenModal] = useState(false);
+
+  const { data, loading, error } = useQuery<IDataWallet>(GET_WALLET_BY_USER, {
+    variables: { userID: user },
+  });
+
+  const hasWallet = !loading && !!data?.getWalletByUser?.length;
+  const WalletID: any = !loading && !!data && data?.getWalletByUser[0]?._id;
+
+  const INITIAL_WALLET = useMemo(() => {
+    return data?.getWalletByUser?.map(wallets => ({
+      ...wallets,
+      checked: wallet !== wallets._id ? false : true,
+    }));
+  }, [openModal]);
+
+  const [selectWallet, setSelectWallet] = useState<IObjectWallet[] | undefined>(
+    [] as IObjectWallet[],
+  );
+
+  useEffect(() => {
+    setSelectWallet(INITIAL_WALLET);
+  }, [INITIAL_WALLET]);
+
+  useEffect(() => {
+    if (!loading && !hasWallet) setOpenModal(true);
+  }, [hasWallet, loading]);
+
+  useEffect(() => {
+    if (hasWallet) handleSetWallet(WalletID);
+  }, [WalletID]);
 
   const handleSelectWallet = (walletID: string) => {
     setSelectWallet(wallets =>
-      wallets.map(wallet => ({
+      wallets?.map(wallet => ({
         ...wallet,
-        checked: walletID !== wallet.id ? false : true,
+        checked: walletID !== wallet._id ? false : true,
       })),
     );
+
+    handleSetWallet(walletID);
   };
 
   return (
@@ -86,27 +138,24 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
       <ShadowBackdrop />
       <Wrapper>
         <Title>Carteiras</Title>
-
+        {loading && <Title>Carregando</Title>}
         <FlatList
           data={selectWallet}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item._id}
           renderItem={({ item }) => (
             <>
-              <Card onPress={() => handleSelectWallet(item.id)}>
+              <Card onPress={() => handleSelectWallet(item._id)}>
                 <CardTitleContainer>
-                  <WalletTitle>{item.name}</WalletTitle>
+                  <WalletTitle>{item.description}</WalletTitle>
                   <CardSubTitle>
-                    <CurrentAmount>R$ {item.currentWalletAmount}</CurrentAmount>
-                    <VariationPercent>
-                      {' '}
-                      (+{item.variationWalletAmount})
-                    </VariationPercent>
+                    <CurrentAmount>R$ {item.sumAmountWallet}</CurrentAmount>
+                    {/*<VariationPercent>{'1%'}</VariationPercent>*/}
                   </CardSubTitle>
                 </CardTitleContainer>
 
                 <PercentWallet>
                   <PercentTitle>% da Carteira</PercentTitle>
-                  <CurrentPercent>{item.currentWalletPercent} %</CurrentPercent>
+                  {/*<CurrentPercent>{'10%'}</CurrentPercent>*/}
                 </PercentWallet>
 
                 <WalletRadioSelect selected={item.checked} />
@@ -145,5 +194,16 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
     </>
   );
 };
+
+export const GET_WALLET_BY_USER = gql`
+  query getWalletByUser($userID: ID!) {
+    getWalletByUser(userID: $userID) {
+      _id
+      description
+      sumCostWallet
+      sumAmountWallet
+    }
+  }
+`;
 
 export default WalletModal;
