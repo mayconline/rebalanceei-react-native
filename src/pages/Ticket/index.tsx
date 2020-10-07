@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useMemo } from 'react';
 import { FlatList, TouchableOpacity, Modal } from 'react-native';
 import { ThemeContext } from 'styled-components/native';
 import { useAuth } from '../../contexts/authContext';
@@ -20,7 +20,9 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Header from '../../components/Header';
 import SubHeader from '../../components/SubHeader';
 import Empty from '../../components/Empty';
-import WalletModal, { GET_WALLET_BY_USER } from '../../components/WalletModal';
+import WalletModal from '../../components/WalletModal';
+import { useFocusEffect } from '@react-navigation/native';
+import { formatNumber, formatTicket } from '../../utils/format';
 
 const CARD_LIST = [
   {
@@ -98,13 +100,14 @@ interface ITickets {
   grade: number;
 }
 
-interface ICurrentTickets {
-  ticket: ITickets[];
+interface IWalletID {
+  _id: string;
   description: string;
+  ticket: ITickets[];
 }
 
 interface IDataTickets {
-  getTicketsByWallet: ITickets[];
+  getWalletById: IWalletID;
 }
 
 const Ticket: React.FC = () => {
@@ -112,17 +115,21 @@ const Ticket: React.FC = () => {
   const [filters, setFilters] = useState(initialFilter);
   const { user, wallet, loading } = useAuth();
   const [openModal, setOpenModal] = useState(false);
-  const [currentTickets, setCurrentTickets] = useState<ICurrentTickets>(
-    {} as ICurrentTickets,
+  const [currentTickets, setCurrentTickets] = useState<ITickets[] | undefined>(
+    undefined,
   );
 
-  const hasTickets = false;
+  const hasTickets = !!currentTickets?.length;
 
-  const { data, error } = useQuery<IDataTickets>(GET_TICKET_BY_WALLET, {
-    variables: { walletID: wallet },
+  const { data, error } = useQuery<IDataTickets>(GET_WALLET_BY_ID, {
+    variables: { _id: wallet },
   });
 
-  console.log(data?.getTicketsByWallet);
+  const getArrayTickets = useMemo(() => {
+    setCurrentTickets(data?.getWalletById?.ticket);
+  }, [data]);
+
+  useFocusEffect(() => getArrayTickets);
 
   useEffect(() => {
     if (!loading && !wallet) setOpenModal(true);
@@ -152,12 +159,15 @@ const Ticket: React.FC = () => {
             />
             <List>
               <FlatList
-                data={CARD_LIST}
-                keyExtractor={item => item.ticket}
+                data={currentTickets}
+                keyExtractor={item => item._id}
                 renderItem={({ item }) => (
                   <Content>
                     <TouchableOpacity>
-                      <Card colors={gradient.lightToGray} ticket={item.ticket}>
+                      <Card
+                        colors={gradient.lightToGray}
+                        ticket={formatTicket(item.symbol)}
+                      >
                         <MaterialCommunityIcons
                           name="circle-edit-outline"
                           size={28}
@@ -165,10 +175,15 @@ const Ticket: React.FC = () => {
                         />
                         <CardContent>
                           <CardTitleContainer>
-                            <CardTicket>{item.ticket}</CardTicket>
-                            <CardTitle> - {item.title}</CardTitle>
+                            <CardTicket>{formatTicket(item.symbol)}</CardTicket>
+                            <CardTitle>
+                              {' '}
+                              - {formatTicket(item.symbol)}
+                            </CardTitle>
                           </CardTitleContainer>
-                          <CardSubTitle>{item.subTitle}</CardSubTitle>
+                          <CardSubTitle>
+                            {item.quantity}x {formatNumber(item.averagePrice)}
+                          </CardSubTitle>
                         </CardContent>
                         <Grade>{item.grade}</Grade>
                       </Card>
@@ -193,14 +208,18 @@ const Ticket: React.FC = () => {
   );
 };
 
-const GET_TICKET_BY_WALLET = gql`
-  query getTicketsByWallet($walletID: ID!) {
-    getTicketsByWallet(walletID: $walletID) {
+const GET_WALLET_BY_ID = gql`
+  query getWalletById($_id: ID!) {
+    getWalletById(_id: $_id) {
       _id
-      symbol
-      quantity
-      averagePrice
-      grade
+      description
+      ticket {
+        _id
+        symbol
+        quantity
+        averagePrice
+        grade
+      }
     }
   }
 `;
