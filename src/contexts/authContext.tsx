@@ -127,7 +127,6 @@ export const AuthProvider: React.FC = ({ children }) => {
         handleSignIn,
         handleSignOut,
         loading,
-
         isConnected,
       }}
     >

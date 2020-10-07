@@ -1,8 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { FlatList, TouchableOpacity, Modal } from 'react-native';
 import { ThemeContext } from 'styled-components/native';
-import { useQuery, gql } from '@apollo/client';
 import { useAuth } from '../../contexts/authContext';
+import { useQuery, gql } from '@apollo/client';
 import {
   Wrapper,
   List,
@@ -17,11 +17,10 @@ import {
 } from './styles';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-
 import Header from '../../components/Header';
 import SubHeader from '../../components/SubHeader';
 import Empty from '../../components/Empty';
-import WalletModal from '../../components/WalletModal';
+import WalletModal, { GET_WALLET_BY_USER } from '../../components/WalletModal';
 
 const CARD_LIST = [
   {
@@ -91,13 +90,39 @@ const initialFilter = [
   },
 ];
 
+interface ITickets {
+  _id: string;
+  symbol: string;
+  quantity: number;
+  averagePrice: number;
+  grade: number;
+}
+
+interface ICurrentTickets {
+  ticket: ITickets[];
+  description: string;
+}
+
+interface IDataTickets {
+  getTicketsByWallet: ITickets[];
+}
+
 const Ticket: React.FC = () => {
   const { color, gradient } = useContext(ThemeContext);
   const [filters, setFilters] = useState(initialFilter);
   const { user, wallet, loading } = useAuth();
   const [openModal, setOpenModal] = useState(false);
+  const [currentTickets, setCurrentTickets] = useState<ICurrentTickets>(
+    {} as ICurrentTickets,
+  );
 
-  const hasTicket = false; //!loading && !!data?.getWalletByUser[0]?.ticket?.length;
+  const hasTickets = false;
+
+  const { data, error } = useQuery<IDataTickets>(GET_TICKET_BY_WALLET, {
+    variables: { walletID: wallet },
+  });
+
+  console.log(data?.getTicketsByWallet);
 
   useEffect(() => {
     if (!loading && !wallet) setOpenModal(true);
@@ -116,7 +141,7 @@ const Ticket: React.FC = () => {
     <>
       <Wrapper>
         <Header />
-        {!hasTicket ? (
+        {!hasTickets ? (
           <Empty />
         ) : (
           <>
@@ -167,5 +192,17 @@ const Ticket: React.FC = () => {
     </>
   );
 };
+
+const GET_TICKET_BY_WALLET = gql`
+  query getTicketsByWallet($walletID: ID!) {
+    getTicketsByWallet(walletID: $walletID) {
+      _id
+      symbol
+      quantity
+      averagePrice
+      grade
+    }
+  }
+`;
 
 export default Ticket;

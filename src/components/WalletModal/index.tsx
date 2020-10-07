@@ -35,6 +35,7 @@ import Divider from '../Divider';
 import AddButton from '../AddButton';
 import ShadowBackdrop from '../ShadowBackdrop';
 import AddWalletModal from '../AddWalletModal';
+import Loading from '../Loading';
 
 const WALLET_LIST = [
   {
@@ -81,10 +82,24 @@ interface IObjectWallet {
   sumCostWallet: number;
   sumAmountWallet: number;
   checked?: boolean;
+  ticket?: ITickets[];
 }
 
 interface IDataWallet {
   getWalletByUser: IObjectWallet[];
+}
+
+interface ITickets {
+  _id: string;
+  symbol: string;
+  quantity: number;
+  averagePrice: number;
+  grade: number;
+}
+
+interface ICurrentTickets {
+  ticket?: ITickets[];
+  description: string;
 }
 
 const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
@@ -92,12 +107,15 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
   const { user, handleSetWallet, wallet } = useAuth();
   const [openModal, setOpenModal] = useState(false);
 
-  const { data, loading, error } = useQuery<IDataWallet>(GET_WALLET_BY_USER, {
-    variables: { userID: user },
-  });
+  const { data, loading: queryLoading, error } = useQuery<IDataWallet>(
+    GET_WALLET_BY_USER,
+    {
+      variables: { userID: user },
+    },
+  );
 
-  const hasWallet = !loading && !!data?.getWalletByUser?.length;
-  const WalletID: any = !loading && !!data && data?.getWalletByUser[0]?._id;
+  const hasWallet = !queryLoading && !!data?.getWalletByUser?.length;
+  // const WalletID: any = !loading && !!data && data?.getWalletByUser[0]?._id;
 
   const INITIAL_WALLET = useMemo(() => {
     return data?.getWalletByUser?.map(wallets => ({
@@ -115,12 +133,12 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
   }, [INITIAL_WALLET]);
 
   useEffect(() => {
-    if (!loading && !hasWallet) setOpenModal(true);
-  }, [hasWallet, loading]);
+    if (!queryLoading && !hasWallet) setOpenModal(true);
+  }, [hasWallet, queryLoading]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (hasWallet) handleSetWallet(WalletID);
-  }, [WalletID]);
+  }, [WalletID]);*/
 
   const handleSelectWallet = (walletID: string) => {
     setSelectWallet(wallets =>
@@ -133,12 +151,13 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
     handleSetWallet(walletID);
   };
 
-  return (
+  return queryLoading ? (
+    <Loading />
+  ) : (
     <>
       <ShadowBackdrop />
       <Wrapper>
         <Title>Carteiras</Title>
-        {loading && <Title>Carregando</Title>}
         <FlatList
           data={selectWallet}
           keyExtractor={item => item._id}
@@ -202,6 +221,13 @@ export const GET_WALLET_BY_USER = gql`
       description
       sumCostWallet
       sumAmountWallet
+      ticket {
+        _id
+        symbol
+        quantity
+        averagePrice
+        grade
+      }
     }
   }
 `;

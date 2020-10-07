@@ -1,8 +1,9 @@
 import React, { useContext, useState } from 'react';
-import { Platform, Modal } from 'react-native';
+import { Platform, Modal, ActivityIndicator } from 'react-native';
+import { useAuth } from '../../contexts/authContext';
 import { ThemeContext } from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
-
+import { useMutation, gql } from '@apollo/client';
 import {
   Wrapper,
   FormContainer,
@@ -25,30 +26,44 @@ import {
 
 import ImageAddTicket from '../../../assets/svg/ImageAddTicket';
 import SuccessModal from '../../components/SuccessModal';
+import { GET_WALLET_BY_USER } from '../../components/WalletModal';
 
 interface ITicketForm {
-  ticket: string;
-  grade: string;
+  symbol: string;
   quantity: string;
   averagePrice: string;
+  grade: string;
+}
+
+interface IDataCreateTicket {
+  _id: string;
+  symbol: string;
+  quantity: number;
+  averagePrice: number;
+  grade: number;
+}
+
+interface IcreateTicket {
+  createTicket: IDataCreateTicket;
 }
 
 const SUGGESTIONS = [
   {
-    ticket: 'LREN3',
+    ticket: 'LREN3.sa',
     title: 'Lojas Renner',
   },
   {
-    ticket: 'MGLU3',
+    ticket: 'MGLU3.sa',
     title: 'Magazine Luiza',
   },
   {
-    ticket: 'TRPL4',
+    ticket: 'TRPL4.sa',
     title: 'Transmissão Paulista LTDA',
   },
 ];
 
 const AddTicket: React.FC = () => {
+  const { wallet, user } = useAuth();
   const { color, gradient } = useContext(ThemeContext);
   const [ticketForm, setTicketForm] = useState<ITicketForm>({} as ITicketForm);
   const [focus, setFocus] = useState(0);
@@ -67,10 +82,36 @@ const AddTicket: React.FC = () => {
     setHasSuggestions(false);
   };
 
-  const handleSubmit = () => {
-    setTicketForm({} as ITicketForm);
-    setFocus(0);
-    setOpenModal(true);
+  const [
+    createTicket,
+    { loading: mutationLoading, error: mutationError },
+  ] = useMutation<IcreateTicket>(CREATE_TICKET);
+
+  console.log({ wallet });
+
+  const handleSubmit = async () => {
+    const dataTicket = {
+      walletID: wallet,
+      symbol: 'mglu3.sa',
+      quantity: Number(ticketForm.quantity),
+      averagePrice: Number(ticketForm.averagePrice),
+      grade: Number(ticketForm.grade),
+    };
+
+    try {
+      const response = await createTicket({
+        variables: dataTicket,
+        refetchQueries: [
+          { query: GET_WALLET_BY_USER, variables: { userID: user } },
+        ],
+      });
+
+      setTicketForm({} as ITicketForm);
+      setFocus(0);
+      setOpenModal(true);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -92,7 +133,7 @@ const AddTicket: React.FC = () => {
               <InputGroup>
                 <Label>Busque e Selecione um Ativo</Label>
                 <Input
-                  value={ticketForm.ticket}
+                  value={ticketForm.symbol}
                   autoCapitalize={'characters'}
                   returnKeyType={'next'}
                   placeholder="RBLC3"
@@ -179,7 +220,11 @@ const AddTicket: React.FC = () => {
             </FormRow>
             <Gradient colors={gradient.darkToLightBlue} start={[1, 0.5]}>
               <Button onPress={handleSubmit}>
-                <TextButton>Adicionar Ativo</TextButton>
+                {mutationLoading ? (
+                  <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                  <TextButton>Adicionar Ativo</TextButton>
+                )}
               </Button>
             </Gradient>
           </Form>
@@ -200,5 +245,31 @@ const AddTicket: React.FC = () => {
     </>
   );
 };
+
+const CREATE_TICKET = gql`
+  mutation createTicket(
+    $walletID: ID!
+    $symbol: String!
+    $quantity: Float!
+    $averagePrice: Float!
+    $grade: Int!
+  ) {
+    createTicket(
+      input: {
+        walletID: $walletID
+        symbol: $symbol
+        quantity: $quantity
+        averagePrice: $averagePrice
+        grade: $grade
+      }
+    ) {
+      _id
+      symbol
+      quantity
+      averagePrice
+      grade
+    }
+  }
+`;
 
 export default AddTicket;
