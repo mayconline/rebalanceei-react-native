@@ -21,7 +21,6 @@ import Header from '../../components/Header';
 import SubHeader from '../../components/SubHeader';
 import Empty from '../../components/Empty';
 import WalletModal from '../../components/WalletModal';
-import { useFocusEffect } from '@react-navigation/native';
 import { formatNumber, formatTicket } from '../../utils/format';
 
 const CARD_LIST = [
@@ -113,27 +112,20 @@ interface IDataTickets {
 const Ticket: React.FC = () => {
   const { color, gradient } = useContext(ThemeContext);
   const [filters, setFilters] = useState(initialFilter);
-  const { user, wallet, loading } = useAuth();
+  const { wallet, loading } = useAuth();
   const [openModal, setOpenModal] = useState(false);
-  const [currentTickets, setCurrentTickets] = useState<ITickets[] | undefined>(
-    undefined,
+
+  const { data, loading: queryLoading, error } = useQuery<IDataTickets>(
+    GET_WALLET_BY_ID,
+    {
+      variables: { _id: wallet },
+      fetchPolicy: 'cache-and-network',
+    },
   );
 
-  const hasTickets = !!currentTickets?.length;
-
-  const { data, error } = useQuery<IDataTickets>(GET_WALLET_BY_ID, {
-    variables: { _id: wallet },
-  });
-
-  const getArrayTickets = useMemo(() => {
-    setCurrentTickets(data?.getWalletById?.ticket);
-  }, [data]);
-
-  useFocusEffect(() => getArrayTickets);
-
-  useEffect(() => {
+  useMemo(() => {
     if (!loading && !wallet) setOpenModal(true);
-  }, [wallet, loading]);
+  }, [wallet]);
 
   const handleChangeFilter = (filterName: string) => {
     setFilters(filters =>
@@ -144,10 +136,13 @@ const Ticket: React.FC = () => {
     );
   };
 
+  const hasTickets =
+    wallet && !queryLoading && !!data?.getWalletById?.ticket?.length;
+
   return (
     <>
       <Wrapper>
-        <Header />
+        <Header title={data?.getWalletById?.description} />
         {!hasTickets ? (
           <Empty />
         ) : (
@@ -159,7 +154,7 @@ const Ticket: React.FC = () => {
             />
             <List>
               <FlatList
-                data={currentTickets}
+                data={data?.getWalletById?.ticket}
                 keyExtractor={item => item._id}
                 renderItem={({ item }) => (
                   <Content>
@@ -208,7 +203,7 @@ const Ticket: React.FC = () => {
   );
 };
 
-const GET_WALLET_BY_ID = gql`
+export const GET_WALLET_BY_ID = gql`
   query getWalletById($_id: ID!) {
     getWalletById(_id: $_id) {
       _id

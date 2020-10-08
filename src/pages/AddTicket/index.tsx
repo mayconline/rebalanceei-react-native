@@ -26,6 +26,7 @@ import {
 
 import ImageAddTicket from '../../../assets/svg/ImageAddTicket';
 import SuccessModal from '../../components/SuccessModal';
+import { GET_WALLET_BY_ID } from '../Ticket';
 import { GET_WALLET_BY_USER } from '../../components/WalletModal';
 
 interface ITicketForm {
@@ -87,8 +88,6 @@ const AddTicket: React.FC = () => {
     { loading: mutationLoading, error: mutationError },
   ] = useMutation<IcreateTicket>(CREATE_TICKET);
 
-  console.log({ wallet });
-
   const handleSubmit = async () => {
     const dataTicket = {
       walletID: wallet,
@@ -99,10 +98,12 @@ const AddTicket: React.FC = () => {
     };
 
     try {
-      const response = await createTicket({
+      await createTicket({
         variables: dataTicket,
+
         refetchQueries: [
-          { query: GET_WALLET_BY_USER, variables: { userID: user } },
+          { query: GET_WALLET_BY_ID, variables: { _id: wallet } },
+          // { query: GET_WALLET_BY_USER, variables: { userID: user } },
         ],
       });
 

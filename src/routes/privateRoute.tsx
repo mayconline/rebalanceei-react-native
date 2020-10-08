@@ -63,6 +63,7 @@ const privateRoute: React.FC = () => {
 
   return (
     <Tab.Navigator
+      lazy={false}
       screenOptions={({ route, navigation }) => ({
         tabBarIcon: ({ color, size, focused }) => {
           if (route.name === 'AddTicket') {

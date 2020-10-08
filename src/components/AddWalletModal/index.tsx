@@ -26,9 +26,13 @@ import { GET_WALLET_BY_USER } from '../WalletModal';
 
 interface IAddWalletModal {
   onClose(): void;
+  beforeModalClose(): void;
 }
 
-const AddWalletModal: React.FC<IAddWalletModal> = ({ onClose }) => {
+const AddWalletModal: React.FC<IAddWalletModal> = ({
+  onClose,
+  beforeModalClose,
+}) => {
   const { color, gradient } = useContext(ThemeContext);
   const [wallet, setWallet] = useState('');
   const [focus, setFocus] = useState(0);
@@ -46,14 +50,12 @@ const AddWalletModal: React.FC<IAddWalletModal> = ({ onClose }) => {
           userID: user,
           description: wallet,
         },
-        refetchQueries: [
-          { query: GET_WALLET_BY_USER, variables: { userID: user } },
-        ],
       });
 
       handleSetWallet(response?.data?.createWallet?._id);
 
       setOpenModal(true);
+      beforeModalClose();
       setWallet('');
     } catch (err) {
       console.log(err);

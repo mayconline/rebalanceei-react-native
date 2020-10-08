@@ -73,7 +73,7 @@ const WALLET_LIST = [
 ];
 
 interface WalletProps {
-  onClose?(): void;
+  onClose(): void;
 }
 
 interface IObjectWallet {
@@ -81,25 +81,12 @@ interface IObjectWallet {
   description: string;
   sumCostWallet: number;
   sumAmountWallet: number;
+  percentRentabilityWallet: number;
   checked?: boolean;
-  ticket?: ITickets[];
 }
 
 interface IDataWallet {
   getWalletByUser: IObjectWallet[];
-}
-
-interface ITickets {
-  _id: string;
-  symbol: string;
-  quantity: number;
-  averagePrice: number;
-  grade: number;
-}
-
-interface ICurrentTickets {
-  ticket?: ITickets[];
-  description: string;
 }
 
 const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
@@ -111,10 +98,11 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
     GET_WALLET_BY_USER,
     {
       variables: { userID: user },
+      fetchPolicy: 'cache-and-network',
     },
   );
 
-  const hasWallet = !queryLoading && !!data?.getWalletByUser?.length;
+  const hasWallet = !!data?.getWalletByUser?.length;
   // const WalletID: any = !loading && !!data && data?.getWalletByUser[0]?._id;
 
   const INITIAL_WALLET = useMemo(() => {
@@ -122,23 +110,19 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
       ...wallets,
       checked: wallet !== wallets._id ? false : true,
     }));
-  }, [openModal]);
+  }, [data]);
 
   const [selectWallet, setSelectWallet] = useState<IObjectWallet[] | undefined>(
     [] as IObjectWallet[],
   );
 
-  useEffect(() => {
+  useMemo(() => {
     setSelectWallet(INITIAL_WALLET);
-  }, [INITIAL_WALLET]);
+  }, [INITIAL_WALLET, data]);
 
-  useEffect(() => {
+  useMemo(() => {
     if (!queryLoading && !hasWallet) setOpenModal(true);
-  }, [hasWallet, queryLoading]);
-
-  /*useEffect(() => {
-    if (hasWallet) handleSetWallet(WalletID);
-  }, [WalletID]);*/
+  }, [queryLoading]);
 
   const handleSelectWallet = (walletID: string) => {
     setSelectWallet(wallets =>
@@ -208,7 +192,10 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
         visible={openModal}
         statusBarTranslucent={true}
       >
-        <AddWalletModal onClose={() => setOpenModal(false)} />
+        <AddWalletModal
+          onClose={() => setOpenModal(false)}
+          beforeModalClose={onClose}
+        />
       </Modal>
     </>
   );
@@ -221,13 +208,7 @@ export const GET_WALLET_BY_USER = gql`
       description
       sumCostWallet
       sumAmountWallet
-      ticket {
-        _id
-        symbol
-        quantity
-        averagePrice
-        grade
-      }
+      percentRentabilityWallet
     }
   }
 `;
