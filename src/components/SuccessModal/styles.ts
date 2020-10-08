@@ -31,7 +31,7 @@ export const LootieContainer = styled.View`
   min-height: 500px;
 `;
 
-export const Gradient = styled(LinearGradient)`
+export const Gradient = styled(LinearGradient)<any>`
   justify-content: center;
   border-radius: 24px;
 `;

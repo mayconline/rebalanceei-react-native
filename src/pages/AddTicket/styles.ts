@@ -65,7 +65,7 @@ export const Button = styled(RectButton)`
   padding: 12px 20px;
 `;
 
-export const Gradient = styled(LinearGradient)`
+export const Gradient = styled(LinearGradient)<any>`
   justify-content: center;
   margin-top: 24px;
   border-radius: 24px;

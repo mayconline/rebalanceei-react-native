@@ -83,7 +83,7 @@ export const InputIcon = styled(BorderlessButton)`
   margin-left: -32px;
 `;
 
-export const Gradient = styled(LinearGradient)`
+export const Gradient = styled(LinearGradient)<any>`
   justify-content: center;
   margin-top: 36px;
   border-radius: 24px;

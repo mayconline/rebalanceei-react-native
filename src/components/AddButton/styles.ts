@@ -8,7 +8,7 @@ export interface AddButtonProps {
   mb?: number;
 }
 
-export const Button = styled(LinearGradient)<AddButtonProps>`
+export const Button = styled(LinearGradient)<AddButtonProps | any>`
   width: ${({ size }) => `${size}px`};
   height: ${({ size }) => `${size}px`};
   border-radius: 30px;

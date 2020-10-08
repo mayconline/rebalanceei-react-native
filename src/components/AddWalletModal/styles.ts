@@ -70,7 +70,7 @@ export const Input = styled.TextInput`
   opacity: ${({ editable = true }) => (!editable ? 0.4 : 1)};
 `;
 
-export const Gradient = styled(LinearGradient)`
+export const Gradient = styled(LinearGradient)<any>`
   justify-content: center;
   margin-top: 44px;
   border-radius: 24px;
