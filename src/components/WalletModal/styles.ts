@@ -4,6 +4,10 @@ export interface RadioProps {
   selected?: boolean;
 }
 
+export interface IPercentVariation {
+  value: number;
+}
+
 export const Wrapper = styled.SafeAreaView`
   background-color: ${({ theme }) => theme.color.secondary};
   padding: 20px 20px 4px;
@@ -46,8 +50,13 @@ export const CurrentAmount = styled.Text`
   color: ${({ theme }) => theme.color.subtitle};
   font: 400 16px/24px 'TitilliumWeb_400Regular';
 `;
-export const VariationPercent = styled.Text`
-  color: ${({ theme }) => theme.color.success};
+export const VariationPercent = styled.Text<IPercentVariation>`
+  color: ${({ theme, value }) =>
+    value > 0
+      ? theme.color.success
+      : value < 0
+      ? theme.color.danger
+      : theme.color.titleNotImport};
   font: 600 16px/24px 'TitilliumWeb_600SemiBold';
 `;
 export const PercentWallet = styled.View`
@@ -82,7 +91,10 @@ export const AddButtonContainer = styled.TouchableOpacity`
 export const BackButtonContainer = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
-  padding: 8px;
+`;
+
+export const BackIcon = styled.View`
+  margin-top: 2px;
 `;
 
 export const BackButton = styled.Text`

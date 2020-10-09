@@ -8,7 +8,7 @@ import React, {
 import { FlatList, Modal } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { ThemeContext } from 'styled-components/native';
-import { Entypo } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 import { useLazyQuery, useQuery, gql } from '@apollo/client';
 import { useAuth } from '../../contexts/authContext';
 import {
@@ -27,6 +27,7 @@ import {
   Label,
   BackButtonContainer,
   BackButton,
+  BackIcon,
   AddButtonContainer,
   WalletRadioSelect,
 } from './styles';
@@ -36,6 +37,8 @@ import AddButton from '../AddButton';
 import ShadowBackdrop from '../ShadowBackdrop';
 import AddWalletModal from '../AddWalletModal';
 import Loading from '../Loading';
+
+import { formatNumber, formatPercent } from '../../utils/format';
 
 const WALLET_LIST = [
   {
@@ -151,8 +154,12 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
                 <CardTitleContainer>
                   <WalletTitle>{item.description}</WalletTitle>
                   <CardSubTitle>
-                    <CurrentAmount>R$ {item.sumAmountWallet}</CurrentAmount>
-                    {/*<VariationPercent>{'1%'}</VariationPercent>*/}
+                    <CurrentAmount>
+                      {formatNumber(item.sumAmountWallet)}
+                    </CurrentAmount>
+                    <VariationPercent value={item.percentRentabilityWallet}>
+                      {formatPercent(item.percentRentabilityWallet)}
+                    </VariationPercent>
                   </CardSubTitle>
                 </CardTitleContainer>
 
@@ -171,12 +178,10 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
 
         <AddWalletContainer>
           <BackButtonContainer onPress={onClose}>
-            <Entypo
-              name="chevron-small-left"
-              size={16}
-              color={color.subtitle}
-            />
-            <BackButton>Voltar</BackButton>
+            <BackIcon>
+              <AntDesign name="closecircleo" size={16} color={color.subtitle} />
+            </BackIcon>
+            <BackButton>Fechar Modal</BackButton>
           </BackButtonContainer>
 
           <AddButtonContainer onPress={() => setOpenModal(true)}>

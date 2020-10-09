@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { ThemeContext } from 'styled-components/native';
-
+import { useNavigation } from '@react-navigation/native';
 import {
   Wrapper,
   Main,
@@ -17,6 +17,7 @@ import ImageEmpty from '../../../assets/svg/ImageEmpty';
 
 const Empty: React.FC = () => {
   const { gradient } = useContext(ThemeContext);
+  const navigation = useNavigation();
 
   return (
     <Wrapper>
@@ -34,7 +35,7 @@ const Empty: React.FC = () => {
       </Main>
       <Footer>
         <Gradient colors={gradient.darkToLightBlue} start={[1, 0.5]}>
-          <Button onPress={() => {}}>
+          <Button onPress={() => navigation.navigate('AddTicket')}>
             <TextButton>Adicionar Ativo</TextButton>
           </Button>
         </Gradient>
