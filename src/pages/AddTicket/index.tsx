@@ -91,7 +91,7 @@ const AddTicket: React.FC = () => {
   const handleSubmit = async () => {
     const dataTicket = {
       walletID: wallet,
-      symbol: 'mglu3.sa',
+      symbol: 'lren3.sa',
       quantity: Number(ticketForm.quantity),
       averagePrice: Number(ticketForm.averagePrice),
       grade: Number(ticketForm.grade),

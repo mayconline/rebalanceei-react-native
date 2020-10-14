@@ -85,6 +85,8 @@ interface IObjectWallet {
   sumCostWallet: number;
   sumAmountWallet: number;
   percentRentabilityWallet: number;
+  percentPositionWallet: number;
+  sumAmountAllWallet: number;
   checked?: boolean;
 }
 
@@ -165,7 +167,9 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
 
                 <PercentWallet>
                   <PercentTitle>% da Carteira</PercentTitle>
-                  {/*<CurrentPercent>{'10%'}</CurrentPercent>*/}
+                  <CurrentPercent>
+                    {`${item.percentPositionWallet.toFixed(0)}%`}
+                  </CurrentPercent>
                 </PercentWallet>
 
                 <WalletRadioSelect selected={item.checked} />
@@ -214,6 +218,8 @@ export const GET_WALLET_BY_USER = gql`
       sumCostWallet
       sumAmountWallet
       percentRentabilityWallet
+      percentPositionWallet
+      sumAmountAllWallet
     }
   }
 `;
