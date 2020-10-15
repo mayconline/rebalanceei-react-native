@@ -94,6 +94,7 @@ const initialFilter = [
 interface ITickets {
   _id: string;
   symbol: string;
+  name: string;
   quantity: number;
   averagePrice: number;
   grade: number;
@@ -171,9 +172,9 @@ const Ticket: React.FC = () => {
                         <CardContent>
                           <CardTitleContainer>
                             <CardTicket>{formatTicket(item.symbol)}</CardTicket>
-                            <CardTitle>
+                            <CardTitle numberOfLines={1} ellipsizeMode="tail">
                               {' '}
-                              - {formatTicket(item.symbol)}
+                              - {formatTicket(item.name)}
                             </CardTitle>
                           </CardTitleContainer>
                           <CardSubTitle>
@@ -211,6 +212,7 @@ export const GET_WALLET_BY_ID = gql`
       ticket {
         _id
         symbol
+        name
         quantity
         averagePrice
         grade

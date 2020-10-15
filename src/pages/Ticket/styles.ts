@@ -62,6 +62,7 @@ export const CardTitle = styled.Text`
   font-weight: 600;
   font-family: 'TitilliumWeb_600SemiBold';
   align-self: flex-end;
+  width: 75%;
 `;
 
 export const CardSubTitle = styled.Text`

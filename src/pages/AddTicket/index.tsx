@@ -1,9 +1,11 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useCallback } from 'react';
 import { Platform, Modal, ActivityIndicator } from 'react-native';
 import { useAuth } from '../../contexts/authContext';
 import { ThemeContext } from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
 import { useMutation, gql } from '@apollo/client';
+import api from '../../services/api';
+import { useDebouncedCallback } from 'use-debounce';
 import {
   Wrapper,
   FormContainer,
@@ -31,14 +33,17 @@ import { GET_WALLET_BY_USER } from '../../components/WalletModal';
 
 interface ITicketForm {
   symbol: string;
+  name: string;
   quantity: string;
   averagePrice: string;
   grade: string;
+  preview: string;
 }
 
 interface IDataCreateTicket {
   _id: string;
   symbol: string;
+  name: string;
   quantity: number;
   averagePrice: number;
   grade: number;
@@ -48,7 +53,12 @@ interface IcreateTicket {
   createTicket: IDataCreateTicket;
 }
 
-const SUGGESTIONS = [
+interface ISuggestions {
+  symbol: string;
+  name: string;
+}
+
+/*const SUGGESTIONS = [
   {
     ticket: 'LREN3.sa',
     title: 'Lojas Renner',
@@ -61,7 +71,7 @@ const SUGGESTIONS = [
     ticket: 'TRPL4.sa',
     title: 'Transmissão Paulista LTDA',
   },
-];
+];*/
 
 const AddTicket: React.FC = () => {
   const { wallet, user } = useAuth();
@@ -69,17 +79,44 @@ const AddTicket: React.FC = () => {
   const [ticketForm, setTicketForm] = useState<ITicketForm>({} as ITicketForm);
   const [focus, setFocus] = useState(0);
   const [hasSuggestions, setHasSuggestions] = useState(false);
+  const [suggestions, setSuggestions] = useState<ISuggestions[] | null>([]);
   const [openModal, setOpenModal] = useState(false);
 
   const navigation = useNavigation();
 
   const handleSuggestionsAutoComplete = (ticket: string) => {
-    setTicketForm(ticketForm => ({ ...ticketForm, ticket }));
-    setHasSuggestions(true);
+    // if (!ticket.length) return setHasSuggestions(false);
+
+    setTicketForm(ticketForm => ({ ...ticketForm, preview: ticket }));
+
+    displaySuggestionsAutoComplete.callback(ticket);
   };
 
-  const handleSelectTicket = (ticket: string) => {
-    setTicketForm(ticketForm => ({ ...ticketForm, ticket }));
+  const displaySuggestionsAutoComplete = useDebouncedCallback(
+    async (ticket: string) => {
+      const response = await api.get('/autoc?', {
+        params: {
+          query: ticket,
+          region: 1,
+          lang: 'ptbr',
+        },
+      });
+
+      let suggest = response?.data?.ResultSet?.Result;
+      setSuggestions(suggest);
+
+      setHasSuggestions(true);
+    },
+    500,
+  );
+
+  const handleSelectTicket = (symbol: string, name: string) => {
+    setTicketForm(ticketForm => ({
+      ...ticketForm,
+      symbol,
+      name,
+      preview: symbol,
+    }));
     setHasSuggestions(false);
   };
 
@@ -91,7 +128,8 @@ const AddTicket: React.FC = () => {
   const handleSubmit = async () => {
     const dataTicket = {
       walletID: wallet,
-      symbol: 'lren3.sa',
+      symbol: ticketForm.symbol,
+      name: ticketForm.name,
       quantity: Number(ticketForm.quantity),
       averagePrice: Number(ticketForm.averagePrice),
       grade: Number(ticketForm.grade),
@@ -134,12 +172,12 @@ const AddTicket: React.FC = () => {
               <InputGroup>
                 <Label>Busque e Selecione um Ativo</Label>
                 <Input
-                  value={ticketForm.symbol}
+                  value={ticketForm.preview}
                   autoCapitalize={'characters'}
                   returnKeyType={'next'}
                   placeholder="RBLC3"
                   placeholderTextColor={color.titleNotImport}
-                  maxLength={6}
+                  maxLength={10}
                   onChangeText={ticket => handleSuggestionsAutoComplete(ticket)}
                   autoFocus={focus === 1}
                   onFocus={() => setFocus(1)}
@@ -148,16 +186,21 @@ const AddTicket: React.FC = () => {
                 />
                 <SuggestionContainer visibled={hasSuggestions}>
                   <SuggestionList>
-                    {SUGGESTIONS?.map(suggestion => (
-                      <SuggestionItem key={suggestion.ticket}>
+                    {suggestions?.map(suggestion => (
+                      <SuggestionItem key={suggestion.symbol}>
                         <SuggestionButton
-                          onPress={() => handleSelectTicket(suggestion.ticket)}
+                          onPress={() =>
+                            handleSelectTicket(
+                              suggestion.symbol,
+                              suggestion.name,
+                            )
+                          }
                         >
                           <SuggestionText
                             numberOfLines={1}
                             ellipsizeMode="tail"
                           >
-                            {suggestion.ticket}- {suggestion.title}
+                            {suggestion.symbol}- {suggestion.name}
                           </SuggestionText>
                         </SuggestionButton>
                       </SuggestionItem>
@@ -251,6 +294,7 @@ const CREATE_TICKET = gql`
   mutation createTicket(
     $walletID: ID!
     $symbol: String!
+    $name: String!
     $quantity: Float!
     $averagePrice: Float!
     $grade: Int!
@@ -259,6 +303,7 @@ const CREATE_TICKET = gql`
       input: {
         walletID: $walletID
         symbol: $symbol
+        name: $name
         quantity: $quantity
         averagePrice: $averagePrice
         grade: $grade
@@ -269,6 +314,7 @@ const CREATE_TICKET = gql`
       quantity
       averagePrice
       grade
+      name
     }
   }
 `;
