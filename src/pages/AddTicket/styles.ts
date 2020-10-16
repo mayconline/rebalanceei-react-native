@@ -2,10 +2,6 @@ import styled from 'styled-components/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { RectButton } from 'react-native-gesture-handler';
 
-interface ISuggestions {
-  visibled: boolean;
-}
-
 export const Wrapper = styled.SafeAreaView`
   flex: 1;
   background-color: ${({ theme }) => theme.color.primary};
@@ -76,35 +72,19 @@ export const TextButton = styled.Text`
   font: 600 20px/24px 'TitilliumWeb_600SemiBold';
 `;
 
-export const SuggestionContainer = styled.View<ISuggestions>`
-  display: ${({ visibled }) => (!visibled ? 'none' : 'flex')};
-  elevation: 0.7;
-  margin-top: 4px;
-  position: relative;
-`;
-
-export const SuggestionList = styled.View`
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: ${({ theme }) => theme.color.secondary};
-  border-color: ${({ theme }) => theme.color.divider};
-  border-width: 0.7px;
-  border-radius: 4px;
-`;
-
-export const SuggestionItem = styled.View`
+export const SuggestButton = styled.TouchableOpacity`
+  align-items: center;
+  padding: 8px 0px;
   border-bottom-color: ${({ theme }) => theme.color.divider};
-  border-bottom-width: 0.7px;
+  border-bottom-width: 1px;
   border-radius: 4px;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
 `;
 
-export const SuggestionButton = styled(RectButton)`
-  padding: 8px;
-  border-radius: 4px;
-`;
-
-export const SuggestionText = styled.Text`
-  color: ${({ theme }) => theme.color.title};
-  font: 400 16px/24px 'TitilliumWeb_400Regular';
+export const SuggestButtonText = styled.Text`
+  color: ${({ theme }) => theme.color.titleNotImport};
+  font: 600 16px/24px 'TitilliumWeb_600SemiBold';
+  flex: 1;
 `;

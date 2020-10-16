@@ -1,11 +1,9 @@
-import React, { useContext, useState, useCallback } from 'react';
+import React, { useContext, useState } from 'react';
 import { Platform, Modal, ActivityIndicator } from 'react-native';
 import { useAuth } from '../../contexts/authContext';
 import { ThemeContext } from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
 import { useMutation, gql } from '@apollo/client';
-import api from '../../services/api';
-import { useDebouncedCallback } from 'use-debounce';
 import {
   Wrapper,
   FormContainer,
@@ -19,17 +17,14 @@ import {
   Button,
   Gradient,
   TextButton,
-  SuggestionContainer,
-  SuggestionList,
-  SuggestionItem,
-  SuggestionText,
-  SuggestionButton,
+  SuggestButton,
+  SuggestButtonText,
 } from './styles';
-
 import ImageAddTicket from '../../../assets/svg/ImageAddTicket';
 import SuccessModal from '../../components/SuccessModal';
 import { GET_WALLET_BY_ID } from '../Ticket';
-import { GET_WALLET_BY_USER } from '../../components/WalletModal';
+import SuggestionsModal from '../../components/SuggestionsModal';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 interface ITicketForm {
   symbol: string;
@@ -53,11 +48,6 @@ interface IcreateTicket {
   createTicket: IDataCreateTicket;
 }
 
-interface ISuggestions {
-  symbol: string;
-  name: string;
-}
-
 /*const SUGGESTIONS = [
   {
     ticket: 'LREN3.sa',
@@ -74,41 +64,20 @@ interface ISuggestions {
 ];*/
 
 const AddTicket: React.FC = () => {
-  const { wallet, user } = useAuth();
+  const { wallet } = useAuth();
   const { color, gradient } = useContext(ThemeContext);
   const [ticketForm, setTicketForm] = useState<ITicketForm>({} as ITicketForm);
   const [focus, setFocus] = useState(0);
   const [hasSuggestions, setHasSuggestions] = useState(false);
-  const [suggestions, setSuggestions] = useState<ISuggestions[] | null>([]);
+
   const [openModal, setOpenModal] = useState(false);
 
   const navigation = useNavigation();
 
-  const handleSuggestionsAutoComplete = (ticket: string) => {
-    // if (!ticket.length) return setHasSuggestions(false);
-
-    setTicketForm(ticketForm => ({ ...ticketForm, preview: ticket }));
-
-    displaySuggestionsAutoComplete.callback(ticket);
+  const HandleOpenSuggestionsModal = () => {
+    setFocus(1);
+    setHasSuggestions(true);
   };
-
-  const displaySuggestionsAutoComplete = useDebouncedCallback(
-    async (ticket: string) => {
-      const response = await api.get('/autoc?', {
-        params: {
-          query: ticket,
-          region: 1,
-          lang: 'ptbr',
-        },
-      });
-
-      let suggest = response?.data?.ResultSet?.Result;
-      setSuggestions(suggest);
-
-      setHasSuggestions(true);
-    },
-    500,
-  );
 
   const handleSelectTicket = (symbol: string, name: string) => {
     setTicketForm(ticketForm => ({
@@ -141,7 +110,6 @@ const AddTicket: React.FC = () => {
 
         refetchQueries: [
           { query: GET_WALLET_BY_ID, variables: { _id: wallet } },
-          // { query: GET_WALLET_BY_USER, variables: { userID: user } },
         ],
       });
 
@@ -163,51 +131,29 @@ const AddTicket: React.FC = () => {
         <FormContainer behavior={Platform.OS == 'ios' ? 'padding' : 'position'}>
           <Form>
             <FormRow>
-              <InputGroup>
-                <Label>Carteira Atual</Label>
-                <Input value={'Ações'} editable={false} />
-              </InputGroup>
+              <SuggestButton onPress={HandleOpenSuggestionsModal}>
+                <MaterialCommunityIcons
+                  name="file-document-box-search-outline"
+                  size={24}
+                  color={color.titleNotImport}
+                />
+                <SuggestButtonText>
+                  Busque e Selecione um Ativo
+                </SuggestButtonText>
+              </SuggestButton>
             </FormRow>
             <FormRow>
               <InputGroup>
-                <Label>Busque e Selecione um Ativo</Label>
+                <Label>Ativo Selecionado</Label>
                 <Input
                   value={ticketForm.preview}
-                  autoCapitalize={'characters'}
-                  returnKeyType={'next'}
-                  placeholder="RBLC3"
+                  placeholder="Nenhum ativo selecionado"
                   placeholderTextColor={color.titleNotImport}
                   maxLength={10}
-                  onChangeText={ticket => handleSuggestionsAutoComplete(ticket)}
-                  autoFocus={focus === 1}
-                  onFocus={() => setFocus(1)}
-                  onEndEditing={() => setHasSuggestions(false)}
-                  autoCorrect={false}
+                  editable={false}
                 />
-                <SuggestionContainer visibled={hasSuggestions}>
-                  <SuggestionList>
-                    {suggestions?.map(suggestion => (
-                      <SuggestionItem key={suggestion.symbol}>
-                        <SuggestionButton
-                          onPress={() =>
-                            handleSelectTicket(
-                              suggestion.symbol,
-                              suggestion.name,
-                            )
-                          }
-                        >
-                          <SuggestionText
-                            numberOfLines={1}
-                            ellipsizeMode="tail"
-                          >
-                            {suggestion.symbol}- {suggestion.name}
-                          </SuggestionText>
-                        </SuggestionButton>
-                      </SuggestionItem>
-                    ))}
-                  </SuggestionList>
-                </SuggestionContainer>
               </InputGroup>
+
               <InputGroup>
                 <Label>Dê uma Nota</Label>
                 <Input
@@ -284,6 +230,18 @@ const AddTicket: React.FC = () => {
         <SuccessModal
           onClose={() => setOpenModal(false)}
           beforeModalClose={() => navigation.goBack()}
+        />
+      </Modal>
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={hasSuggestions}
+        statusBarTranslucent={false}
+      >
+        <SuggestionsModal
+          onClose={() => setHasSuggestions(false)}
+          handleSelectTicket={handleSelectTicket}
         />
       </Modal>
     </>
