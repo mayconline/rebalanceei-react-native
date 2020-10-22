@@ -17,4 +17,6 @@ export const formatFilter = (filter: string) =>
     gradePercent: '% Ideal',
     targetAmount: 'Valor',
     targetPercent: 'Porcentagem',
+    costAmount: 'Saldo Aplicado',
+    variationPercent: 'Rentabilidade',
   }[filter]);

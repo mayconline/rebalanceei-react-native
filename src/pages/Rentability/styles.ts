@@ -65,8 +65,14 @@ export const CardSubTitle = styled.Text`
   font: 400 16px/24px 'TitilliumWeb_400Regular';
 `;
 
+export const CardSubTitleLegend = styled.Text`
+  color: ${({ theme }) => theme.color.titleNotImport};
+  font: 600 12px/20px 'TitilliumWeb_600SemiBold';
+  margin-top: -4px;
+`;
+
 export const AmountContainer = styled.View`
-  align-items: flex-end;
+  align-items: center;
 `;
 
 export const Amount = styled.Text<IformatNumber>`

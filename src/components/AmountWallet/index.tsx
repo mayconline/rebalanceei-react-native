@@ -19,7 +19,7 @@ const AmountWallet: React.FC = () => {
     <Wrapper>
       <WalletContainer>
         <PreviousContainer>
-          <PreviousTitle>Saldo Aplicado</PreviousTitle>
+          <PreviousTitle>Saldo Aplicado Mockado</PreviousTitle>
           <PreviousAmount>{formatNumber(10900.0, 'BRL')}</PreviousAmount>
         </PreviousContainer>
         <CurrentContainer>
