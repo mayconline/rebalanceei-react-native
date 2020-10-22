@@ -1,90 +1,91 @@
-import React, { Fragment, useState, useMemo } from 'react';
-import { PieChart } from 'react-native-svg-charts';
+import React, { Fragment, useState, useMemo, useCallback } from 'react';
+import { PieChart, PieChartData } from 'react-native-svg-charts';
 import { Text } from 'react-native-svg';
+import { useAuth } from '../../contexts/authContext';
+import { useQuery, useLazyQuery, gql } from '@apollo/client';
+import { useFocusEffect } from '@react-navigation/native';
 
 import { Wrapper, Content, ContainerGraph } from './styles';
 
 import Header from '../../components/Header';
 import SubHeader from '../../components/SubHeader';
 
-const CARD_LIST = [
-  {
-    title: 'Lojas Renner',
-    ticket: 'LREN3',
-    subTitle: '+40.5%',
-    amount: 40070.2454,
-    status: 'BUY',
-    financialCurrency: 'BRL',
-    percent: 0.1,
-  },
-  {
-    title: 'Transmissão Paulista',
-    ticket: 'TRPL4',
-    subTitle: '+10.5%',
-    amount: 10.2454,
-    status: 'BUY',
-    financialCurrency: 'BRL',
-    percent: 0.05,
-  },
-  {
-    title: 'Engie',
-    ticket: 'EGIE3',
-    subTitle: '+0.5%',
-    amount: 210.2454,
-    status: 'BUY',
-    financialCurrency: 'BRL',
-    percent: 0.06,
-  },
-  {
-    title: 'Cshg Logistica',
-    ticket: 'HGLG11',
-    subTitle: '+50.5%',
-    amount: 400.2454,
-    status: 'BUY',
-    financialCurrency: 'BRL',
-    percent: 0.04,
-  },
-  {
-    title: 'Alphabet Inc.',
-    ticket: 'GOOG',
-    subTitle: '+0%',
-    amount: 0,
-    status: 'KEEP',
-    financialCurrency: 'USD',
-    percent: 0.02,
-  },
-  {
-    title: 'Magazine Luiza SA.',
-    ticket: 'MGLU3',
-    subTitle: '-2.3%',
-    amount: -300.78124,
-    status: 'ANALIZE',
-    financialCurrency: 'BRL',
-    percent: 0.03,
-  },
-];
+import { formatTicket } from '../../utils/format';
+import Empty from '../../components/Empty';
+import Loading from '../../components/Loading';
 
-const randomColor = () =>
-  ('#' + ((Math.random() * 0xffffff) << 0).toString(16) + '000000').slice(0, 7);
+interface IRebalances {
+  _id: string;
+  symbol: string;
+  currentPercent: number;
+}
+
+interface IDataTickets {
+  rebalances: IRebalances[];
+}
+
+const randomDarkColor = () => {
+  var lum = -0.25;
+  var hex = String(
+    '#' + Math.random().toString(16).slice(2, 8).toUpperCase(),
+  ).replace(/[^0-9a-f]/gi, '');
+  if (hex.length < 6) {
+    hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+  }
+  var rgb = '#',
+    c,
+    i;
+  for (i = 0; i < 3; i++) {
+    c = parseInt(hex.substr(i * 2, 2), 16);
+    c = Math.round(Math.min(Math.max(0, c + c * lum), 255)).toString(16);
+    rgb += ('00' + c).substr(c.length);
+  }
+  return rgb;
+};
 
 const Chart: React.FC = () => {
   const [select, setSelect] = useState('');
+  const [dataGraph, setDataGraph] = useState<PieChartData[]>([]);
 
-  const pieData = CARD_LIST?.map(data => ({
-    value: data.percent * 100,
-    svg: {
-      fill: useMemo(() => randomColor(), []),
-      onPress: () => setSelect(data.ticket),
-    },
-    key: data.ticket,
-    arc: {
-      outerRadius: select === data.ticket ? '108%' : '100%',
-      cornerRadius: 8,
-    },
-  }));
+  const { wallet } = useAuth();
+
+  const [rebalances, { data, loading: queryLoading, error }] = useLazyQuery<
+    IDataTickets
+  >(REBALANCES, {
+    variables: { walletID: wallet, sort: 'currentPercent' },
+    fetchPolicy: 'cache-and-network',
+  });
+
+  useFocusEffect(
+    useCallback(() => {
+      rebalances();
+    }, []),
+  );
+  useFocusEffect(
+    useCallback(() => {
+      if (data?.rebalances) {
+        let formatedPie: PieChartData[] = data.rebalances.map(item => ({
+          value: Number(item.currentPercent.toFixed(1)),
+          svg: {
+            fill: randomDarkColor(),
+            onPress: () => setSelect(item.symbol),
+          },
+          key: formatTicket(item.symbol),
+          arc: {
+            outerRadius: select === item.symbol ? '108%' : '100%',
+            cornerRadius: 8,
+          },
+        }));
+
+        setDataGraph(formatedPie);
+      }
+    }, [select]),
+  );
+
+  const hasTickets = wallet && !queryLoading && !!data?.rebalances?.length;
 
   const Labels = ({ slices }) => {
-    return slices.map(slice => {
+    return slices?.map(slice => {
       const { pieCentroid, data } = slice;
       return (
         <Fragment key={data.key}>
@@ -117,26 +118,44 @@ const Chart: React.FC = () => {
     });
   };
 
-  return (
+  return queryLoading ? (
+    <Loading />
+  ) : (
     <Wrapper>
       <Header />
-      <SubHeader title="Gráficos" onPress={() => {}} />
-      <Content>
-        <ContainerGraph>
-          <PieChart
-            style={{ height: 284 }}
-            data={pieData}
-            valueAccessor={({ item }) => item.value}
-            outerRadius={'92%'}
-            innerRadius={'48%'}
-            numberOfTicks={pieData.length}
-          >
-            <Labels />
-          </PieChart>
-        </ContainerGraph>
-      </Content>
+      {!hasTickets ? (
+        <Empty />
+      ) : (
+        <>
+          <SubHeader title="Gráficos" onPress={() => {}} />
+          <Content>
+            <ContainerGraph>
+              <PieChart
+                style={{ height: 284 }}
+                data={dataGraph}
+                valueAccessor={({ item }) => item.value}
+                outerRadius={'92%'}
+                innerRadius={'48%'}
+                numberOfTicks={dataGraph?.length}
+              >
+                <Labels />
+              </PieChart>
+            </ContainerGraph>
+          </Content>
+        </>
+      )}
     </Wrapper>
   );
 };
+
+const REBALANCES = gql`
+  query rebalances($walletID: ID!, $sort: SortRebalance!) {
+    rebalances(walletID: $walletID, sort: $sort) {
+      _id
+      symbol
+      currentPercent
+    }
+  }
+`;
 
 export default Chart;
