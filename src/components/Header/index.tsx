@@ -16,12 +16,8 @@ import {
 
 import WalletModal from '../WalletModal';
 
-interface IHeaderProps {
-  title?: string;
-}
-
-const Header: React.FC<IHeaderProps> = ({ title = 'Adicionar Carteira' }) => {
-  const { handleSignOut } = useAuth();
+const Header: React.FC = () => {
+  const { handleSignOut, walletName } = useAuth();
   const { color, gradient } = useContext(ThemeContext);
 
   const [openModal, setOpenModal] = useState(false);
@@ -31,7 +27,7 @@ const Header: React.FC<IHeaderProps> = ({ title = 'Adicionar Carteira' }) => {
       <Wrapper colors={gradient.darkToLightGreen}>
         <MenuBar>
           <Wallet onPress={() => setOpenModal(true)}>
-            <Title>{title}</Title>
+            <Title>{walletName}</Title>
             <Entypo
               name="chevron-thin-down"
               size={20}

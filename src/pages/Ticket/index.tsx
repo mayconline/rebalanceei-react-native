@@ -113,7 +113,7 @@ interface IDataTickets {
 const Ticket: React.FC = () => {
   const { color, gradient } = useContext(ThemeContext);
   const [filters, setFilters] = useState(initialFilter);
-  const { wallet, loading, walletName } = useAuth();
+  const { wallet, loading } = useAuth();
   const [openModal, setOpenModal] = useState(false);
 
   const { data, loading: queryLoading, error } = useQuery<IDataTickets>(
@@ -143,7 +143,7 @@ const Ticket: React.FC = () => {
   return (
     <>
       <Wrapper>
-        <Header title={walletName} />
+        <Header />
         {!hasTickets ? (
           <Empty />
         ) : (

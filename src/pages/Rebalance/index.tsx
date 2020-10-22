@@ -136,7 +136,7 @@ const Rebalance: React.FC = () => {
   const [selectedFilter, setSelectFilter] = useState<string | undefined>(
     'targetPercent',
   );
-  const { wallet, walletName } = useAuth();
+  const { wallet } = useAuth();
 
   const [rebalances, { data, loading: queryLoading, error }] = useLazyQuery<
     IDataTickets
@@ -168,7 +168,7 @@ const Rebalance: React.FC = () => {
     <Loading />
   ) : (
     <Wrapper>
-      <Header title={walletName} />
+      <Header />
       {!hasTickets ? (
         <Empty />
       ) : (
