@@ -79,7 +79,7 @@ const Chart: React.FC = () => {
 
         setDataGraph(formatedPie);
       }
-    }, [select]),
+    }, [select, data]),
   );
 
   const hasTickets = wallet && !queryLoading && !!data?.rebalances?.length;

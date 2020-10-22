@@ -54,6 +54,7 @@ export const CardTitle = styled.Text`
   color: ${({ theme }) => theme.color.subtitle};
   font: 600 12px/20px 'TitilliumWeb_600SemiBold';
   align-self: flex-end;
+  width: 70%;
 `;
 
 export const SubTitleContant = styled.View`

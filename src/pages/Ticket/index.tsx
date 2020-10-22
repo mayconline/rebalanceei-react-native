@@ -20,73 +20,18 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Header from '../../components/Header';
 import SubHeader from '../../components/SubHeader';
 import Empty from '../../components/Empty';
+import Loading from '../../components/Loading';
 import WalletModal from '../../components/WalletModal';
-import { formatNumber, formatTicket } from '../../utils/format';
 
-const CARD_LIST = [
-  {
-    title: 'Lojas Renner',
-    ticket: 'LREN3',
-    subTitle: '30x PM R$ 40.00',
-    grade: 10,
-  },
-  {
-    title: 'Wege',
-    ticket: 'WEGE3',
-    subTitle: '30x PM R$ 70.00',
-    grade: 10,
-  },
-  {
-    title: 'Itausa',
-    ticket: 'ITSA4',
-    subTitle: '30x PM R$ 70.00',
-    grade: 10,
-  },
-  {
-    title: 'Engie',
-    ticket: 'EGIE3',
-    subTitle: '30x PM R$ 70.00',
-    grade: 10,
-  },
-  {
-    title: 'Transmisão Paulista',
-    ticket: 'TRPL4',
-    subTitle: '30x PM R$ 70.00',
-    grade: 10,
-  },
-  {
-    title: 'Hedge Grifo Logistica',
-    ticket: 'HGLG11',
-    subTitle: '30x PM R$ 70.00',
-    grade: 5,
-  },
-  {
-    title: 'Hedge Grifo Shopping',
-    ticket: 'HGBS11',
-    subTitle: '30x PM R$ 70.00',
-    grade: 3,
-  },
-  {
-    title: 'Google',
-    ticket: 'GOOG',
-    subTitle: '30x PM R$ 70.00',
-    grade: 3,
-  },
-  {
-    title: 'Amazon BDR',
-    ticket: 'AMZN34',
-    subTitle: '30x PM R$ 70.00',
-    grade: 3,
-  },
-];
+import { formatNumber, formatTicket } from '../../utils/format';
 
 const initialFilter = [
   {
-    name: 'Ativo',
+    name: 'symbol',
     focused: false,
   },
   {
-    name: 'Nota',
+    name: 'grade',
     focused: true,
   },
 ];
@@ -113,6 +58,9 @@ interface IDataTickets {
 const Ticket: React.FC = () => {
   const { color, gradient } = useContext(ThemeContext);
   const [filters, setFilters] = useState(initialFilter);
+  const [selectedFilter, setSelectFilter] = useState<string | undefined>(
+    'grade',
+  );
   const { wallet, loading } = useAuth();
   const [openModal, setOpenModal] = useState(false);
 
@@ -135,12 +83,16 @@ const Ticket: React.FC = () => {
         focused: filterName !== filter.name ? false : true,
       })),
     );
+
+    setSelectFilter(filterName);
   };
 
   const hasTickets =
     wallet && !queryLoading && !!data?.getWalletById?.ticket?.length;
 
-  return (
+  return queryLoading ? (
+    <Loading />
+  ) : (
     <>
       <Wrapper>
         <Header />

@@ -11,6 +11,7 @@ export const formatTicket = (symbol: string) => symbol.split('.')[0];
 export const formatFilter = (filter: string) =>
   ({
     symbol: 'Ativo',
+    grade: 'Nota',
     status: 'Status',
     currentAmount: 'Saldo Atual',
     currentPercent: '% Atual',

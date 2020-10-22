@@ -37,63 +37,6 @@ import {
 } from '../../utils/format';
 
 import { FontAwesome5 } from '@expo/vector-icons';
-/*
-const CARD_LIST = [
-  {
-    title: 'Lojas Renner',
-    ticket: 'LREN3',
-    subTitle: '+40.5%',
-    amount: 40070.2454,
-    status: 'BUY',
-    financialCurrency: 'BRL',
-    percent: 0.6,
-  },
-  {
-    title: 'Transmissão Paulista',
-    ticket: 'TRPL4',
-    subTitle: '+10.5%',
-    amount: 10.2454,
-    status: 'BUY',
-    financialCurrency: 'BRL',
-    percent: 0.85,
-  },
-  {
-    title: 'Engie',
-    ticket: 'EGIE3',
-    subTitle: '+0.5%',
-    amount: 210.2454,
-    status: 'BUY',
-    financialCurrency: 'BRL',
-    percent: 0.95,
-  },
-  {
-    title: 'Cshg Logistica',
-    ticket: 'HGLG11',
-    subTitle: '+50.5%',
-    amount: 400.2454,
-    status: 'BUY',
-    financialCurrency: 'BRL',
-    percent: 0.45,
-  },
-  {
-    title: 'Alphabet Inc.',
-    ticket: 'GOOG',
-    subTitle: '+0%',
-    amount: 0,
-    status: 'KEEP',
-    financialCurrency: 'USD',
-    percent: 1,
-  },
-  {
-    title: 'Magazine Luiza SA.',
-    ticket: 'MGLU3',
-    subTitle: '-2.3%',
-    amount: -300.78124,
-    status: 'ANALIZE',
-    financialCurrency: 'BRL',
-    percent: 1,
-  },
-];*/
 
 const initialFilter = [
   {

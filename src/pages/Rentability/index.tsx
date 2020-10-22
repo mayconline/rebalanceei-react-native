@@ -33,63 +33,6 @@ import Empty from '../../components/Empty';
 
 import { formatNumber, formatPercent, formatTicket } from '../../utils/format';
 
-/*const CARD_LIST = [
-  {
-    title: 'Lojas Renner',
-    ticket: 'LREN3',
-    subTitle: 2000.0,
-    amount: 40070.2454,
-    financialCurrency: 'BRL',
-    variation: 120.5,
-  },
-
-  {
-    title: 'Engie',
-    ticket: 'EGIE3',
-    subTitle: 500.45,
-    amount: 21087.2454,
-    financialCurrency: 'BRL',
-    percent: 0.95,
-    variation: 70.2,
-  },
-  {
-    title: 'Cshg Logistica',
-    ticket: 'HGLG11',
-    subTitle: 150.44,
-    amount: 400.2454,
-    financialCurrency: 'BRL',
-    percent: 0.45,
-    variation: 0.45,
-  },
-  {
-    title: 'Alphabet Inc.',
-    ticket: 'GOOG',
-    subTitle: 12107.0,
-    amount: 12107.0,
-    financialCurrency: 'USD',
-    percent: 1,
-    variation: 0,
-  },
-  {
-    title: 'Transmissão Paulista',
-    ticket: 'TRPL4',
-    subTitle: 400.02,
-    amount: 200.2454,
-    financialCurrency: 'BRL',
-    percent: 0.85,
-    variation: -4.5,
-  },
-  {
-    title: 'Magazine Luiza SA.',
-    ticket: 'MGLU3',
-    subTitle: 4189.0214,
-    amount: 1054.02,
-    financialCurrency: 'BRL',
-    percent: 1,
-    variation: -40.2,
-  },
-];*/
-
 const initialFilter = [
   {
     name: 'symbol',
