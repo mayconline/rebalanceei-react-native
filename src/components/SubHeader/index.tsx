@@ -4,6 +4,7 @@ import { ThemeContext } from 'styled-components/native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import { Wrapper, Title, FiltersContainer, Filter, TextFilter } from './styles';
+import { formatFilter } from '../../utils/format';
 
 interface ISubHeaderProps {
   title: string;
@@ -42,7 +43,9 @@ const SubHeader: React.FC<ISubHeaderProps> = ({
         >
           {filters?.map(filter => (
             <Filter key={filter.name} onPress={() => onPress(filter.name)}>
-              <TextFilter focused={filter.focused}>{filter.name}</TextFilter>
+              <TextFilter focused={filter.focused}>
+                {formatFilter(filter.name)}
+              </TextFilter>
             </Filter>
           ))}
         </ScrollView>

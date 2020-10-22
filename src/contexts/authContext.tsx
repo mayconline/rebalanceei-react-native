@@ -23,7 +23,8 @@ interface IAuthContext {
   isConnected: boolean;
   user: string | null;
   wallet: string | null;
-  handleSetWallet(walletID: string): void;
+  walletName: string | undefined;
+  handleSetWallet(walletID: string, walletName: string): void;
   handleSignUp(user: IAccountRegister): Promise<void>;
   handleSignIn(user: ISignIn): Promise<void>;
   handleSignOut(): void;
@@ -34,6 +35,7 @@ const AuthContext = createContext<IAuthContext>({} as IAuthContext);
 export const AuthProvider: React.FC = ({ children }) => {
   const [user, setUser] = useState<string | null>(null);
   const [wallet, setWallet] = useState<string | null>(null);
+  const [walletName, setWalletName] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(true);
 
   const [
@@ -48,12 +50,16 @@ export const AuthProvider: React.FC = ({ children }) => {
       const storageUser = await AsyncStorage.getItem('@authUser');
       const storageToken = await AsyncStorage.getItem('@authToken');
       const storageWallet = await AsyncStorage.getItem('@authWallet');
+      const storageWalletName = await AsyncStorage.getItem('@authWalletName');
 
       if (storageUser && storageToken) {
         setUser(storageUser);
       }
 
-      if (storageWallet) setWallet(storageWallet);
+      if (storageWallet && storageWalletName) {
+        setWallet(storageWallet);
+        setWalletName(storageWalletName);
+      }
 
       setLoading(false);
     }
@@ -109,11 +115,14 @@ export const AuthProvider: React.FC = ({ children }) => {
     await AsyncStorage.clear();
     setUser(null);
     setWallet(null);
+    setWalletName(undefined);
   };
 
-  const handleSetWallet = async (walletID: string) => {
+  const handleSetWallet = async (walletID: string, walletName: string) => {
     await AsyncStorage.setItem('@authWallet', walletID);
+    await AsyncStorage.setItem('@authWalletName', walletName);
     setWallet(walletID);
+    setWalletName(walletName);
   };
 
   return (
@@ -122,6 +131,7 @@ export const AuthProvider: React.FC = ({ children }) => {
         signed: !!user,
         user,
         wallet,
+        walletName,
         handleSetWallet,
         handleSignUp,
         handleSignIn,

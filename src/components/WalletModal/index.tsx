@@ -129,7 +129,7 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
     if (!queryLoading && !hasWallet) setOpenModal(true);
   }, [queryLoading]);
 
-  const handleSelectWallet = (walletID: string) => {
+  const handleSelectWallet = (walletID: string, walletName: string) => {
     setSelectWallet(wallets =>
       wallets?.map(wallet => ({
         ...wallet,
@@ -137,7 +137,7 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
       })),
     );
 
-    handleSetWallet(walletID);
+    handleSetWallet(walletID, walletName);
   };
 
   return queryLoading ? (
@@ -152,7 +152,9 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
           keyExtractor={item => item._id}
           renderItem={({ item }) => (
             <>
-              <Card onPress={() => handleSelectWallet(item._id)}>
+              <Card
+                onPress={() => handleSelectWallet(item._id, item.description)}
+              >
                 <CardTitleContainer>
                   <WalletTitle>{item.description}</WalletTitle>
                   <CardSubTitle>

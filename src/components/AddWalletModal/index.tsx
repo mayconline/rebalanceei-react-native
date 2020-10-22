@@ -52,7 +52,10 @@ const AddWalletModal: React.FC<IAddWalletModal> = ({
         },
       });
 
-      handleSetWallet(response?.data?.createWallet?._id);
+      handleSetWallet(
+        response?.data?.createWallet?._id,
+        response?.data?.createWallet?.description,
+      );
 
       setOpenModal(true);
       beforeModalClose();

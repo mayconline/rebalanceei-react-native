@@ -4,6 +4,10 @@ interface IFormatStatus {
   status?: string;
 }
 
+interface IformatNumber {
+  variation: number;
+}
+
 export const Wrapper = styled.View`
   flex: 1;
   background-color: ${({ theme }) => theme.color.primary};
@@ -60,6 +64,7 @@ export const CardTitle = styled.Text`
   font-weight: 600;
   font-family: 'TitilliumWeb_600SemiBold';
   align-self: flex-end;
+  width: 70%;
 `;
 
 export const SubTitleContant = styled.View`
@@ -124,4 +129,20 @@ export const Status = styled.Text<IFormatStatus>`
   line-height: 24px;
   font-weight: 600;
   font-family: 'TitilliumWeb_600SemiBold';
+`;
+
+export const VariationContainer = styled.View`
+  flex-direction: row;
+  align-items: flex-end;
+`;
+
+export const Variation = styled.Text<IformatNumber>`
+  color: ${({ theme, variation }) =>
+    variation > 0
+      ? theme.color.success
+      : variation < 0
+      ? theme.color.danger
+      : theme.color.subtitle};
+  font: 600 16px/24px 'TitilliumWeb_600SemiBold';
+  padding-right: 4px;
 `;
