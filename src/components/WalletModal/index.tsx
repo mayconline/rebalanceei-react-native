@@ -40,41 +40,6 @@ import Loading from '../Loading';
 
 import { formatNumber, formatPercent } from '../../utils/format';
 
-const WALLET_LIST = [
-  {
-    id: '1',
-    name: 'Ações',
-    currentWalletAmount: '10521.00',
-    currentWalletPercent: '50',
-    variationWalletAmount: '7.1',
-    checked: true,
-  },
-  {
-    id: '2',
-    name: 'Fundos Imobiliários',
-    currentWalletAmount: '5231.03',
-    currentWalletPercent: '20',
-    variationWalletAmount: '3.1',
-    checked: false,
-  },
-  {
-    id: '3',
-    name: 'Reits',
-    currentWalletAmount: '5231.03',
-    currentWalletPercent: '9.77',
-    variationWalletAmount: '3.1',
-    checked: false,
-  },
-  {
-    id: '4',
-    name: 'Stocks',
-    currentWalletAmount: '5231.03',
-    currentWalletPercent: '10.23',
-    variationWalletAmount: '3.1',
-    checked: false,
-  },
-];
-
 interface WalletProps {
   onClose(): void;
 }
