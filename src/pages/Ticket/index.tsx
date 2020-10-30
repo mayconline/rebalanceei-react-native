@@ -45,14 +45,8 @@ interface ITickets {
   grade: number;
 }
 
-interface IWalletID {
-  _id: string;
-  description: string;
-  ticket: ITickets[];
-}
-
 interface IDataTickets {
-  getWalletById: IWalletID;
+  getTicketsByWallet: ITickets[];
 }
 
 const Ticket: React.FC = () => {
@@ -65,9 +59,9 @@ const Ticket: React.FC = () => {
   const [openModal, setOpenModal] = useState(false);
 
   const { data, loading: queryLoading, error } = useQuery<IDataTickets>(
-    GET_WALLET_BY_ID,
+    GET_TICKETS_BY_WALLET,
     {
-      variables: { _id: wallet },
+      variables: { walletID: wallet, sort: selectedFilter },
       fetchPolicy: 'cache-and-network',
     },
   );
@@ -88,7 +82,7 @@ const Ticket: React.FC = () => {
   };
 
   const hasTickets =
-    wallet && !queryLoading && !!data?.getWalletById?.ticket?.length;
+    wallet && !queryLoading && !!data?.getTicketsByWallet?.length;
 
   return queryLoading ? (
     <Loading />
@@ -107,7 +101,7 @@ const Ticket: React.FC = () => {
             />
             <List>
               <FlatList
-                data={data?.getWalletById?.ticket}
+                data={data?.getTicketsByWallet}
                 keyExtractor={item => item._id}
                 renderItem={({ item }) => (
                   <Content>
@@ -156,19 +150,15 @@ const Ticket: React.FC = () => {
   );
 };
 
-export const GET_WALLET_BY_ID = gql`
-  query getWalletById($_id: ID!) {
-    getWalletById(_id: $_id) {
+export const GET_TICKETS_BY_WALLET = gql`
+  query getTicketsByWallet($walletID: ID!, $sort: SortTickets!) {
+    getTicketsByWallet(walletID: $walletID, sort: $sort) {
       _id
-      description
-      ticket {
-        _id
-        symbol
-        name
-        quantity
-        averagePrice
-        grade
-      }
+      symbol
+      name
+      quantity
+      averagePrice
+      grade
     }
   }
 `;
