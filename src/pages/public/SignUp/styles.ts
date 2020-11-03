@@ -34,7 +34,7 @@ export const Image = styled.View`
 `;
 
 export const FormContainer = styled.KeyboardAvoidingView`
-  height: 320px;
+  height: 360px;
   width: 100%;
   position: absolute;
   bottom: 0;

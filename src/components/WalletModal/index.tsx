@@ -66,7 +66,6 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
   const [selectWallet, setSelectWallet] = useState<IObjectWallet[] | undefined>(
     [] as IObjectWallet[],
   );
-  const hasWallet = !!selectWallet;
 
   const [
     getWalletByUser,
@@ -84,20 +83,14 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
   useFocusEffect(
     useCallback(() => {
       if (data) {
-        let teste = data?.getWalletByUser?.map(wallets => ({
+        let checkedWallet = data?.getWalletByUser?.map(wallets => ({
           ...wallets,
           checked: wallet === wallets._id,
         }));
 
-        setSelectWallet(teste);
+        setSelectWallet(checkedWallet);
       }
     }, [data]),
-  );
-
-  useFocusEffect(
-    useCallback(() => {
-      if (!queryLoading && !hasWallet) setOpenModal(true);
-    }, []),
   );
 
   const handleSelectWallet = (walletID: string, walletName: string) => {
@@ -127,7 +120,9 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
                 onPress={() => handleSelectWallet(item._id, item.description)}
               >
                 <CardTitleContainer>
-                  <WalletTitle>{item.description}</WalletTitle>
+                  <WalletTitle numberOfLines={1} ellipsizeMode="tail">
+                    {item.description}
+                  </WalletTitle>
                   <CardSubTitle>
                     <CurrentAmount>
                       {formatNumber(item.sumAmountWallet)}

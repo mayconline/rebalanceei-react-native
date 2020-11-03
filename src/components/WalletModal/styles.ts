@@ -41,6 +41,7 @@ export const CardTitleContainer = styled.View`
 export const WalletTitle = styled.Text`
   color: ${({ theme }) => theme.color.title};
   font: 600 16px/24px 'TitilliumWeb_600SemiBold';
+  max-width: 80%;
 `;
 export const CardSubTitle = styled.View`
   flex-direction: row;

@@ -27,7 +27,9 @@ const Header: React.FC = () => {
       <Wrapper colors={gradient.darkToLightGreen}>
         <MenuBar>
           <Wallet onPress={() => setOpenModal(true)}>
-            <Title>{walletName}</Title>
+            <Title numberOfLines={1} ellipsizeMode="tail">
+              {walletName ?? 'Selecionar Carteira'}
+            </Title>
             <Entypo
               name="chevron-thin-down"
               size={20}

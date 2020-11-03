@@ -19,6 +19,8 @@ export const Wallet = styled(RectButton)`
   align-items: center;
   padding: 4px 16px;
   margin-left: 8px;
+  justify-content: space-between;
+  max-width: 70%;
 `;
 
 export const Title = styled.Text`
