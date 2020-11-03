@@ -7,7 +7,7 @@ import PublicRoute from './publicRoute';
 import Loading from '../components/Loading';
 import Offline from '../components/Offline';
 
-const Routes: React.FC = () => {
+const Routes = () => {
   const { signed, loading, isConnected } = useAuth();
 
   if (!isConnected) return <Offline />;

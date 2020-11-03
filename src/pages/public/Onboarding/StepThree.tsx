@@ -24,18 +24,18 @@ import {
 
 import OnboardingImgThree from '../../../../assets/svg/OnboardingImgThree';
 
-const StepThree: React.FC = () => {
+const StepThree = () => {
   const { gradient } = useContext(ThemeContext);
   const navigation = useNavigation();
 
   const handleNext = () => {
-    navigation.navigate('Register');
+    navigation.navigate('SignIn');
   };
 
   return (
     <Wrapper>
       <Header>
-        <ContainerTextLink onPress={() => navigation.navigate('Register')}>
+        <ContainerTextLink onPress={() => navigation.navigate('SignIn')}>
           <TextLink>Pular</TextLink>
         </ContainerTextLink>
       </Header>

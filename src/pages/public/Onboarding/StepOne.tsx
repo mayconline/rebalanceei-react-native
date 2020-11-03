@@ -24,7 +24,7 @@ import {
 
 import OnboardingImgOne from '../../../../assets/svg/OnboardingImgOne';
 
-const StepOne: React.FC = () => {
+const StepOne = () => {
   const { gradient } = useContext(ThemeContext);
   const navigation = useNavigation();
 
@@ -35,7 +35,7 @@ const StepOne: React.FC = () => {
   return (
     <Wrapper>
       <Header>
-        <ContainerTextLink onPress={() => navigation.navigate('Register')}>
+        <ContainerTextLink onPress={() => navigation.navigate('SignIn')}>
           <TextLink>Pular</TextLink>
         </ContainerTextLink>
       </Header>

@@ -15,7 +15,7 @@ import {
 
 import RebalanceeiLogo from '../../../../assets/svg/RebalanceeiLogo';
 
-const Welcome: React.FC = () => {
+const Welcome = () => {
   const navigation = useNavigation();
 
   const HandleEnter = () => {

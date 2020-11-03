@@ -58,7 +58,7 @@ const icons: Icons = {
   },
 };
 
-const privateRoute: React.FC = () => {
+const privateRoute = () => {
   const { color } = useContext(ThemeContext);
 
   return (

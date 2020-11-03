@@ -22,7 +22,7 @@ import {
 } from './styles';
 import ImageAddTicket from '../../../assets/svg/ImageAddTicket';
 import SuccessModal from '../../components/SuccessModal';
-import { GET_WALLET_BY_ID } from '../Ticket';
+import { GET_TICKETS_BY_WALLET } from '../Ticket';
 import SuggestionsModal from '../../components/SuggestionsModal';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -47,21 +47,6 @@ interface IDataCreateTicket {
 interface IcreateTicket {
   createTicket: IDataCreateTicket;
 }
-
-/*const SUGGESTIONS = [
-  {
-    ticket: 'LREN3.sa',
-    title: 'Lojas Renner',
-  },
-  {
-    ticket: 'MGLU3.sa',
-    title: 'Magazine Luiza',
-  },
-  {
-    ticket: 'TRPL4.sa',
-    title: 'Transmissão Paulista LTDA',
-  },
-];*/
 
 const AddTicket: React.FC = () => {
   const { wallet } = useAuth();
@@ -109,7 +94,10 @@ const AddTicket: React.FC = () => {
         variables: dataTicket,
 
         refetchQueries: [
-          { query: GET_WALLET_BY_ID, variables: { _id: wallet } },
+          {
+            query: GET_TICKETS_BY_WALLET,
+            variables: { walletID: wallet, sort: 'grade' },
+          },
         ],
       });
 
@@ -258,8 +246,8 @@ const CREATE_TICKET = gql`
     $grade: Int!
   ) {
     createTicket(
+      walletID: $walletID
       input: {
-        walletID: $walletID
         symbol: $symbol
         name: $name
         quantity: $quantity

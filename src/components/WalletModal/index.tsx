@@ -61,44 +61,50 @@ interface IDataWallet {
 
 const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
   const { color } = useContext(ThemeContext);
-  const { user, handleSetWallet, wallet } = useAuth();
+  const { handleSetWallet, wallet } = useAuth();
   const [openModal, setOpenModal] = useState(false);
-
-  const { data, loading: queryLoading, error } = useQuery<IDataWallet>(
-    GET_WALLET_BY_USER,
-    {
-      variables: { userID: user },
-      fetchPolicy: 'cache-and-network',
-    },
-  );
-
-  const hasWallet = !!data?.getWalletByUser?.length;
-  // const WalletID: any = !loading && !!data && data?.getWalletByUser[0]?._id;
-
-  const INITIAL_WALLET = useMemo(() => {
-    return data?.getWalletByUser?.map(wallets => ({
-      ...wallets,
-      checked: wallet !== wallets._id ? false : true,
-    }));
-  }, [data]);
-
   const [selectWallet, setSelectWallet] = useState<IObjectWallet[] | undefined>(
     [] as IObjectWallet[],
   );
+  const hasWallet = !!selectWallet;
 
-  useMemo(() => {
-    setSelectWallet(INITIAL_WALLET);
-  }, [INITIAL_WALLET, data]);
+  const [
+    getWalletByUser,
+    { data, loading: queryLoading, error },
+  ] = useLazyQuery<IDataWallet>(GET_WALLET_BY_USER, {
+    fetchPolicy: 'cache-and-network',
+  });
 
-  useMemo(() => {
-    if (!queryLoading && !hasWallet) setOpenModal(true);
-  }, [queryLoading]);
+  useFocusEffect(
+    useCallback(() => {
+      getWalletByUser();
+    }, []),
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (data) {
+        let teste = data?.getWalletByUser?.map(wallets => ({
+          ...wallets,
+          checked: wallet === wallets._id,
+        }));
+
+        setSelectWallet(teste);
+      }
+    }, [data]),
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!queryLoading && !hasWallet) setOpenModal(true);
+    }, []),
+  );
 
   const handleSelectWallet = (walletID: string, walletName: string) => {
     setSelectWallet(wallets =>
       wallets?.map(wallet => ({
         ...wallet,
-        checked: walletID !== wallet._id ? false : true,
+        checked: walletID === wallet._id,
       })),
     );
 
@@ -178,8 +184,8 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
 };
 
 export const GET_WALLET_BY_USER = gql`
-  query getWalletByUser($userID: ID!) {
-    getWalletByUser(userID: $userID) {
+  query getWalletByUser {
+    getWalletByUser {
       _id
       description
       sumCostWallet

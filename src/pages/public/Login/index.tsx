@@ -34,7 +34,7 @@ interface IAccountLogin {
   password: string;
 }
 
-const Login: React.FC = () => {
+const Login = () => {
   const { color, gradient } = useContext(ThemeContext);
   const [focus, setFocus] = useState(0);
   const [visiblePassword, setVisiblePassword] = useState(false);

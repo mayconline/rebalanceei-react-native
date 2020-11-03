@@ -22,7 +22,6 @@ import {
 
 import ImageAddTicket from '../../../assets/svg/ImageAddTicket';
 import SuccessModal from '../SuccessModal';
-import { GET_WALLET_BY_USER } from '../WalletModal';
 
 interface IAddWalletModal {
   onClose(): void;
@@ -37,7 +36,7 @@ const AddWalletModal: React.FC<IAddWalletModal> = ({
   const [wallet, setWallet] = useState('');
   const [focus, setFocus] = useState(0);
   const [openModal, setOpenModal] = useState(false);
-  const { user, handleSetWallet } = useAuth();
+  const { handleSetWallet } = useAuth();
 
   const [createWallet, { loading, error: mutationError }] = useMutation(
     CREATE_WALLET,
@@ -47,7 +46,6 @@ const AddWalletModal: React.FC<IAddWalletModal> = ({
     try {
       const response = await createWallet({
         variables: {
-          userID: user,
           description: wallet,
         },
       });
@@ -126,24 +124,10 @@ const AddWalletModal: React.FC<IAddWalletModal> = ({
 };
 
 const CREATE_WALLET = gql`
-  mutation createWallet($userID: ID!, $description: String!) {
-    createWallet(input: { userID: $userID, description: $description }) {
+  mutation createWallet($description: String!) {
+    createWallet(input: { description: $description }) {
       _id
       description
-      sumCostWallet
-      sumAmountWallet
-      sumGradeWallet
-      ticket {
-        _id
-        symbol
-        quantity
-        averagePrice
-        grade
-      }
-      user {
-        _id
-        email
-      }
     }
   }
 `;

@@ -24,7 +24,7 @@ import {
 
 import OnboardingImgTwo from '../../../../assets/svg/OnboardingImgTwo';
 
-const StepTwo: React.FC = () => {
+const StepTwo = () => {
   const { gradient } = useContext(ThemeContext);
   const navigation = useNavigation();
 
@@ -35,7 +35,7 @@ const StepTwo: React.FC = () => {
   return (
     <Wrapper>
       <Header>
-        <ContainerTextLink onPress={() => navigation.navigate('Register')}>
+        <ContainerTextLink onPress={() => navigation.navigate('SignIn')}>
           <TextLink>Pular</TextLink>
         </ContainerTextLink>
       </Header>

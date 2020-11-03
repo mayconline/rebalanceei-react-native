@@ -48,6 +48,10 @@ const initialFilter = [
     focused: false,
   },
   {
+    name: 'gradePercent',
+    focused: false,
+  },
+  {
     name: 'targetAmount',
     focused: false,
   },

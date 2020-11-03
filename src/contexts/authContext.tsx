@@ -6,7 +6,6 @@ import { useNetInfo } from '@react-native-community/netinfo';
 interface IAccountRegister {
   email: string;
   password: string;
-  active: boolean;
   checkTerms: boolean;
 }
 
@@ -71,7 +70,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 
     try {
       const response = await createUser({
-        variables: { ...userRegister, active: true, checkTerms: true },
+        variables: userRegister,
       });
 
       const { _id, token } =
@@ -154,16 +153,10 @@ const CREATE_USER = gql`
   mutation createUser(
     $email: String!
     $password: String!
-    $active: Boolean!
     $checkTerms: Boolean!
   ) {
     createUser(
-      input: {
-        email: $email
-        password: $password
-        active: $active
-        checkTerms: $checkTerms
-      }
+      input: { email: $email, password: $password, checkTerms: $checkTerms }
     ) {
       _id
       token

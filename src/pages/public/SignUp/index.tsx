@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import { Switch } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../../contexts/authContext';
 import { ThemeContext } from 'styled-components/native';
@@ -34,7 +35,7 @@ interface IAccountRegister {
   checkTerms: boolean;
 }
 
-const Register: React.FC = () => {
+const SignUp = () => {
   const { color, gradient } = useContext(ThemeContext);
   const [focus, setFocus] = useState(0);
   const [visiblePassword, setVisiblePassword] = useState(false);
@@ -120,6 +121,21 @@ const Register: React.FC = () => {
               />
             </InputIcon>
           </FormRow>
+          <FormRow>
+            <Label>Aceito os Termos de Uso</Label>
+            <Switch
+              trackColor={{ false: '#767577', true: '#81b0ff' }}
+              thumbColor={account.checkTerms ? '#f5dd4b' : '#f4f3f4'}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={() =>
+                setAccount(account => ({
+                  ...account,
+                  checkTerms: !account.checkTerms,
+                }))
+              }
+              value={account.checkTerms}
+            />
+          </FormRow>
 
           <Gradient colors={gradient.darkToLightBlue} start={[1, 0.5]}>
             <Button onPress={handleSubmit}>
@@ -136,4 +152,4 @@ const Register: React.FC = () => {
   );
 };
 
-export default Register;
+export default SignUp;
