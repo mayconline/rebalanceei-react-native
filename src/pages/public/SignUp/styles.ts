@@ -85,7 +85,7 @@ export const InputIcon = styled(BorderlessButton)`
 
 export const Gradient = styled(LinearGradient)<any>`
   justify-content: center;
-  margin-top: 36px;
+  margin-top: 8px;
   border-radius: 24px;
 `;
 
@@ -108,4 +108,17 @@ export const ContainerTextLink = styled(BorderlessButton)`
 export const TextLink = styled.Text`
   color: ${({ theme }) => theme.color.subtitle};
   font: 400 16px/24px 'TitilliumWeb_400Regular';
+  text-align: center;
+`;
+
+export const ContainerTerms = styled(BorderlessButton)`
+  justify-content: center;
+  align-items: center;
+  max-width: 80%;
+`;
+
+export const TextTermsLink = styled.Text`
+  color: ${({ theme }) => theme.color.titleNotImport};
+  font: 600 16px/24px 'TitilliumWeb_600SemiBold';
+  text-align: center;
 `;

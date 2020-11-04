@@ -23,6 +23,8 @@ import {
   Gradient,
   TextButton,
   TextError,
+  ContainerTextLink,
+  TextLink,
 } from './styles';
 
 import ImageLogin from '../../../../assets/svg/ImageLogin';
@@ -138,6 +140,9 @@ const Login = () => {
               )}
             </Button>
           </Gradient>
+          <ContainerTextLink onPress={() => navigation.navigate('SignUp')}>
+            <TextLink>Ainda não possui uma conta?</TextLink>
+          </ContainerTextLink>
         </Form>
       </FormContainer>
     </Wrapper>

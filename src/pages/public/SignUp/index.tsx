@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../../contexts/authContext';
 import { ThemeContext } from 'styled-components/native';
 import { Entypo } from '@expo/vector-icons';
+import * as Linking from 'expo-linking';
 
 import {
   Wrapper,
@@ -24,6 +25,8 @@ import {
   TextButton,
   ContainerTextLink,
   TextLink,
+  ContainerTerms,
+  TextTermsLink,
 } from './styles';
 
 import ImageRegister from '../../../../assets/svg/ImageRegister';
@@ -122,11 +125,23 @@ const SignUp = () => {
             </InputIcon>
           </FormRow>
           <FormRow>
-            <Label>Aceito os Termos de Uso</Label>
+            <ContainerTerms
+              onPress={() =>
+                Linking.openURL(
+                  'https://res.cloudinary.com/apinodeteste/image/upload/v1604512771/Rebalanceei/TermsOfServices_and_PrivacyPolicy_k8e0r5.pdf',
+                )
+              }
+            >
+              <TextTermsLink>
+                Aceito os Termos de Uso e Política de Privacidade
+              </TextTermsLink>
+            </ContainerTerms>
             <Switch
-              trackColor={{ false: '#767577', true: '#81b0ff' }}
-              thumbColor={account.checkTerms ? '#f5dd4b' : '#f4f3f4'}
-              ios_backgroundColor="#3e3e3e"
+              trackColor={{ false: color.inactiveTabs, true: color.success }}
+              thumbColor={
+                account.checkTerms ? color.primary : color.titleNotImport
+              }
+              ios_backgroundColor={color.titleNotImport}
               onValueChange={() =>
                 setAccount(account => ({
                   ...account,

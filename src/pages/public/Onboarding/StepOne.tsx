@@ -35,7 +35,7 @@ const StepOne = () => {
   return (
     <Wrapper>
       <Header>
-        <ContainerTextLink onPress={() => navigation.navigate('SignIn')}>
+        <ContainerTextLink onPress={() => navigation.navigate('SignUp')}>
           <TextLink>Pular</TextLink>
         </ContainerTextLink>
       </Header>

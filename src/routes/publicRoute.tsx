@@ -14,7 +14,7 @@ const publicRoute = () => {
   return (
     <Stack.Navigator headerMode="none">
       <Stack.Screen name="Welcome" component={Welcome} />
-      <Stack.Screen name="SignIn" component={SignUp} />
+      <Stack.Screen name="SignUp" component={SignUp} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="StepOne" component={StepOne} />
       <Stack.Screen name="StepTwo" component={StepTwo} />

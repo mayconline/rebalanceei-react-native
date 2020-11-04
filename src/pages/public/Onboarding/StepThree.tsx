@@ -29,13 +29,13 @@ const StepThree = () => {
   const navigation = useNavigation();
 
   const handleNext = () => {
-    navigation.navigate('SignIn');
+    navigation.navigate('SignUp');
   };
 
   return (
     <Wrapper>
       <Header>
-        <ContainerTextLink onPress={() => navigation.navigate('SignIn')}>
+        <ContainerTextLink onPress={() => navigation.navigate('SignUp')}>
           <TextLink>Pular</TextLink>
         </ContainerTextLink>
       </Header>
