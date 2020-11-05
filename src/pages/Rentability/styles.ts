@@ -15,7 +15,7 @@ export const List = styled.SafeAreaView`
   flex: 1;
 `;
 
-export const Content = styled.SafeAreaView`
+export const Content = styled.View`
   background-color: ${({ theme }) => theme.color.secondary};
   padding: 4px 12px 0;
   flex: 1;

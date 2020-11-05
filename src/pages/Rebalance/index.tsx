@@ -34,6 +34,7 @@ import {
   formatStatus,
   formatTicket,
   formatPercent,
+  formatProgress,
 } from '../../utils/format';
 
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -129,6 +130,7 @@ const Rebalance: React.FC = () => {
             <FlatList
               data={data?.rebalances}
               keyExtractor={item => item._id}
+              initialNumToRender={data?.rebalances.length}
               renderItem={({ item }) => (
                 <Content>
                   <Card colors={gradient.lightToGray} status={item.status}>
@@ -143,16 +145,19 @@ const Rebalance: React.FC = () => {
                       <SubTitleContant>
                         <CardSubTitle>
                           <CurrentPercent>
-                            {` % Atual: ${item.currentPercent.toFixed(0)} %`}
+                            {` % Atual: ${item.currentPercent.toFixed(1)} %`}
                           </CurrentPercent>
                           <TargetPercent status={item.status}>
-                            {` % Ideal: ${item.gradePercent.toFixed(0)} %`}
+                            {` % Ideal: ${item.gradePercent.toFixed(1)} %`}
                           </TargetPercent>
                         </CardSubTitle>
                         <ProgressBar
                           styleAttr="Horizontal"
                           indeterminate={false}
-                          progress={1 - item.targetPercent / 100}
+                          progress={formatProgress(
+                            item.gradePercent,
+                            item.currentPercent,
+                          )}
                           color={color.blue}
                         />
                       </SubTitleContant>

@@ -3,6 +3,12 @@ export const formatNumber = (amount: number) => `R$ ${amount.toFixed(2)}`;
 export const formatPercent = (percent: number) =>
   ` (${percent > 0 ? '+' : ''}${percent.toFixed(1)}%)`;
 
+export const formatProgress = (grade: number, current: number) => {
+  if (grade === 0) return 1;
+
+  return current / grade;
+};
+
 export const formatStatus = (status: string) =>
   status === 'BUY' ? 'Comprar' : status === 'KEEP' ? 'Aguardar' : 'Analizar';
 
@@ -10,6 +16,7 @@ export const formatTicket = (symbol: string) => symbol.split('.')[0];
 
 export const formatFilter = (filter: string) =>
   ({
+    [filter]: filter,
     symbol: 'Ativo',
     grade: 'Nota',
     status: 'Status',

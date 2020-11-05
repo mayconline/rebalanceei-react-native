@@ -124,6 +124,7 @@ const Rentability: React.FC = () => {
             <FlatList
               data={data?.getRentability}
               keyExtractor={item => item._id}
+              initialNumToRender={data?.getRentability.length}
               renderItem={({ item }) => (
                 <Content>
                   <Card

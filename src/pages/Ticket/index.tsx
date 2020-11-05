@@ -103,6 +103,7 @@ const Ticket: React.FC = () => {
               <FlatList
                 data={data?.getTicketsByWallet}
                 keyExtractor={item => item._id}
+                initialNumToRender={data?.getTicketsByWallet.length}
                 renderItem={({ item }) => (
                   <Content>
                     <TouchableOpacity>
