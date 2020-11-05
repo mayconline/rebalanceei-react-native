@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../../contexts/authContext';
 import { ThemeContext } from 'styled-components/native';
 import { Entypo } from '@expo/vector-icons';
-import * as Linking from 'expo-linking';
+import { getTerms } from '../../../utils/Terms';
 
 import {
   Wrapper,
@@ -125,13 +125,7 @@ const SignUp = () => {
             </InputIcon>
           </FormRow>
           <FormRow>
-            <ContainerTerms
-              onPress={() =>
-                Linking.openURL(
-                  'https://res.cloudinary.com/apinodeteste/image/upload/v1604512771/Rebalanceei/TermsOfServices_and_PrivacyPolicy_k8e0r5.pdf',
-                )
-              }
-            >
+            <ContainerTerms onPress={getTerms}>
               <TextTermsLink>
                 Aceito os Termos de Uso e Política de Privacidade
               </TextTermsLink>

@@ -15,12 +15,14 @@ import {
 } from './styles';
 
 import WalletModal from '../WalletModal';
+import MenuModal from '../MenuModal';
 
 const Header: React.FC = () => {
-  const { handleSignOut, walletName } = useAuth();
+  const { walletName } = useAuth();
   const { color, gradient } = useContext(ThemeContext);
 
   const [openModal, setOpenModal] = useState(false);
+  const [openMenu, setOpenMenu] = useState(false);
 
   return (
     <>
@@ -40,7 +42,7 @@ const Header: React.FC = () => {
             <Visibled>
               <Entypo name="eye-with-line" size={20} color={color.secondary} />
             </Visibled>
-            <Menu onPress={handleSignOut}>
+            <Menu onPress={() => setOpenMenu(true)}>
               <Entypo
                 name="dots-three-vertical"
                 size={20}
@@ -58,6 +60,15 @@ const Header: React.FC = () => {
         statusBarTranslucent={true}
       >
         <WalletModal onClose={() => setOpenModal(false)} />
+      </Modal>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={openMenu}
+        statusBarTranslucent={true}
+      >
+        <MenuModal onClose={() => setOpenMenu(false)} />
       </Modal>
     </>
   );
