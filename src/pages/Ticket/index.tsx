@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useMemo } from 'react';
+import React, { useContext, useState, useMemo } from 'react';
 import { FlatList, TouchableOpacity, Modal } from 'react-native';
 import { ThemeContext } from 'styled-components/native';
 import { useAuth } from '../../contexts/authContext';
@@ -22,6 +22,7 @@ import SubHeader from '../../components/SubHeader';
 import Empty from '../../components/Empty';
 import Loading from '../../components/Loading';
 import WalletModal from '../../components/WalletModal';
+import EditTicketModal from '../../components/EditTicketModal';
 
 import { formatNumber, formatTicket } from '../../utils/format';
 
@@ -36,7 +37,7 @@ const initialFilter = [
   },
 ];
 
-interface ITickets {
+export interface ITickets {
   _id: string;
   symbol: string;
   name: string;
@@ -57,6 +58,8 @@ const Ticket: React.FC = () => {
   );
   const { wallet, loading } = useAuth();
   const [openModal, setOpenModal] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [selectedWallet, setSelectedWallet] = useState({} as ITickets);
 
   const { data, loading: queryLoading, error } = useQuery<IDataTickets>(
     GET_TICKETS_BY_WALLET,
@@ -84,6 +87,11 @@ const Ticket: React.FC = () => {
   const hasTickets =
     wallet && !queryLoading && !!data?.getTicketsByWallet?.length;
 
+  const handleOpenEditModal = (item: ITickets) => {
+    setSelectedWallet(item);
+    setOpenEditModal(true);
+  };
+
   return queryLoading ? (
     <Loading />
   ) : (
@@ -106,7 +114,7 @@ const Ticket: React.FC = () => {
                 initialNumToRender={data?.getTicketsByWallet.length}
                 renderItem={({ item }) => (
                   <Content>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleOpenEditModal(item)}>
                       <Card
                         colors={gradient.lightToGray}
                         ticket={formatTicket(item.symbol)}
@@ -146,6 +154,18 @@ const Ticket: React.FC = () => {
         statusBarTranslucent={true}
       >
         <WalletModal onClose={() => setOpenModal(false)} />
+      </Modal>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={openEditModal}
+        statusBarTranslucent={true}
+      >
+        <EditTicketModal
+          onClose={() => setOpenEditModal(false)}
+          tickets={selectedWallet}
+        />
       </Modal>
     </>
   );

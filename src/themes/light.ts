@@ -23,8 +23,9 @@ export default {
   },
   gradient: {
     darkToLightGreen: ['#31AD2C', '#2D9B28'],
-    darkToLightBlue: ['#347AF0', '#5C8FE5'],
+    darkToLightBlue: ['#347AF0', '#5C8FE5', '#F2F2F7'],
     lightToGray: ['#FFF', '#EDF1F9'],
     lightToDarkGreen: ['#359846', '#4CD964', '#F2F2F7'],
+    lightToDarkRed: ['#F44336', '#F2F2F7'],
   },
 };
