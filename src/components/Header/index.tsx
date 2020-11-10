@@ -4,15 +4,7 @@ import { ThemeContext } from 'styled-components/native';
 import { useAuth } from '../../contexts/authContext';
 import { Entypo } from '@expo/vector-icons';
 
-import {
-  Wrapper,
-  Wallet,
-  Title,
-  Icons,
-  Visibled,
-  Menu,
-  MenuBar,
-} from './styles';
+import { Wrapper, Wallet, Title, Icons, Menu, MenuBar } from './styles';
 
 import WalletModal from '../WalletModal';
 import MenuModal from '../MenuModal';
@@ -39,9 +31,6 @@ const Header: React.FC = () => {
             />
           </Wallet>
           <Icons>
-            <Visibled>
-              <Entypo name="eye-with-line" size={20} color={color.secondary} />
-            </Visibled>
             <Menu onPress={() => setOpenMenu(true)}>
               <Entypo
                 name="dots-three-vertical"

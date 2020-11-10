@@ -37,9 +37,6 @@ export const Icons = styled.View`
   align-items: center;
 `;
 
-export const Visibled = styled.TouchableOpacity`
-  padding: 0 16px;
-`;
 export const Menu = styled.TouchableOpacity`
   padding: 0 16px;
 `;
