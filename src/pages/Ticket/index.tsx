@@ -59,7 +59,7 @@ const Ticket: React.FC = () => {
   const { wallet, loading } = useAuth();
   const [openModal, setOpenModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
-  const [selectedWallet, setSelectedWallet] = useState({} as ITickets);
+  const [selectedTicket, setSelectedTicket] = useState({} as ITickets);
 
   const { data, loading: queryLoading, error } = useQuery<IDataTickets>(
     GET_TICKETS_BY_WALLET,
@@ -88,8 +88,8 @@ const Ticket: React.FC = () => {
     wallet && !queryLoading && !!data?.getTicketsByWallet?.length;
 
   const handleOpenEditModal = (item: ITickets) => {
-    setSelectedWallet(item);
-    setOpenEditModal(true);
+    setSelectedTicket(item);
+    !!selectedTicket && setOpenEditModal(true);
   };
 
   return queryLoading ? (
@@ -156,17 +156,19 @@ const Ticket: React.FC = () => {
         <WalletModal onClose={() => setOpenModal(false)} />
       </Modal>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={openEditModal}
-        statusBarTranslucent={true}
-      >
-        <EditTicketModal
-          onClose={() => setOpenEditModal(false)}
-          tickets={selectedWallet}
-        />
-      </Modal>
+      {selectedTicket && openEditModal && (
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={openEditModal}
+          statusBarTranslucent={true}
+        >
+          <EditTicketModal
+            onClose={() => setOpenEditModal(false)}
+            tickets={selectedTicket}
+          />
+        </Modal>
+      )}
     </>
   );
 };

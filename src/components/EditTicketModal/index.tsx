@@ -23,6 +23,7 @@ import ImageAddTicket from '../../../assets/svg/ImageAddTicket';
 import { AntDesign } from '@expo/vector-icons';
 
 import { ITickets, GET_TICKETS_BY_WALLET } from '../../pages/Ticket';
+import Loading from '../Loading';
 
 interface IDataForm {
   _id: string;
@@ -116,7 +117,9 @@ const EditTicketModal = ({ onClose, tickets }: IEditWalletModal) => {
     }
   };
 
-  return (
+  return !tickets ? (
+    <Loading />
+  ) : (
     <Wrapper>
       <ContainerTitle>
         <Title>Alterar Ativo</Title>
