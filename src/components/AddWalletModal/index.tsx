@@ -59,7 +59,7 @@ const AddWalletModal: React.FC<IAddWalletModal> = ({
       beforeModalClose();
       setWallet('');
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 

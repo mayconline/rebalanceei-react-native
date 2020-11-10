@@ -1,4 +1,5 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
+import { Modal } from 'react-native';
 import {
   FontAwesome,
   MaterialCommunityIcons,
@@ -9,6 +10,7 @@ import { useAuth } from '../../contexts/authContext';
 import { getTerms } from '../../utils/Terms';
 import Divider from '../Divider';
 import ShadowBackdrop from '../ShadowBackdrop';
+import UpdateUserModal from '../UpdateUserModal';
 
 import {
   Wrapper,
@@ -60,11 +62,12 @@ interface MenuProps {
 
 const MenuModal = ({ onClose }: MenuProps) => {
   const { handleSignOut } = useAuth();
+  const [openUserModal, setOpenUserModal] = useState(false);
 
   const handleClickMenu = (description: string) => {
     switch (description) {
       case 'Meus Dados':
-        return;
+        return setOpenUserModal(true);
       case 'Meu Plano Atual':
         return;
       case 'Termos de Uso':
@@ -113,6 +116,15 @@ const MenuModal = ({ onClose }: MenuProps) => {
           })}
         </MenuContainer>
       </Wrapper>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={openUserModal}
+        statusBarTranslucent={true}
+      >
+        <UpdateUserModal onClose={() => setOpenUserModal(false)} />
+      </Modal>
     </>
   );
 };
