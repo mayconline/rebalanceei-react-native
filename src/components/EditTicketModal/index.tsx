@@ -92,7 +92,7 @@ const EditTicketModal = ({ onClose, tickets }: IEditWalletModal) => {
 
       onClose();
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
@@ -113,7 +113,7 @@ const EditTicketModal = ({ onClose, tickets }: IEditWalletModal) => {
 
       onClose();
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 

@@ -85,7 +85,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 
       await handleSignIn(userLogin);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       handleSignOut();
       setLoading(false);
     }
@@ -104,7 +104,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 
       setLoading(false);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       handleSignOut();
       setLoading(false);
     }

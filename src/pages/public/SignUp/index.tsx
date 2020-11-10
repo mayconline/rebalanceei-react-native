@@ -51,7 +51,7 @@ const SignUp = () => {
     try {
       handleSignUp(account);
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 

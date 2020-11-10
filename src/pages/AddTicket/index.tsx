@@ -105,7 +105,7 @@ const AddTicket: React.FC = () => {
       setFocus(0);
       setOpenModal(true);
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
