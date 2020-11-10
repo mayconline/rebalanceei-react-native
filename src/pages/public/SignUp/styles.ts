@@ -85,7 +85,7 @@ export const InputIcon = styled(BorderlessButton)`
 
 export const Gradient = styled(LinearGradient)<any>`
   justify-content: center;
-  margin-top: 8px;
+  margin-top: 4px;
   border-radius: 24px;
 `;
 
@@ -121,4 +121,11 @@ export const TextTermsLink = styled.Text`
   color: ${({ theme }) => theme.color.titleNotImport};
   font: 600 16px/24px 'TitilliumWeb_600SemiBold';
   text-align: center;
+`;
+
+export const TextError = styled.Text`
+  color: ${({ theme }) => theme.color.warning};
+  font: 400 16px/24px 'TitilliumWeb_400Regular';
+  text-align: center;
+  margin-top: -12px;
 `;

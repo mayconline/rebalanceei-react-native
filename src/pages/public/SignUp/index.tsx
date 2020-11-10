@@ -1,5 +1,6 @@
-import React, { useContext, useState } from 'react';
-import { Switch } from 'react-native';
+import React, { useContext, useState, useEffect } from 'react';
+import { Switch, Alert } from 'react-native';
+import { useMutation, gql } from '@apollo/client';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../../contexts/authContext';
 import { ThemeContext } from 'styled-components/native';
@@ -27,6 +28,7 @@ import {
   TextLink,
   ContainerTerms,
   TextTermsLink,
+  TextError,
 } from './styles';
 
 import ImageRegister from '../../../../assets/svg/ImageRegister';
@@ -44,16 +46,52 @@ const SignUp = () => {
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [account, setAccount] = useState({} as IAccountRegister);
 
-  const { handleSignUp } = useAuth();
+  const { handleSignIn } = useAuth();
   const navigation = useNavigation();
 
-  const handleSubmit = () => {
+  const [
+    createUser,
+    { data, loading: mutationLoading, error: mutationError },
+  ] = useMutation(CREATE_USER);
+
+  const handleSubmit = async () => {
+    if (!account.email || !account.password) return;
+    if (!account.checkTerms) {
+      return Alert.alert(
+        'Termos de Uso',
+        'É preciso aceitar os termos de uso para utilizar o app.',
+        [
+          {
+            text: 'Voltar',
+            style: 'cancel',
+          },
+          {
+            text: 'Continuar',
+            style: 'destructive',
+            onPress: () => {
+              setAccount(account => ({
+                ...account,
+                checkTerms: !account.checkTerms,
+              }));
+            },
+          },
+        ],
+        { cancelable: false },
+      );
+    }
+
     try {
-      handleSignUp(account);
+      await createUser({
+        variables: account,
+      });
     } catch (err) {
-      console.error(err);
+      console.error(mutationError?.message + err);
     }
   };
+
+  useEffect(() => {
+    if (!mutationLoading && data) handleSignIn(data?.createUser);
+  }, [data]);
 
   return (
     <Wrapper>
@@ -146,6 +184,12 @@ const SignUp = () => {
             />
           </FormRow>
 
+          {!!mutationError && (
+            <TextError numberOfLines={1} ellipsizeMode="tail">
+              {mutationError?.message}
+            </TextError>
+          )}
+
           <Gradient colors={gradient.darkToLightBlue} start={[1, 0.5]}>
             <Button onPress={handleSubmit}>
               <TextButton>Criar Conta</TextButton>
@@ -160,5 +204,20 @@ const SignUp = () => {
     </Wrapper>
   );
 };
+
+const CREATE_USER = gql`
+  mutation createUser(
+    $email: String!
+    $password: String!
+    $checkTerms: Boolean!
+  ) {
+    createUser(
+      input: { email: $email, password: $password, checkTerms: $checkTerms }
+    ) {
+      _id
+      token
+    }
+  }
+`;
 
 export default SignUp;

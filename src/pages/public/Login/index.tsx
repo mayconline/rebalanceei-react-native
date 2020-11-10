@@ -47,19 +47,21 @@ const Login = () => {
 
   const [login, { data, loading, error }] = useLazyQuery(LOGIN, {
     variables: account,
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-and-network',
   });
 
   const handleSubmit = () => {
+    if (!account.email || !account.password) return;
+
     try {
       login();
     } catch (err) {
-      console.error(err);
+      console.error(error?.message + err);
     }
   };
 
   useEffect(() => {
-    if (!loading && data) handleSignIn(data);
+    if (!loading && data) handleSignIn(data?.login);
   }, [data]);
 
   return (
@@ -131,6 +133,12 @@ const Login = () => {
               />
             </InputIcon>
           </FormRow>
+
+          {!!error && (
+            <TextError numberOfLines={1} ellipsizeMode="tail">
+              {error && error.message}
+            </TextError>
+          )}
 
           <Gradient colors={gradient.darkToLightBlue} start={[1, 0.5]}>
             <Button onPress={handleSubmit}>

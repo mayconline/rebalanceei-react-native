@@ -1,19 +1,10 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
-import { useMutation, gql } from '@apollo/client';
 import { useNetInfo } from '@react-native-community/netinfo';
 
-interface IAccountRegister {
-  email: string;
-  password: string;
-  checkTerms: boolean;
-}
-
 interface ISignIn {
-  login: {
-    _id: string;
-    token: string;
-  };
+  _id: string;
+  token: string;
 }
 
 interface IAuthContext {
@@ -24,7 +15,6 @@ interface IAuthContext {
   wallet: string | null;
   walletName: string | null;
   handleSetWallet(walletID: string, walletName: string): void;
-  handleSignUp(user: IAccountRegister): Promise<void>;
   handleSignIn(user: ISignIn): Promise<void>;
   handleSignOut(): void;
 }
@@ -36,11 +26,6 @@ export const AuthProvider: React.FC = ({ children }) => {
   const [wallet, setWallet] = useState<string | null>(null);
   const [walletName, setWalletName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-
-  const [
-    createUser,
-    { loading: mutationLoading, error: mutationError },
-  ] = useMutation(CREATE_USER);
 
   const { isConnected } = useNetInfo();
 
@@ -65,37 +50,11 @@ export const AuthProvider: React.FC = ({ children }) => {
     loadStorageData();
   }, []);
 
-  const handleSignUp = async (userRegister: IAccountRegister) => {
-    setLoading(true);
-
-    try {
-      const response = await createUser({
-        variables: userRegister,
-      });
-
-      const { _id, token } =
-        !mutationLoading && !mutationError && response?.data?.createUser;
-
-      let userLogin = {
-        login: {
-          _id,
-          token,
-        },
-      };
-
-      await handleSignIn(userLogin);
-    } catch (err) {
-      console.error(err);
-      handleSignOut();
-      setLoading(false);
-    }
-  };
-
   const handleSignIn = async (userLogin: ISignIn) => {
     setLoading(true);
 
     try {
-      const { _id, token } = userLogin?.login;
+      const { _id, token } = userLogin;
 
       setUser(_id);
 
@@ -104,7 +63,6 @@ export const AuthProvider: React.FC = ({ children }) => {
 
       setLoading(false);
     } catch (err) {
-      console.error(err);
       handleSignOut();
       setLoading(false);
     }
@@ -132,7 +90,6 @@ export const AuthProvider: React.FC = ({ children }) => {
         wallet,
         walletName,
         handleSetWallet,
-        handleSignUp,
         handleSignIn,
         handleSignOut,
         loading,
@@ -148,18 +105,3 @@ export function useAuth() {
   const context = useContext(AuthContext);
   return context;
 }
-
-const CREATE_USER = gql`
-  mutation createUser(
-    $email: String!
-    $password: String!
-    $checkTerms: Boolean!
-  ) {
-    createUser(
-      input: { email: $email, password: $password, checkTerms: $checkTerms }
-    ) {
-      _id
-      token
-    }
-  }
-`;
