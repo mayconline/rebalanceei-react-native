@@ -71,7 +71,7 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
     getWalletByUser,
     { data, loading: queryLoading, error },
   ] = useLazyQuery<IDataWallet>(GET_WALLET_BY_USER, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'no-cache',
   });
 
   useFocusEffect(

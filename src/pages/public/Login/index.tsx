@@ -47,6 +47,7 @@ const Login = () => {
 
   const [login, { data, loading, error }] = useLazyQuery(LOGIN, {
     variables: account,
+    fetchPolicy: 'network-only',
   });
 
   const handleSubmit = () => {

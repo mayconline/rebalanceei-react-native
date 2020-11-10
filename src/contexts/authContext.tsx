@@ -22,7 +22,7 @@ interface IAuthContext {
   isConnected: boolean;
   user: string | null;
   wallet: string | null;
-  walletName: string | undefined;
+  walletName: string | null;
   handleSetWallet(walletID: string, walletName: string): void;
   handleSignUp(user: IAccountRegister): Promise<void>;
   handleSignIn(user: ISignIn): Promise<void>;
@@ -34,7 +34,7 @@ const AuthContext = createContext<IAuthContext>({} as IAuthContext);
 export const AuthProvider: React.FC = ({ children }) => {
   const [user, setUser] = useState<string | null>(null);
   const [wallet, setWallet] = useState<string | null>(null);
-  const [walletName, setWalletName] = useState<string | undefined>(undefined);
+  const [walletName, setWalletName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const [
@@ -114,7 +114,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     await AsyncStorage.clear();
     setUser(null);
     setWallet(null);
-    setWalletName(undefined);
+    setWalletName(null);
   };
 
   const handleSetWallet = async (walletID: string, walletName: string) => {
