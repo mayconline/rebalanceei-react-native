@@ -8,7 +8,7 @@ import {
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { useColorScheme } from 'react-native';
-import { ThemeProvider } from 'styled-components';
+import { ThemeProvider } from 'styled-components/native';
 import themes, { themeMode, Theme } from './themes';
 import { AuthProvider } from './contexts/authContext';
 import { AppRegistry } from 'react-native';

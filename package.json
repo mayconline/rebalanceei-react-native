@@ -5,7 +5,28 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "test": "jest --watchAll"
+  },
+  "jest": {
+    "preset": "jest-expo",
+    "setupFiles": [
+      "./src/setupTests.ts"
+    ],
+    "setupFilesAfterEnv": [
+      "@testing-library/jest-native/extend-expect"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|@sentry/.*)"
+    ],
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "**/*.{js,jsx,ts,tsx}",
+      "!**/coverage/**",
+      "!**/node_modules/**",
+      "!**/babel.config.js",
+      "!**/jest.setup.js"
+    ]
   },
   "dependencies": {
     "@apollo/client": "^3.2.1",
@@ -17,7 +38,7 @@
     "@react-navigation/native": "^5.8.4",
     "@react-navigation/stack": "^5.12.1",
     "@types/react-native-svg-charts": "^5.0.3",
-    "@types/styled-components": "^5.1.1",
+    "@types/styled-components": "^5.1.4",
     "axios": "^0.20.0",
     "expo": "^39.0.0",
     "expo-font": "~8.3.0",
@@ -40,8 +61,14 @@
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",
+    "@testing-library/jest-native": "^3.4.3",
+    "@testing-library/react-native": "^7.1.0",
+    "@types/jest": "^26.0.15",
     "@types/react": "~16.9.35",
     "@types/react-native": "~0.63.2",
+    "jest-expo": "^39.0.0",
+    "jest-styled-components": "^7.0.3",
+    "react-test-renderer": "^17.0.1",
     "typescript": "~3.9.2",
     "typescript-styled-plugin": "^0.15.0"
   },
