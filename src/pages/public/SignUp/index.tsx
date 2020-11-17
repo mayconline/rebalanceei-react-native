@@ -36,7 +36,6 @@ import ImageRegister from '../../../../assets/svg/ImageRegister';
 interface IAccountRegister {
   email: string;
   password: string;
-  active: boolean;
   checkTerms: boolean;
 }
 
@@ -100,7 +99,7 @@ const SignUp = () => {
           <Entypo name="chevron-left" size={32} color={color.secondary} />
         </Icon>
         <ContainerTitle>
-          <Title>Criar Conta</Title>
+          <Title accessibilityRole="header">Criar Conta</Title>
         </ContainerTitle>
       </Header>
       <Image>
@@ -181,6 +180,7 @@ const SignUp = () => {
                 }))
               }
               value={account.checkTerms}
+              accessibilityRole="switch"
             />
           </FormRow>
 
@@ -192,7 +192,7 @@ const SignUp = () => {
 
           <Gradient colors={gradient.darkToLightBlue} start={[1, 0.5]}>
             <Button onPress={handleSubmit}>
-              <TextButton>Criar Conta</TextButton>
+              <TextButton accessibilityRole="button">Criar Conta</TextButton>
             </Button>
           </Gradient>
 
@@ -205,7 +205,7 @@ const SignUp = () => {
   );
 };
 
-const CREATE_USER = gql`
+export const CREATE_USER = gql`
   mutation createUser(
     $email: String!
     $password: String!
