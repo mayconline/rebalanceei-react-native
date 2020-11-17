@@ -1,8 +1,6 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { useAuth } from '../../../contexts/authContext';
 import { ThemeContext } from 'styled-components/native';
-import { Entypo } from '@expo/vector-icons';
 
 import {
   Wrapper,
@@ -35,7 +33,7 @@ const StepThree = () => {
   return (
     <Wrapper>
       <Header>
-        <ContainerTextLink onPress={() => navigation.navigate('SignUp')}>
+        <ContainerTextLink onPress={handleNext}>
           <TextLink>Pular</TextLink>
         </ContainerTextLink>
       </Header>
