@@ -88,11 +88,6 @@ describe('SignUp Page', () => {
     fireEvent.press(termsLink);
     expect(mockedTerms).toHaveBeenCalledTimes(1);
 
-    const iconPasswordButton = getByA11yLabel('Ver Senha');
-    await findByTestId('eye-with-line');
-    fireEvent.press(iconPasswordButton);
-    await findByTestId('eye');
-
     const loginLink = getByText(/Já possui uma conta\?/i);
     fireEvent.press(loginLink);
     expect(mockedNavigate).toHaveBeenCalledWith('Login');
