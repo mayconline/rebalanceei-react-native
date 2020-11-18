@@ -2,14 +2,18 @@ import React from 'react';
 import { Alert } from 'react-native';
 import SignUp, { CREATE_USER } from './index';
 import { render, fireEvent, waitFor, act } from '../../../utils/testProvider';
+import * as Terms from '../../../utils/Terms';
 
 const mockedGoBack = jest.fn();
+const mockedNavigate = jest.fn();
 const mockedHandleSignIn = jest.fn();
 const mockedAlert = (Alert.alert = jest.fn());
+const mockedTerms = jest.spyOn(Terms, 'getTerms');
 
 jest.mock('@react-navigation/native', () => ({
   useNavigation: () => ({
     goBack: mockedGoBack,
+    navigate: mockedNavigate,
   }),
 }));
 
@@ -71,6 +75,32 @@ describe('SignUp Page', () => {
         token: 'token_created',
       }),
     );
+  });
+
+  it('should links work correctly', async () => {
+    const { getByText, getByA11yRole, getByA11yLabel, findByTestId } = render(
+      <SignUp />,
+    );
+
+    const termsLink = getByText(
+      /Aceito os Termos de Uso e Política de Privacidade/i,
+    );
+    fireEvent.press(termsLink);
+    expect(mockedTerms).toHaveBeenCalledTimes(1);
+
+    const iconPasswordButton = getByA11yLabel('Ver Senha');
+    await findByTestId('eye-with-line');
+    fireEvent.press(iconPasswordButton);
+    await findByTestId('eye');
+
+    const loginLink = getByText(/Já possui uma conta\?/i);
+    fireEvent.press(loginLink);
+    expect(mockedNavigate).toHaveBeenCalledWith('Login');
+
+    const iconBackButton = getByA11yRole('imagebutton');
+    expect(iconBackButton).toBeTruthy();
+    fireEvent.press(iconBackButton);
+    await waitFor(() => expect(mockedGoBack).toHaveBeenCalledTimes(1));
   });
 });
 

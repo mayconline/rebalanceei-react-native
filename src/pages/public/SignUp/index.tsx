@@ -95,7 +95,11 @@ const SignUp = () => {
   return (
     <Wrapper>
       <Header>
-        <Icon onPress={() => navigation.goBack()}>
+        <Icon
+          accessibilityRole="imagebutton"
+          accessibilityLabel="Voltar"
+          onPress={() => navigation.goBack()}
+        >
           <Entypo name="chevron-left" size={32} color={color.secondary} />
         </Icon>
         <ContainerTitle>
@@ -150,11 +154,13 @@ const SignUp = () => {
               />
             </InputGroup>
             <InputIcon
+              accessibilityLabel="Ver Senha"
               onPress={() =>
                 setVisiblePassword(visiblePassword => !visiblePassword)
               }
             >
               <Entypo
+                testID={!visiblePassword ? 'eye-with-line' : 'eye'}
                 name={!visiblePassword ? 'eye-with-line' : 'eye'}
                 size={20}
                 color={color.titleNotImport}
