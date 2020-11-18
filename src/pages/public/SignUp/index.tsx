@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useCallback } from 'react';
 import { Switch, Alert } from 'react-native';
 import { useMutation, gql } from '@apollo/client';
 import { useNavigation } from '@react-navigation/native';
@@ -17,13 +17,6 @@ import {
   Title,
   Form,
   FormRow,
-  InputGroup,
-  Label,
-  Input,
-  InputIcon,
-  Button,
-  Gradient,
-  TextButton,
   ContainerTextLink,
   TextLink,
   ContainerTerms,
@@ -33,16 +26,25 @@ import {
 
 import ImageRegister from '../../../../assets/svg/ImageRegister';
 
+import Button from '../../../components/Button';
+import InputForm from '../../../components/InputForm';
+
 interface IAccountRegister {
   email: string;
   password: string;
   checkTerms: boolean;
 }
 
+interface ICreateUser {
+  createUser: {
+    _id: string;
+    token: string;
+  };
+}
+
 const SignUp = () => {
   const { color, gradient } = useContext(ThemeContext);
   const [focus, setFocus] = useState(0);
-  const [visiblePassword, setVisiblePassword] = useState(false);
   const [account, setAccount] = useState({} as IAccountRegister);
 
   const { handleSignIn } = useAuth();
@@ -50,10 +52,10 @@ const SignUp = () => {
 
   const [
     createUser,
-    { data, loading: mutationLoading, error: mutationError },
-  ] = useMutation(CREATE_USER);
+    { loading: mutationLoading, error: mutationError },
+  ] = useMutation<ICreateUser>(CREATE_USER);
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!account.email || !account.password) return;
     if (!account.checkTerms) {
       return Alert.alert(
@@ -79,18 +81,29 @@ const SignUp = () => {
       );
     }
 
-    try {
-      await createUser({
-        variables: account,
-      });
-    } catch (err) {
-      console.error(mutationError?.message + err);
-    }
+    createUser({
+      variables: account,
+    })
+      .then(
+        response =>
+          response.data?.createUser && handleSignIn(response.data.createUser),
+      )
+      .catch(err => console.error(mutationError?.message + err));
   };
 
-  useEffect(() => {
-    if (!mutationLoading && data) handleSignIn(data?.createUser);
-  }, [data]);
+  const handleSetEmail = useCallback((email: string) => {
+    setAccount(account => ({
+      ...account,
+      email,
+    }));
+  }, []);
+
+  const handleSetPassword = useCallback((password: string) => {
+    setAccount(account => ({
+      ...account,
+      password,
+    }));
+  }, []);
 
   return (
     <Wrapper>
@@ -112,61 +125,35 @@ const SignUp = () => {
       <FormContainer behavior={'padding'}>
         <Form>
           <FormRow>
-            <InputGroup>
-              <Label>E-mail</Label>
-              <Input
-                value={account.email}
-                placeholder="meuemail@teste.com.br"
-                autoCompleteType="email"
-                placeholderTextColor={color.titleNotImport}
-                maxLength={80}
-                autoFocus={focus === 1}
-                onFocus={() => setFocus(1)}
-                onChangeText={(email: string) =>
-                  setAccount(account => ({
-                    ...account,
-                    email,
-                  }))
-                }
-              />
-            </InputGroup>
+            <InputForm
+              label="E-mail"
+              value={account.email}
+              placeholder="meuemail@teste.com.br"
+              autoCompleteType="email"
+              maxLength={80}
+              keyboardType="email-address"
+              autoFocus={focus === 1}
+              onFocus={() => setFocus(1)}
+              onChangeText={handleSetEmail}
+              onEndEditing={() => setFocus(2)}
+            />
           </FormRow>
 
           <FormRow>
-            <InputGroup>
-              <Label>Senha</Label>
-              <Input
-                value={account.password}
-                placeholder="********"
-                autoCompleteType="password"
-                secureTextEntry={!visiblePassword ? true : false}
-                placeholderTextColor={color.titleNotImport}
-                maxLength={32}
-                autoFocus={focus === 2}
-                onFocus={() => setFocus(2)}
-                onChangeText={(password: string) =>
-                  setAccount(account => ({
-                    ...account,
-                    password,
-                  }))
-                }
-                onEndEditing={() => setFocus(0)}
-              />
-            </InputGroup>
-            <InputIcon
-              accessibilityLabel="Ver Senha"
-              onPress={() =>
-                setVisiblePassword(visiblePassword => !visiblePassword)
-              }
-            >
-              <Entypo
-                testID={!visiblePassword ? 'eye-with-line' : 'eye'}
-                name={!visiblePassword ? 'eye-with-line' : 'eye'}
-                size={20}
-                color={color.titleNotImport}
-              />
-            </InputIcon>
+            <InputForm
+              label="Senha"
+              value={account.password}
+              isSecure
+              placeholder="********"
+              autoCompleteType="password"
+              maxLength={32}
+              autoFocus={focus === 2}
+              onFocus={() => setFocus(2)}
+              onChangeText={handleSetPassword}
+              onEndEditing={() => setFocus(0)}
+            />
           </FormRow>
+
           <FormRow>
             <ContainerTerms onPress={getTerms}>
               <TextTermsLink>
@@ -174,7 +161,10 @@ const SignUp = () => {
               </TextTermsLink>
             </ContainerTerms>
             <Switch
-              trackColor={{ false: color.inactiveTabs, true: color.success }}
+              trackColor={{
+                false: color.inactiveTabs,
+                true: color.success,
+              }}
               thumbColor={
                 account.checkTerms ? color.primary : color.titleNotImport
               }
@@ -196,11 +186,14 @@ const SignUp = () => {
             </TextError>
           )}
 
-          <Gradient colors={gradient.darkToLightBlue} start={[1, 0.5]}>
-            <Button onPress={handleSubmit}>
-              <TextButton accessibilityRole="button">Criar Conta</TextButton>
-            </Button>
-          </Gradient>
+          <Button
+            colors={gradient.darkToLightBlue}
+            start={[1, 0.5]}
+            onPress={handleSubmit}
+            loading={mutationLoading}
+          >
+            Criar Conta
+          </Button>
 
           <ContainerTextLink onPress={() => navigation.navigate('Login')}>
             <TextLink>Já possui uma conta?</TextLink>
