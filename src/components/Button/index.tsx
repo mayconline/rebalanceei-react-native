@@ -1,18 +1,29 @@
 import React from 'react';
-import { TouchableOpacityProps } from 'react-native';
+import { ActivityIndicator, TouchableOpacityProps } from 'react-native';
 import { Gradient, ContainerButton, TextButton } from './styles';
 
 interface IButtonProps extends TouchableOpacityProps {
   children: string;
   colors: string[];
   start: number[];
+  loading?: boolean;
 }
 
-const Button = ({ children, colors, start, ...rest }: IButtonProps) => {
+const Button = ({
+  children,
+  colors,
+  start,
+  loading,
+  ...rest
+}: IButtonProps) => {
   return (
     <Gradient colors={colors} start={start}>
       <ContainerButton {...rest}>
-        <TextButton accessibilityRole="button">{children}</TextButton>
+        {loading ? (
+          <ActivityIndicator size="small" color="#fff" />
+        ) : (
+          <TextButton accessibilityRole="button">{children}</TextButton>
+        )}
       </ContainerButton>
     </Gradient>
   );
