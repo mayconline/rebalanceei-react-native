@@ -1,4 +1,10 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+} from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 import { useNetInfo } from '@react-native-community/netinfo';
 
@@ -11,82 +17,93 @@ interface IAuthContext {
   signed: boolean;
   loading: boolean;
   isConnected: boolean;
-  user: string | null;
   wallet: string | null;
   walletName: string | null;
   handleSetWallet(walletID: string, walletName: string): void;
   handleSignIn(user: ISignIn): Promise<void>;
-  handleSignOut(): void;
+  handleSignOut(): Promise<void>;
 }
 
 const AuthContext = createContext<IAuthContext>({} as IAuthContext);
 
 export const AuthProvider: React.FC = ({ children }) => {
-  const [user, setUser] = useState<string | null>(null);
+  const [signed, setSigned] = useState<boolean>(false);
   const [wallet, setWallet] = useState<string | null>(null);
   const [walletName, setWalletName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const { isConnected } = useNetInfo();
 
-  useEffect(() => {
-    async function loadStorageData() {
-      const storageUser = await AsyncStorage.getItem('@authUser');
-      const storageToken = await AsyncStorage.getItem('@authToken');
-      const storageWallet = await AsyncStorage.getItem('@authWallet');
-      const storageWalletName = await AsyncStorage.getItem('@authWalletName');
+  const loadStorageData = useCallback(async () => {
+    const [
+      storageToken,
+      storageWallet,
+      storageWalletName,
+    ] = await AsyncStorage.multiGet([
+      '@authToken',
+      '@authWallet',
+      '@authWalletName',
+    ]);
 
-      if (storageUser && storageToken) {
-        setUser(storageUser);
-      }
-
-      if (storageWallet && storageWalletName) {
-        setWallet(storageWallet);
-        setWalletName(storageWalletName);
-      }
-
-      setLoading(false);
+    if (storageToken[1]) {
+      setSigned(true);
     }
+
+    if (storageWallet[1] && storageWalletName[1]) {
+      setWallet(storageWallet[1]);
+      setWalletName(storageWalletName[1]);
+    }
+
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
     loadStorageData();
   }, []);
 
-  const handleSignIn = async (userLogin: ISignIn) => {
+  const handleSignIn = useCallback(async (userLogin: ISignIn) => {
     setLoading(true);
 
     try {
-      const { _id, token } = userLogin;
+      const { token } = userLogin;
 
-      setUser(_id);
-
-      await AsyncStorage.setItem('@authUser', _id);
       await AsyncStorage.setItem('@authToken', token);
+      setSigned(true);
 
       setLoading(false);
     } catch (err) {
       handleSignOut();
       setLoading(false);
     }
-  };
+  }, []);
 
-  const handleSignOut = async () => {
-    await AsyncStorage.clear();
-    setUser(null);
+  const handleSignOut = useCallback(async () => {
+    await AsyncStorage.multiRemove([
+      '@authWallet',
+      '@authWalletName',
+      '@authToken',
+    ]);
+    setSigned(false);
     setWallet(null);
     setWalletName(null);
-  };
+  }, []);
 
-  const handleSetWallet = async (walletID: string, walletName: string) => {
-    await AsyncStorage.setItem('@authWallet', walletID);
-    await AsyncStorage.setItem('@authWalletName', walletName);
-    setWallet(walletID);
-    setWalletName(walletName);
-  };
+  const handleSetWallet = useCallback(
+    async (walletID: string, walletName: string) => {
+      await AsyncStorage.multiSet([
+        ['@authWallet', walletID],
+        ['@authWalletName', walletName],
+      ]);
+      setWallet(walletID);
+      setWalletName(walletName);
+    },
+    [],
+  );
 
   return (
     <AuthContext.Provider
       value={{
-        signed: !!user,
-        user,
+        signed,
         wallet,
         walletName,
         handleSetWallet,
