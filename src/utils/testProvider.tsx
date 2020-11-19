@@ -3,14 +3,16 @@ import { render } from '@testing-library/react-native';
 import { MockedProvider } from '@apollo/client/testing';
 import { ThemeProvider } from 'styled-components/native';
 import themes from '../themes';
+import { DocumentNode, GraphQLError } from 'graphql';
 
 interface IMocks {
   request: {
-    query: any;
+    query: DocumentNode;
     variables?: Object;
   };
   result: {
-    data: Object;
+    data?: Object;
+    errors?: GraphQLError[];
   };
 }
 

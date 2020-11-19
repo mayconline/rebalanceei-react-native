@@ -3,6 +3,7 @@ import { Alert } from 'react-native';
 import SignUp, { CREATE_USER } from './index';
 import { render, fireEvent, waitFor, act } from '../../../utils/testProvider';
 import * as Terms from '../../../utils/Terms';
+import { GraphQLError } from 'graphql';
 
 const mockedGoBack = jest.fn();
 const mockedNavigate = jest.fn();
@@ -27,11 +28,12 @@ describe('SignUp Page', () => {
   it('should successfully create user', async () => {
     const {
       getByText,
+      getAllByText,
       getByPlaceholderText,
       getByDisplayValue,
       getByA11yRole,
       findByA11yRole,
-    } = render(<SignUp />, [SUCCESSFUL_CREATE_USER]);
+    } = render(<SignUp />, [INVALID_USER, SUCCESSFUL_CREATE_USER]);
 
     const title = await findByA11yRole('header');
     expect(title).toHaveProperty('children', ['Criar Conta']);
@@ -43,8 +45,8 @@ describe('SignUp Page', () => {
 
     getByText(/E-mail/i);
     const inputEmail = getByPlaceholderText(/meuemail@teste.com.br/i);
-    fireEvent.changeText(inputEmail, 'test@test.com');
-    getByDisplayValue('test@test.com');
+    fireEvent.changeText(inputEmail, 'userexists@test.com');
+    getByDisplayValue('userexists@test.com');
 
     getByText(/Senha/i);
     const inputPassword = getByPlaceholderText('********');
@@ -67,20 +69,25 @@ describe('SignUp Page', () => {
     act(() => mockedAlert.mock.calls[0][2][1].onPress());
 
     fireEvent.press(submitButton);
+    await waitFor(() => getByText(/Usuário Já Existe./i));
+
+    fireEvent.changeText(inputEmail, 'test@test.com');
+    getByDisplayValue('test@test.com');
+
+    const registerButton = getAllByText('Criar Conta')[1];
+    fireEvent.press(registerButton);
 
     await waitFor(() =>
       expect(mockedHandleSignIn).toHaveBeenCalledWith({
-        __typename: 'createUser',
-        id: 'id_created',
+        __typename: 'User',
+        _id: 'id_created',
         token: 'token_created',
       }),
     );
   });
 
   it('should links work correctly', async () => {
-    const { getByText, getByA11yRole, getByA11yLabel, findByTestId } = render(
-      <SignUp />,
-    );
+    const { getByText, getByA11yRole } = render(<SignUp />);
 
     const termsLink = getByText(
       /Aceito os Termos de Uso e Política de Privacidade/i,
@@ -111,10 +118,25 @@ const SUCCESSFUL_CREATE_USER = {
   result: {
     data: {
       createUser: {
-        id: 'id_created',
+        _id: 'id_created',
         token: 'token_created',
-        __typename: 'createUser',
+        __typename: 'User',
       },
     },
+  },
+};
+
+const INVALID_USER = {
+  request: {
+    query: CREATE_USER,
+    variables: {
+      email: 'userexists@test.com',
+      password: '123',
+      checkTerms: true,
+    },
+  },
+  result: {
+    data: undefined,
+    errors: [new GraphQLError('Usuário Já Existe.')],
   },
 };

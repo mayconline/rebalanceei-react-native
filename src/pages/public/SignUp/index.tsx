@@ -1,11 +1,10 @@
-import React, { useContext, useState, useEffect, useCallback } from 'react';
+import React, { useContext, useState, useCallback } from 'react';
 import { Switch, Alert } from 'react-native';
-import { useMutation, gql } from '@apollo/client';
 import { useNavigation } from '@react-navigation/native';
-import { useAuth } from '../../../contexts/authContext';
+import { useMutation, gql } from '@apollo/client';
+
 import { ThemeContext } from 'styled-components/native';
-import { Entypo } from '@expo/vector-icons';
-import { getTerms } from '../../../utils/Terms';
+import { useAuth } from '../../../contexts/authContext';
 
 import {
   Wrapper,
@@ -23,11 +22,13 @@ import {
   TextTermsLink,
   TextError,
 } from './styles';
-
+import { Entypo } from '@expo/vector-icons';
 import ImageRegister from '../../../../assets/svg/ImageRegister';
 
 import Button from '../../../components/Button';
 import InputForm from '../../../components/InputForm';
+
+import { getTerms } from '../../../utils/Terms';
 
 interface IAccountRegister {
   email: string;
@@ -53,7 +54,7 @@ const SignUp = () => {
   const [
     createUser,
     { loading: mutationLoading, error: mutationError },
-  ] = useMutation<ICreateUser>(CREATE_USER);
+  ] = useMutation<ICreateUser, IAccountRegister>(CREATE_USER);
 
   const handleSubmit = () => {
     if (!account.email || !account.password) return;

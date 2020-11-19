@@ -59,46 +59,6 @@ export const FormRow = styled.View`
   width: 100%;
 `;
 
-export const InputGroup = styled.View`
-  align-self: center;
-  width: 100%;
-`;
-
-export const Label = styled.Text`
-  color: ${({ theme }) => theme.color.titleNotImport};
-  font: 600 16px/24px 'TitilliumWeb_600SemiBold';
-`;
-
-export const Input = styled.TextInput`
-  color: ${({ theme }) => theme.color.title};
-  height: 32px;
-  font: 400 16px/24px 'TitilliumWeb_400Regular';
-  border-bottom-color: ${({ theme, autoFocus }) =>
-    !autoFocus ? theme.color.divider : theme.color.blue};
-  border-bottom-width: 1px;
-  opacity: ${({ editable = true }) => (!editable ? 0.4 : 1)};
-`;
-
-export const InputIcon = styled(BorderlessButton)`
-  margin-left: -32px;
-`;
-
-export const Gradient = styled(LinearGradient)<any>`
-  justify-content: center;
-  margin-top: 16px;
-  border-radius: 24px;
-`;
-
-export const Button = styled.TouchableOpacity`
-  align-items: center;
-  padding: 12px 20px;
-`;
-
-export const TextButton = styled.Text`
-  color: ${({ theme }) => theme.color.secondary};
-  font: 600 20px/28px 'TitilliumWeb_600SemiBold';
-`;
-
 export const ContainerTextLink = styled(BorderlessButton)`
   justify-content: center;
   align-items: center;
