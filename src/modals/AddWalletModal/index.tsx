@@ -40,7 +40,7 @@ const AddWalletModal: React.FC<IAddWalletModal> = ({
     { loading: mutationLoading, error: mutationError },
   ] = useMutation(CREATE_WALLET);
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     if (!wallet) return;
 
     try {
@@ -61,7 +61,7 @@ const AddWalletModal: React.FC<IAddWalletModal> = ({
     } catch (err) {
       console.error(mutationError?.message + err);
     }
-  };
+  }, [wallet]);
 
   const handleSetName = useCallback((walletName: string) => {
     setWallet(walletName);
