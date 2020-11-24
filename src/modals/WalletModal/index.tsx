@@ -32,11 +32,11 @@ import {
   WalletRadioSelect,
 } from './styles';
 
-import Divider from '../Divider';
-import AddButton from '../AddButton';
-import ShadowBackdrop from '../ShadowBackdrop';
+import Divider from '../../components/Divider';
+import AddButton from '../../components/AddButton';
+import ShadowBackdrop from '../../components/ShadowBackdrop';
 import AddWalletModal from '../AddWalletModal';
-import Loading from '../Loading';
+import Loading from '../../components/Loading';
 
 import { formatNumber, formatPercent } from '../../utils/format';
 

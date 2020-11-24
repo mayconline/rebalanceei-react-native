@@ -21,9 +21,9 @@ import {
   SuggestButtonText,
 } from './styles';
 import ImageAddTicket from '../../../assets/svg/ImageAddTicket';
-import SuccessModal from '../../components/SuccessModal';
+import SuccessModal from '../../modals/SuccessModal';
 import { GET_TICKETS_BY_WALLET } from '../Ticket';
-import SuggestionsModal from '../../components/SuggestionsModal';
+import SuggestionsModal from '../../modals/SuggestionsModal';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 interface ITicketForm {

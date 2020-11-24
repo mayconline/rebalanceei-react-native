@@ -21,7 +21,7 @@ import {
 } from './styles';
 
 import ImageAddTicket from '../../../assets/svg/ImageAddTicket';
-import SuccessModal from '../SuccessModal';
+import SuccessModal from '../../modals/SuccessModal';
 
 interface IAddWalletModal {
   onClose(): void;

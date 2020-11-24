@@ -8,9 +8,9 @@ import {
 } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/authContext';
 import { getTerms } from '../../utils/Terms';
-import Divider from '../Divider';
-import ShadowBackdrop from '../ShadowBackdrop';
-import UpdateUserModal from '../UpdateUserModal';
+import Divider from '../../components/Divider';
+import ShadowBackdrop from '../../components/ShadowBackdrop';
+import UpdateUserModal from '../../modals/UpdateUserModal';
 
 import {
   Wrapper,

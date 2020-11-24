@@ -21,8 +21,8 @@ import Header from '../../components/Header';
 import SubHeader from '../../components/SubHeader';
 import Empty from '../../components/Empty';
 import Loading from '../../components/Loading';
-import WalletModal from '../../components/WalletModal';
-import EditTicketModal from '../../components/EditTicketModal';
+import WalletModal from '../../modals/WalletModal';
+import EditTicketModal from '../../modals/EditTicketModal';
 
 import { formatNumber, formatTicket } from '../../utils/format';
 

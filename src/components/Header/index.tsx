@@ -6,8 +6,8 @@ import { Entypo } from '@expo/vector-icons';
 
 import { Wrapper, Wallet, Title, Icons, Menu, MenuBar } from './styles';
 
-import WalletModal from '../WalletModal';
-import MenuModal from '../MenuModal';
+import WalletModal from '../../modals/WalletModal';
+import MenuModal from '../../modals/MenuModal';
 
 const Header: React.FC = () => {
   const { walletName } = useAuth();

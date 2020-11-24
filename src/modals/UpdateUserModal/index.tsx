@@ -23,7 +23,7 @@ import {
 } from './styles';
 import ImageAddTicket from '../../../assets/svg/ImageAddTicket';
 import { AntDesign, Entypo } from '@expo/vector-icons';
-import Loading from '../Loading';
+import Loading from '../../components/Loading';
 
 interface IUser {
   _id: string;
@@ -51,9 +51,10 @@ const UpdateUserModal = ({ onClose }: IUpdateUserModal) => {
   const [visiblePassword, setVisiblePassword] = useState(false);
   const { handleSignOut } = useAuth();
 
-  const [getUserByToken, { data, loading: queryLoading, error }] = useLazyQuery<
-    IGetUser
-  >(GET_USER_BY_TOKEN);
+  const [
+    getUserByToken,
+    { data, loading: queryLoading, error },
+  ] = useLazyQuery<IGetUser>(GET_USER_BY_TOKEN);
 
   const [
     updateUser,
