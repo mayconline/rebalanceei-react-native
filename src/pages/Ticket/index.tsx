@@ -147,14 +147,16 @@ const Ticket: React.FC = () => {
         )}
       </Wrapper>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={openModal}
-        statusBarTranslucent={true}
-      >
-        <WalletModal onClose={() => setOpenModal(false)} />
-      </Modal>
+      {openModal && (
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={openModal}
+          statusBarTranslucent={true}
+        >
+          <WalletModal onClose={() => setOpenModal(false)} />
+        </Modal>
+      )}
 
       {selectedTicket && openEditModal && (
         <Modal

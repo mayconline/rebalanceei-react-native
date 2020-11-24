@@ -24,6 +24,7 @@
       "src/pages/**/*.tsx",
       "src/pages/**/**/*.tsx",
       "src/components/**/*.tsx",
+      "src/modals/**/*.tsx",
       "src/contexts/*.tsx"
     ]
   },
