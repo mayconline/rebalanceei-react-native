@@ -1,15 +1,9 @@
-import React, {
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-  useMemo,
-} from 'react';
+import React, { useContext, useState, useCallback } from 'react';
 import { FlatList, Modal } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { ThemeContext } from 'styled-components/native';
 import { AntDesign } from '@expo/vector-icons';
-import { useLazyQuery, useQuery, gql } from '@apollo/client';
+import { useLazyQuery, gql } from '@apollo/client';
 import { useAuth } from '../../contexts/authContext';
 import {
   Wrapper,
@@ -35,13 +29,13 @@ import {
 import Divider from '../../components/Divider';
 import AddButton from '../../components/AddButton';
 import ShadowBackdrop from '../../components/ShadowBackdrop';
-import AddWalletModal from '../AddWalletModal';
 import Loading from '../../components/Loading';
 import TextError from '../../components/TextError';
+import AddWalletModal from '../AddWalletModal';
 
 import { formatNumber, formatPercent } from '../../utils/format';
 
-interface WalletProps {
+interface IWalletProps {
   onClose(): void;
 }
 
@@ -59,7 +53,7 @@ interface IDataWallet {
   getWalletByUser: IObjectWallet[];
 }
 
-const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
+const WalletModal = ({ onClose }: IWalletProps) => {
   const { color } = useContext(ThemeContext);
   const { handleSetWallet, wallet } = useAuth();
   const [openModal, setOpenModal] = useState(false);
@@ -92,7 +86,7 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
     <>
       <ShadowBackdrop />
       <Wrapper>
-        <Title>Carteiras</Title>
+        <Title accessibilityRole="header">Carteiras</Title>
         <FlatList
           data={data?.getWalletByUser}
           keyExtractor={item => item._id}
@@ -100,16 +94,28 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
             <>
               <Card
                 onPress={() => handleSelectWallet(item._id, item.description)}
+                accessibilityRole="radio"
+                accessibilityLabel={item.description}
+                accessibilityState={{ selected: item._id === selectedWallet }}
               >
                 <CardTitleContainer>
                   <WalletTitle numberOfLines={1} ellipsizeMode="tail">
                     {item.description}
                   </WalletTitle>
                   <CardSubTitle>
-                    <CurrentAmount>
+                    <CurrentAmount
+                      accessibilityLabel="Valor atual da carteira"
+                      accessibilityValue={{ now: item.sumAmountWallet }}
+                    >
                       {formatNumber(item.sumAmountWallet)}
                     </CurrentAmount>
-                    <VariationPercent value={item.percentRentabilityWallet}>
+                    <VariationPercent
+                      value={item.percentRentabilityWallet}
+                      accessibilityLabel="Percentual de valorização da carteira"
+                      accessibilityValue={{
+                        now: item.percentRentabilityWallet,
+                      }}
+                    >
                       {formatPercent(item.percentRentabilityWallet)}
                     </VariationPercent>
                   </CardSubTitle>
@@ -117,7 +123,12 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
 
                 <PercentWallet>
                   <PercentTitle>% da Carteira</PercentTitle>
-                  <CurrentPercent>
+                  <CurrentPercent
+                    accessibilityLabel="Porcentagem atual do valor alocado na carteira"
+                    accessibilityValue={{
+                      now: item.percentPositionWallet,
+                    }}
+                  >
                     {`${item.percentPositionWallet.toFixed(0)}%`}
                   </CurrentPercent>
                 </PercentWallet>
@@ -135,11 +146,11 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
             <BackIcon>
               <AntDesign name="closecircleo" size={16} color={color.subtitle} />
             </BackIcon>
-            <BackButton>Fechar Modal</BackButton>
+            <BackButton accessibilityRole="button">Fechar Modal</BackButton>
           </BackButtonContainer>
 
           <AddButtonContainer onPress={() => setOpenModal(true)}>
-            <Label>Adicionar Carteira</Label>
+            <Label accessibilityRole="button">Adicionar Carteira</Label>
             <AddButton size={40} />
           </AddButtonContainer>
         </AddWalletContainer>
