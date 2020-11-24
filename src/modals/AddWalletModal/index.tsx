@@ -41,6 +41,8 @@ const AddWalletModal: React.FC<IAddWalletModal> = ({
   ] = useMutation(CREATE_WALLET);
 
   const handleSubmit = async () => {
+    if (!wallet) return;
+
     try {
       const response = await createWallet({
         variables: {
@@ -57,7 +59,7 @@ const AddWalletModal: React.FC<IAddWalletModal> = ({
       beforeModalClose();
       setWallet('');
     } catch (err) {
-      console.error(err);
+      console.error(mutationError?.message + err);
     }
   };
 
@@ -69,10 +71,14 @@ const AddWalletModal: React.FC<IAddWalletModal> = ({
     <>
       <Wrapper>
         <ContainerTitle>
-          <Icon onPress={onClose}>
+          <Icon
+            accessibilityRole="imagebutton"
+            accessibilityLabel="Voltar"
+            onPress={onClose}
+          >
             <Entypo name="chevron-left" size={32} color={color.secondary} />
           </Icon>
-          <Title>Criar Nova Carteira</Title>
+          <Title accessibilityRole="header">Criar Nova Carteira</Title>
         </ContainerTitle>
         <ImageAddTicket
           translateX={36}
@@ -116,22 +122,24 @@ const AddWalletModal: React.FC<IAddWalletModal> = ({
         </FormContainer>
       </Wrapper>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={openModal}
-        statusBarTranslucent={false}
-      >
-        <SuccessModal
-          onClose={() => setOpenModal(false)}
-          beforeModalClose={onClose}
-        />
-      </Modal>
+      {openModal && (
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={openModal}
+          statusBarTranslucent={false}
+        >
+          <SuccessModal
+            onClose={() => setOpenModal(false)}
+            beforeModalClose={onClose}
+          />
+        </Modal>
+      )}
     </>
   );
 };
 
-const CREATE_WALLET = gql`
+export const CREATE_WALLET = gql`
   mutation createWallet($description: String!) {
     createWallet(input: { description: $description }) {
       _id
