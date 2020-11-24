@@ -37,6 +37,7 @@ import AddButton from '../../components/AddButton';
 import ShadowBackdrop from '../../components/ShadowBackdrop';
 import AddWalletModal from '../AddWalletModal';
 import Loading from '../../components/Loading';
+import TextError from '../../components/TextError';
 
 import { formatNumber, formatPercent } from '../../utils/format';
 
@@ -52,7 +53,6 @@ interface IObjectWallet {
   percentRentabilityWallet: number;
   percentPositionWallet: number;
   sumAmountAllWallet: number;
-  checked?: boolean;
 }
 
 interface IDataWallet {
@@ -63,13 +63,11 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
   const { color } = useContext(ThemeContext);
   const { handleSetWallet, wallet } = useAuth();
   const [openModal, setOpenModal] = useState(false);
-  const [selectWallet, setSelectWallet] = useState<IObjectWallet[] | undefined>(
-    [] as IObjectWallet[],
-  );
+  const [selectedWallet, setSelectedWallet] = useState<String | null>(wallet);
 
   const [
     getWalletByUser,
-    { data, loading: queryLoading, error },
+    { data, loading: queryLoading, error: queryError },
   ] = useLazyQuery<IDataWallet>(GET_WALLET_BY_USER, {
     fetchPolicy: 'no-cache',
   });
@@ -80,29 +78,13 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
     }, []),
   );
 
-  useFocusEffect(
-    useCallback(() => {
-      if (data) {
-        let checkedWallet = data?.getWalletByUser?.map(wallets => ({
-          ...wallets,
-          checked: wallet === wallets._id,
-        }));
-
-        setSelectWallet(checkedWallet);
-      }
-    }, [data]),
+  const handleSelectWallet = useCallback(
+    (walletID: string, walletName: string) => {
+      setSelectedWallet(walletID);
+      handleSetWallet(walletID, walletName);
+    },
+    [],
   );
-
-  const handleSelectWallet = (walletID: string, walletName: string) => {
-    setSelectWallet(wallets =>
-      wallets?.map(wallet => ({
-        ...wallet,
-        checked: walletID === wallet._id,
-      })),
-    );
-
-    handleSetWallet(walletID, walletName);
-  };
 
   return queryLoading ? (
     <Loading />
@@ -112,7 +94,7 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
       <Wrapper>
         <Title>Carteiras</Title>
         <FlatList
-          data={selectWallet}
+          data={data?.getWalletByUser}
           keyExtractor={item => item._id}
           renderItem={({ item }) => (
             <>
@@ -140,13 +122,13 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
                   </CurrentPercent>
                 </PercentWallet>
 
-                <WalletRadioSelect selected={item.checked} />
+                <WalletRadioSelect selected={item._id === selectedWallet} />
               </Card>
-
               <Divider />
             </>
           )}
         />
+        {!!queryError && <TextError>{queryError?.message}</TextError>}
 
         <AddWalletContainer>
           <BackButtonContainer onPress={onClose}>
@@ -163,17 +145,19 @@ const WalletModal: React.FC<WalletProps> = ({ onClose }) => {
         </AddWalletContainer>
       </Wrapper>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={openModal}
-        statusBarTranslucent={true}
-      >
-        <AddWalletModal
-          onClose={() => setOpenModal(false)}
-          beforeModalClose={onClose}
-        />
-      </Modal>
+      {openModal && (
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={openModal}
+          statusBarTranslucent={true}
+        >
+          <AddWalletModal
+            onClose={() => setOpenModal(false)}
+            beforeModalClose={onClose}
+          />
+        </Modal>
+      )}
     </>
   );
 };

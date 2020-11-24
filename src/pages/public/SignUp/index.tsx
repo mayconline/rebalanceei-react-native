@@ -20,13 +20,13 @@ import {
   TextLink,
   ContainerTerms,
   TextTermsLink,
-  TextError,
 } from './styles';
 import { Entypo } from '@expo/vector-icons';
 import ImageRegister from '../../../../assets/svg/ImageRegister';
 
 import Button from '../../../components/Button';
 import InputForm from '../../../components/InputForm';
+import TextError from '../../../components/TextError';
 
 import { getTerms } from '../../../utils/Terms';
 
@@ -181,11 +181,7 @@ const SignUp = () => {
             />
           </FormRow>
 
-          {!!mutationError && (
-            <TextError numberOfLines={1} ellipsizeMode="tail">
-              {mutationError?.message}
-            </TextError>
-          )}
+          {!!mutationError && <TextError>{mutationError?.message}</TextError>}
 
           <Button
             colors={gradient.darkToLightBlue}

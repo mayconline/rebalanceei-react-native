@@ -69,9 +69,3 @@ export const TextLink = styled.Text`
   color: ${({ theme }) => theme.color.subtitle};
   font: 400 16px/24px 'TitilliumWeb_400Regular';
 `;
-
-export const TextError = styled.Text`
-  color: ${({ theme }) => theme.color.warning};
-  font: 400 16px/24px 'TitilliumWeb_400Regular';
-  text-align: center;
-`;

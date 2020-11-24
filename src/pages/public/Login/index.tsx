@@ -15,7 +15,6 @@ import {
   Title,
   Form,
   FormRow,
-  TextError,
   ContainerTextLink,
   TextLink,
 } from './styles';
@@ -24,6 +23,7 @@ import ImageLogin from '../../../../assets/svg/ImageLogin';
 
 import Button from '../../../components/Button';
 import InputForm from '../../../components/InputForm';
+import TextError from '../../../components/TextError';
 
 interface IAccountLogin {
   email: string;
@@ -128,11 +128,7 @@ const Login = () => {
             />
           </FormRow>
 
-          {!!error && (
-            <TextError numberOfLines={1} ellipsizeMode="tail">
-              {error?.message}
-            </TextError>
-          )}
+          {!!error && <TextError>{error?.message}</TextError>}
 
           <Button
             colors={gradient.darkToLightBlue}

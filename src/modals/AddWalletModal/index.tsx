@@ -12,13 +12,13 @@ import {
   Title,
   Form,
   FormRow,
-  TextError,
 } from './styles';
 
 import ImageAddTicket from '../../../assets/svg/ImageAddTicket';
 import SuccessModal from '../../modals/SuccessModal';
 import Button from '../../components/Button';
 import InputForm from '../../components/InputForm';
+import TextError from '../../components/TextError';
 
 interface IAddWalletModal {
   onClose(): void;
@@ -104,11 +104,7 @@ const AddWalletModal: React.FC<IAddWalletModal> = ({
               />
             </FormRow>
 
-            {!!mutationError && (
-              <TextError numberOfLines={1} ellipsizeMode="tail">
-                {mutationError?.message}
-              </TextError>
-            )}
+            {!!mutationError && <TextError>{mutationError?.message}</TextError>}
 
             <Button
               colors={gradient.darkToLightBlue}
