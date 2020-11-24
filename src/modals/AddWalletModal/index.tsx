@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react';
-import { Platform, Modal, ActivityIndicator } from 'react-native';
+import React, { useContext, useState, useCallback } from 'react';
+import { Platform, Modal } from 'react-native';
 import { ThemeContext } from 'styled-components/native';
 import { Entypo } from '@expo/vector-icons';
 import { useMutation, gql } from '@apollo/client';
@@ -12,16 +12,13 @@ import {
   Title,
   Form,
   FormRow,
-  InputGroup,
-  Label,
-  Input,
-  Button,
-  Gradient,
-  TextButton,
+  TextError,
 } from './styles';
 
 import ImageAddTicket from '../../../assets/svg/ImageAddTicket';
 import SuccessModal from '../../modals/SuccessModal';
+import Button from '../../components/Button';
+import InputForm from '../../components/InputForm';
 
 interface IAddWalletModal {
   onClose(): void;
@@ -38,9 +35,10 @@ const AddWalletModal: React.FC<IAddWalletModal> = ({
   const [openModal, setOpenModal] = useState(false);
   const { handleSetWallet } = useAuth();
 
-  const [createWallet, { loading, error: mutationError }] = useMutation(
-    CREATE_WALLET,
-  );
+  const [
+    createWallet,
+    { loading: mutationLoading, error: mutationError },
+  ] = useMutation(CREATE_WALLET);
 
   const handleSubmit = async () => {
     try {
@@ -63,6 +61,10 @@ const AddWalletModal: React.FC<IAddWalletModal> = ({
     }
   };
 
+  const handleSetName = useCallback((walletName: string) => {
+    setWallet(walletName);
+  }, []);
+
   return (
     <>
       <Wrapper>
@@ -81,29 +83,35 @@ const AddWalletModal: React.FC<IAddWalletModal> = ({
         <FormContainer behavior={Platform.OS == 'ios' ? 'padding' : 'position'}>
           <Form>
             <FormRow>
-              <InputGroup>
-                <Label>Nome da Carteira</Label>
-                <Input
-                  value={wallet}
-                  placeholder="Minha Nova Carteira"
-                  placeholderTextColor={color.titleNotImport}
-                  maxLength={80}
-                  autoFocus={focus === 1}
-                  onFocus={() => setFocus(1)}
-                  onChangeText={(wallet: string) => setWallet(wallet)}
-                />
-              </InputGroup>
+              <InputForm
+                label="Nome da Carteira"
+                value={wallet}
+                placeholder="Minha Nova Carteira"
+                autoCompleteType="off"
+                maxLength={80}
+                keyboardType="email-address"
+                autoFocus={focus === 1}
+                onFocus={() => setFocus(1)}
+                onChangeText={handleSetName}
+                onEndEditing={() => setFocus(0)}
+                onSubmitEditing={handleSubmit}
+              />
             </FormRow>
 
-            <Gradient colors={gradient.darkToLightBlue} start={[1, 0.5]}>
-              <Button onPress={handleSubmit}>
-                {loading ? (
-                  <ActivityIndicator size="small" color="#fff" />
-                ) : (
-                  <TextButton>Adicionar Carteira</TextButton>
-                )}
-              </Button>
-            </Gradient>
+            {!!mutationError && (
+              <TextError numberOfLines={1} ellipsizeMode="tail">
+                {mutationError?.message}
+              </TextError>
+            )}
+
+            <Button
+              colors={gradient.darkToLightBlue}
+              start={[1, 0.5]}
+              onPress={handleSubmit}
+              loading={mutationLoading}
+            >
+              Adicionar Carteira
+            </Button>
           </Form>
         </FormContainer>
       </Wrapper>
