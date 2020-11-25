@@ -9,12 +9,19 @@ export const Wrapper = styled.SafeAreaView`
 
 export const ContainerTitle = styled.View`
   margin-top: 40px;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+export const BackIcon = styled.TouchableOpacity`
+  padding-right: 8px;
 `;
 
 export const Title = styled.Text`
   color: ${({ theme }) => theme.color.secondary};
   font: 600 24px/32px 'TitilliumWeb_600SemiBold';
-  align-self: center;
+  text-align: center;
+  flex: 1;
 `;
 
 export const FormContainer = styled.KeyboardAvoidingView`

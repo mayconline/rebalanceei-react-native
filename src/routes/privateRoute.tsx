@@ -69,7 +69,9 @@ const privateRoute = () => {
           if (route.name === 'AddTicket') {
             return (
               <AddButton
-                onPress={() => navigation.navigate('AddTicket')}
+                onPress={() =>
+                  navigation.navigate('AddTicket', { ticket: null })
+                }
                 focused={focused}
                 size={60}
                 mb={24}

@@ -1,8 +1,9 @@
-import React, { useContext, useState, useMemo } from 'react';
+import React, { useContext, useState, useMemo, useCallback } from 'react';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { FlatList, TouchableOpacity, Modal } from 'react-native';
 import { ThemeContext } from 'styled-components/native';
 import { useAuth } from '../../contexts/authContext';
-import { useQuery, gql } from '@apollo/client';
+import { useQuery, useLazyQuery, gql } from '@apollo/client';
 import {
   Wrapper,
   List,
@@ -22,7 +23,6 @@ import SubHeader from '../../components/SubHeader';
 import Empty from '../../components/Empty';
 import Loading from '../../components/Loading';
 import WalletModal from '../../modals/WalletModal';
-import EditTicketModal from '../../modals/EditTicketModal';
 
 import { formatNumber, formatTicket } from '../../utils/format';
 
@@ -50,30 +50,40 @@ interface IDataTickets {
   getTicketsByWallet: ITickets[];
 }
 
-const Ticket: React.FC = () => {
+const Ticket = () => {
   const { color, gradient } = useContext(ThemeContext);
+  const navigation = useNavigation();
   const [filters, setFilters] = useState(initialFilter);
   const [selectedFilter, setSelectFilter] = useState<string | undefined>(
     'grade',
   );
   const { wallet, loading } = useAuth();
   const [openModal, setOpenModal] = useState(false);
-  const [openEditModal, setOpenEditModal] = useState(false);
-  const [selectedTicket, setSelectedTicket] = useState({} as ITickets);
 
-  const { data, loading: queryLoading, error } = useQuery<IDataTickets>(
-    GET_TICKETS_BY_WALLET,
-    {
-      variables: { walletID: wallet, sort: selectedFilter },
-      fetchPolicy: 'cache-and-network',
-    },
+  const [
+    getTicketsByWallet,
+    { data, loading: queryLoading, error },
+  ] = useLazyQuery<IDataTickets>(GET_TICKETS_BY_WALLET, {
+    variables: { walletID: wallet, sort: selectedFilter },
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const arrayLength =
+    data?.getTicketsByWallet && data.getTicketsByWallet?.length + 1;
+
+  useFocusEffect(
+    useCallback(() => {
+      getTicketsByWallet();
+    }, []),
   );
 
-  useMemo(() => {
-    if (!loading && !wallet) setOpenModal(true);
-  }, [wallet]);
+  useFocusEffect(
+    useCallback(() => {
+      if (!loading && !queryLoading && !wallet) setOpenModal(true);
+    }, [wallet, loading, queryLoading]),
+  );
 
-  const handleChangeFilter = (filterName: string) => {
+  const handleChangeFilter = useCallback((filterName: string) => {
     setFilters(filters =>
       filters.map(filter => ({
         name: filter.name,
@@ -82,15 +92,15 @@ const Ticket: React.FC = () => {
     );
 
     setSelectFilter(filterName);
-  };
+  }, []);
 
   const hasTickets =
     wallet && !queryLoading && !!data?.getTicketsByWallet?.length;
 
-  const handleOpenEditModal = (item: ITickets) => {
-    setSelectedTicket(item);
-    !!selectedTicket && setOpenEditModal(true);
-  };
+  const handleOpenEditModal = useCallback((item: ITickets) => {
+    navigation.setParams({ ticket: null });
+    navigation.navigate('AddTicket', { ticket: item });
+  }, []);
 
   return queryLoading ? (
     <Loading />
@@ -111,7 +121,7 @@ const Ticket: React.FC = () => {
               <FlatList
                 data={data?.getTicketsByWallet}
                 keyExtractor={item => item._id}
-                initialNumToRender={data?.getTicketsByWallet.length}
+                initialNumToRender={arrayLength}
                 renderItem={({ item }) => (
                   <Content>
                     <TouchableOpacity onPress={() => handleOpenEditModal(item)}>
@@ -155,20 +165,6 @@ const Ticket: React.FC = () => {
           statusBarTranslucent={true}
         >
           <WalletModal onClose={() => setOpenModal(false)} />
-        </Modal>
-      )}
-
-      {selectedTicket && openEditModal && (
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={openEditModal}
-          statusBarTranslucent={true}
-        >
-          <EditTicketModal
-            onClose={() => setOpenEditModal(false)}
-            tickets={selectedTicket}
-          />
         </Modal>
       )}
     </>

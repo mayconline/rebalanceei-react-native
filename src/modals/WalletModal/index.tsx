@@ -63,7 +63,7 @@ const WalletModal = ({ onClose }: IWalletProps) => {
     getWalletByUser,
     { data, loading: queryLoading, error: queryError },
   ] = useLazyQuery<IDataWallet>(GET_WALLET_BY_USER, {
-    fetchPolicy: 'no-cache',
+    fetchPolicy: 'cache-and-network',
   });
 
   useFocusEffect(

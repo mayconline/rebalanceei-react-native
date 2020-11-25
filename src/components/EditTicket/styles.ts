@@ -1,30 +1,6 @@
 import styled from 'styled-components/native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-export const Wrapper = styled.SafeAreaView`
-  flex: 1;
-  background-color: ${({ theme }) => theme.color.primary};
-  elevation: 5;
-`;
-
-export const ContainerTitle = styled.View`
-  margin-top: 40px;
-  flex-direction: row;
-  justify-content: space-between;
-`;
-
-export const BackIcon = styled.TouchableOpacity`
-  padding-right: 8px;
-`;
-
-export const Title = styled.Text`
-  color: ${({ theme }) => theme.color.secondary};
-  font: 600 24px/32px 'TitilliumWeb_600SemiBold';
-
-  text-align: center;
-  flex: 1;
-`;
-
 export const FormContainer = styled.KeyboardAvoidingView`
   flex: 1;
   max-height: 316px;
