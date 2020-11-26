@@ -23,6 +23,7 @@ import SubHeader from '../../components/SubHeader';
 import Empty from '../../components/Empty';
 import Loading from '../../components/Loading';
 import WalletModal from '../../modals/WalletModal';
+import ListItem from './ListItem';
 
 import { formatNumber, formatTicket } from '../../utils/format';
 
@@ -67,9 +68,6 @@ const Ticket = () => {
     variables: { walletID: wallet, sort: selectedFilter },
     fetchPolicy: 'cache-and-network',
   });
-
-  const arrayLength =
-    data?.getTicketsByWallet && data.getTicketsByWallet?.length + 1;
 
   useFocusEffect(
     useCallback(() => {
@@ -120,36 +118,21 @@ const Ticket = () => {
             <List>
               <FlatList
                 data={data?.getTicketsByWallet}
+                extraData={!!queryLoading}
                 keyExtractor={item => item._id}
-                initialNumToRender={arrayLength}
+                removeClippedSubviews={false}
+                initialNumToRender={5}
+                maxToRenderPerBatch={1}
+                updateCellsBatchingPeriod={300}
+                automaticallyAdjustContentInsets={false}
+                style={{ flex: 0 }}
                 renderItem={({ item }) => (
-                  <Content>
-                    <TouchableOpacity onPress={() => handleOpenEditModal(item)}>
-                      <Card
-                        colors={gradient.lightToGray}
-                        ticket={formatTicket(item.symbol)}
-                      >
-                        <MaterialCommunityIcons
-                          name="circle-edit-outline"
-                          size={28}
-                          color={color.blue}
-                        />
-                        <CardContent>
-                          <CardTitleContainer>
-                            <CardTicket>{formatTicket(item.symbol)}</CardTicket>
-                            <CardTitle numberOfLines={1} ellipsizeMode="tail">
-                              {' '}
-                              - {formatTicket(item.name)}
-                            </CardTitle>
-                          </CardTitleContainer>
-                          <CardSubTitle>
-                            {item.quantity}x {formatNumber(item.averagePrice)}
-                          </CardSubTitle>
-                        </CardContent>
-                        <Grade>{item.grade}</Grade>
-                      </Card>
-                    </TouchableOpacity>
-                  </Content>
+                  <ListItem
+                    item={item}
+                    color={color}
+                    gradient={gradient}
+                    handleOpenEditModal={handleOpenEditModal}
+                  />
                 )}
               />
             </List>
