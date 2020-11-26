@@ -76,6 +76,7 @@ const WalletModal = ({ onClose }: IWalletProps) => {
     (walletID: string, walletName: string) => {
       setSelectedWallet(walletID);
       handleSetWallet(walletID, walletName);
+      onClose();
     },
     [],
   );

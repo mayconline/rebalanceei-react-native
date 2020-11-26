@@ -1,31 +1,18 @@
-import React, { useContext, useState, useMemo, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { FlatList, TouchableOpacity, Modal } from 'react-native';
-import { ThemeContext } from 'styled-components/native';
+import { FlatList, Modal } from 'react-native';
 import { useAuth } from '../../contexts/authContext';
-import { useQuery, useLazyQuery, gql } from '@apollo/client';
-import {
-  Wrapper,
-  List,
-  Content,
-  Card,
-  CardContent,
-  CardTitleContainer,
-  CardTicket,
-  CardTitle,
-  CardSubTitle,
-  Grade,
-} from './styles';
+import { useLazyQuery, gql } from '@apollo/client';
 
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Wrapper, List } from './styles';
+
 import Header from '../../components/Header';
 import SubHeader from '../../components/SubHeader';
 import Empty from '../../components/Empty';
 import Loading from '../../components/Loading';
+import TextError from '../../components/TextError';
 import WalletModal from '../../modals/WalletModal';
 import ListItem from './ListItem';
-
-import { formatNumber, formatTicket } from '../../utils/format';
 
 const initialFilter = [
   {
@@ -52,18 +39,17 @@ interface IDataTickets {
 }
 
 const Ticket = () => {
-  const { color, gradient } = useContext(ThemeContext);
   const navigation = useNavigation();
   const [filters, setFilters] = useState(initialFilter);
   const [selectedFilter, setSelectFilter] = useState<string | undefined>(
     'grade',
   );
-  const { wallet, loading } = useAuth();
-  const [openModal, setOpenModal] = useState(false);
+  const { wallet } = useAuth();
+  const [openModal, setOpenModal] = useState(!wallet ? true : false);
 
   const [
     getTicketsByWallet,
-    { data, loading: queryLoading, error },
+    { data, loading: queryLoading, error: queryError },
   ] = useLazyQuery<IDataTickets>(GET_TICKETS_BY_WALLET, {
     variables: { walletID: wallet, sort: selectedFilter },
     fetchPolicy: 'cache-and-network',
@@ -73,12 +59,6 @@ const Ticket = () => {
     useCallback(() => {
       getTicketsByWallet();
     }, []),
-  );
-
-  useFocusEffect(
-    useCallback(() => {
-      if (!loading && !queryLoading && !wallet) setOpenModal(true);
-    }, [wallet, loading, queryLoading]),
   );
 
   const handleChangeFilter = useCallback((filterName: string) => {
@@ -92,8 +72,7 @@ const Ticket = () => {
     setSelectFilter(filterName);
   }, []);
 
-  const hasTickets =
-    wallet && !queryLoading && !!data?.getTicketsByWallet?.length;
+  const hasTickets = !queryLoading && !!data?.getTicketsByWallet?.length;
 
   const handleOpenEditModal = useCallback((item: ITickets) => {
     navigation.setParams({ ticket: null });
@@ -106,6 +85,9 @@ const Ticket = () => {
     <>
       <Wrapper>
         <Header />
+        {!!queryError && (
+          <TextError isTabs={true}>{queryError?.message}</TextError>
+        )}
         {!hasTickets ? (
           <Empty />
         ) : (
@@ -129,8 +111,6 @@ const Ticket = () => {
                 renderItem={({ item }) => (
                   <ListItem
                     item={item}
-                    color={color}
-                    gradient={gradient}
                     handleOpenEditModal={handleOpenEditModal}
                   />
                 )}

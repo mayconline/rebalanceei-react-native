@@ -29,6 +29,21 @@ export const client = new ApolloClient({
               return incoming;
             },
           },
+          getWalletByUser: {
+            merge(existing, incoming) {
+              return incoming;
+            },
+          },
+          getRentability: {
+            merge(existing, incoming) {
+              return incoming;
+            },
+          },
+          rebalances: {
+            merge(existing, incoming) {
+              return incoming;
+            },
+          },
         },
       },
     },
