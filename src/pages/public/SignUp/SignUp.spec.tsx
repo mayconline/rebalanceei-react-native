@@ -5,18 +5,9 @@ import { render, fireEvent, waitFor, act } from '../../../utils/testProvider';
 import * as Terms from '../../../utils/Terms';
 import { GraphQLError } from 'graphql';
 
-const mockedGoBack = jest.fn();
-const mockedNavigate = jest.fn();
 const mockedHandleSignIn = jest.fn();
 const mockedAlert = (Alert.alert = jest.fn());
 const mockedTerms = jest.spyOn(Terms, 'getTerms');
-
-jest.mock('@react-navigation/native', () => ({
-  useNavigation: () => ({
-    goBack: mockedGoBack,
-    navigate: mockedNavigate,
-  }),
-}));
 
 jest.mock('../../../contexts/authContext', () => ({
   useAuth: () => ({
@@ -87,7 +78,7 @@ describe('SignUp Page', () => {
   });
 
   it('should links work correctly', async () => {
-    const { getByText, getByA11yRole } = render(<SignUp />);
+    const { getByText, getByA11yRole, navigate, goBack } = render(<SignUp />);
 
     const termsLink = getByText(
       /Aceito os Termos de Uso e Política de Privacidade/i,
@@ -97,12 +88,12 @@ describe('SignUp Page', () => {
 
     const loginLink = getByText(/Já possui uma conta\?/i);
     fireEvent.press(loginLink);
-    expect(mockedNavigate).toHaveBeenCalledWith('Login');
+    expect(navigate).toHaveBeenCalledWith('Login');
 
     const iconBackButton = getByA11yRole('imagebutton');
     expect(iconBackButton).toBeTruthy();
     fireEvent.press(iconBackButton);
-    await waitFor(() => expect(mockedGoBack).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(goBack).toHaveBeenCalledTimes(1));
   });
 });
 

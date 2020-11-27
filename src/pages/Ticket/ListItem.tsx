@@ -26,7 +26,11 @@ const ListItem = ({ item, handleOpenEditModal }: IListItem) => {
 
   return (
     <Content>
-      <TouchableOpacity onPress={() => handleOpenEditModal(item)}>
+      <TouchableOpacity
+        accessibilityRole="button"
+        accessibilityLabel={`Editar ativo ${item.symbol}`}
+        onPress={() => handleOpenEditModal(item)}
+      >
         <Card colors={gradient.lightToGray} ticket={formatTicket(item.symbol)}>
           <MaterialCommunityIcons
             name="circle-edit-outline"
@@ -35,17 +39,37 @@ const ListItem = ({ item, handleOpenEditModal }: IListItem) => {
           />
           <CardContent>
             <CardTitleContainer>
-              <CardTicket>{formatTicket(item.symbol)}</CardTicket>
-              <CardTitle numberOfLines={1} ellipsizeMode="tail">
+              <CardTicket
+                accessibilityLabel="Código do Ativo"
+                accessibilityValue={{ text: item.symbol }}
+              >
+                {formatTicket(item.symbol)}
+              </CardTicket>
+              <CardTitle
+                accessibilityLabel="Nome do Ativo"
+                accessibilityValue={{ text: item.name }}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
                 {' '}
                 - {formatTicket(item.name)}
               </CardTitle>
             </CardTitleContainer>
-            <CardSubTitle>
+            <CardSubTitle
+              accessibilityLabel="Quantidade e Preço Médio do Ativo"
+              accessibilityValue={{
+                text: `${item.quantity}x ${item.averagePrice}`,
+              }}
+            >
               {item.quantity}x {formatNumber(item.averagePrice)}
             </CardSubTitle>
           </CardContent>
-          <Grade>{item.grade}</Grade>
+          <Grade
+            accessibilityLabel="Nota para o peso do ativo esperado pela carteira"
+            accessibilityValue={{ now: item.grade }}
+          >
+            {item.grade}
+          </Grade>
         </Card>
       </TouchableOpacity>
     </Content>

@@ -17,33 +17,37 @@ interface IMocks {
   };
 }
 
-const mockNavContext: any = {
-  isFocused: () => true,
-  addListener: jest.fn(() => jest.fn()),
-};
-
 export const testProvider = (
   children: JSX.Element,
   mocks: Array<IMocks> = [],
-  isPrivate: boolean = false,
 ) => {
-  const renderUtils = isPrivate
-    ? render(
-        <MockedProvider mocks={mocks}>
-          <ThemeProvider theme={themes.light}>
-            <NavigationContext.Provider value={mockNavContext}>
-              {children}
-            </NavigationContext.Provider>
-          </ThemeProvider>
-        </MockedProvider>,
-      )
-    : render(
-        <MockedProvider mocks={mocks}>
-          <ThemeProvider theme={themes.light}>{children}</ThemeProvider>
-        </MockedProvider>,
-      );
+  const setParams = jest.fn(jest.fn());
+  const navigate = jest.fn(jest.fn());
+  const goBack = jest.fn(jest.fn);
 
-  return { ...renderUtils };
+  const mockNavContext: any = {
+    isFocused: () => true,
+    addListener: jest.fn(() => jest.fn()),
+  };
+
+  const renderUtils = render(
+    <MockedProvider mocks={mocks}>
+      <ThemeProvider theme={themes.light}>
+        <NavigationContext.Provider
+          value={{ setParams, navigate, goBack, ...mockNavContext }}
+        >
+          {children}
+        </NavigationContext.Provider>
+      </ThemeProvider>
+    </MockedProvider>,
+  );
+
+  return {
+    ...renderUtils,
+    setParams,
+    navigate,
+    goBack,
+  };
 };
 
 export * from '@testing-library/react-native';

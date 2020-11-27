@@ -23,11 +23,9 @@ describe('Wallet Modal', () => {
       getAllByA11yRole,
       getByA11yLabel,
       getAllByA11yLabel,
-    } = render(
-      <WalletModal onClose={mockedOnClose} />,
-      [SUCCESSFUL_LIST_WALLET],
-      true,
-    );
+    } = render(<WalletModal onClose={mockedOnClose} />, [
+      SUCCESSFUL_LIST_WALLET,
+    ]);
 
     const title = await findByA11yRole('header');
     expect(title).toHaveProperty('children', ['Carteiras']);
@@ -90,7 +88,6 @@ describe('Wallet Modal', () => {
     const { getAllByA11yRole, getByText } = render(
       <WalletModal onClose={mockedOnClose} />,
       [EMPTY_LIST_WALLET],
-      true,
     );
 
     const addButton = getAllByA11yRole('button')[1];
@@ -107,11 +104,9 @@ describe('Wallet Modal', () => {
   });
 
   it('should throw error', async () => {
-    const { findByText } = render(
-      <WalletModal onClose={mockedOnClose} />,
-      [INVALID_LIST_WALLET],
-      true,
-    );
+    const { findByText } = render(<WalletModal onClose={mockedOnClose} />, [
+      INVALID_LIST_WALLET,
+    ]);
 
     await findByText(/Sem conexão com o banco de dados./i);
   });

@@ -3,16 +3,7 @@ import Login, { LOGIN } from './index';
 import { render, fireEvent, waitFor, act } from '../../../utils/testProvider';
 import { GraphQLError } from 'graphql';
 
-const mockedGoBack = jest.fn();
-const mockedNavigate = jest.fn();
 const mockedHandleSignIn = jest.fn();
-
-jest.mock('@react-navigation/native', () => ({
-  useNavigation: () => ({
-    goBack: mockedGoBack,
-    navigate: mockedNavigate,
-  }),
-}));
 
 jest.mock('../../../contexts/authContext', () => ({
   useAuth: () => ({
@@ -71,17 +62,17 @@ describe('Login Page', () => {
   });
 
   it('should links work correctly', async () => {
-    const { getByText, getByA11yRole } = render(<Login />);
+    const { getByText, getByA11yRole, navigate, goBack } = render(<Login />);
 
     const signUpLink = getByText(/Ainda não possui uma conta\?/i);
     act(() => fireEvent.press(signUpLink));
-    expect(mockedNavigate).toHaveBeenCalledWith('SignUp');
+    expect(navigate).toHaveBeenCalledWith('SignUp');
 
     const iconBackButton = getByA11yRole('imagebutton');
     expect(iconBackButton).toBeTruthy();
     act(() => fireEvent.press(iconBackButton));
 
-    await waitFor(() => expect(mockedGoBack).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(goBack).toHaveBeenCalledTimes(1));
   });
 });
 

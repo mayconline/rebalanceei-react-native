@@ -2,22 +2,14 @@ import React from 'react';
 import StepTwo from './StepTwo';
 import { render, fireEvent } from '../../../utils/testProvider';
 
-const mockedNavigate = jest.fn();
-
-jest.mock('@react-navigation/native', () => ({
-  useNavigation: () => ({
-    navigate: mockedNavigate,
-  }),
-}));
-
 describe('Onboarding StepTwo', () => {
   it('should display correct page view', async () => {
-    const { getByText, findByText } = render(<StepTwo />);
+    const { getByText, findByText, navigate } = render(<StepTwo />);
 
     const skipButton = await findByText(/Pular/i);
 
     fireEvent.press(skipButton);
-    expect(mockedNavigate).toBeCalledWith('SignUp');
+    expect(navigate).toBeCalledWith('SignUp');
 
     getByText(/Adicione seus ativos e dê notas a eles/i);
     getByText(
@@ -27,6 +19,6 @@ describe('Onboarding StepTwo', () => {
     const nextButton = await findByText(/Próximo/i);
 
     fireEvent.press(nextButton);
-    expect(mockedNavigate).toBeCalledWith('StepThree');
+    expect(navigate).toBeCalledWith('StepThree');
   });
 });
