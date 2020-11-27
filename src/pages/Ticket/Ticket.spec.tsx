@@ -1,6 +1,5 @@
 import React from 'react';
 import Ticket, { GET_TICKETS_BY_WALLET } from './index';
-import { GET_WALLET_BY_USER } from '../../modals/WalletModal';
 import { render, fireEvent, act } from '../../utils/testProvider';
 import { GraphQLError } from 'graphql';
 

@@ -234,29 +234,33 @@ const AddTicket: React.FC = () => {
         )}
       </Wrapper>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={openModal}
-        statusBarTranslucent={false}
-      >
-        <SuccessModal
-          onClose={() => setOpenModal(false)}
-          beforeModalClose={() => navigation.goBack()}
-        />
-      </Modal>
+      {openModal && (
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={openModal}
+          statusBarTranslucent={false}
+        >
+          <SuccessModal
+            onClose={() => setOpenModal(false)}
+            beforeModalClose={() => navigation.goBack()}
+          />
+        </Modal>
+      )}
 
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={hasSuggestions}
-        statusBarTranslucent={false}
-      >
-        <SuggestionsModal
-          onClose={() => setHasSuggestions(false)}
-          handleSelectTicket={handleSelectTicket}
-        />
-      </Modal>
+      {hasSuggestions && (
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={hasSuggestions}
+          statusBarTranslucent={false}
+        >
+          <SuggestionsModal
+            onClose={() => setHasSuggestions(false)}
+            handleSelectTicket={handleSelectTicket}
+          />
+        </Modal>
+      )}
     </>
   );
 };
