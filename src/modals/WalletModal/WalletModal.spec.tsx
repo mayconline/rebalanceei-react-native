@@ -1,6 +1,6 @@
 import React from 'react';
 import WalletModal, { GET_WALLET_BY_USER } from './index';
-import { render, fireEvent, waitFor, act } from '../../utils/testProvider';
+import { render, fireEvent, act } from '../../utils/testProvider';
 import { GraphQLError } from 'graphql';
 
 const mockedOnClose = jest.fn();

@@ -117,14 +117,16 @@ const MenuModal = ({ onClose }: MenuProps) => {
         </MenuContainer>
       </Wrapper>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={openUserModal}
-        statusBarTranslucent={true}
-      >
-        <UpdateUserModal onClose={() => setOpenUserModal(false)} />
-      </Modal>
+      {openUserModal && (
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={openUserModal}
+          statusBarTranslucent={true}
+        >
+          <UpdateUserModal onClose={() => setOpenUserModal(false)} />
+        </Modal>
+      )}
     </>
   );
 };

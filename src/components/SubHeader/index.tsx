@@ -29,7 +29,7 @@ const SubHeader: React.FC<ISubHeaderProps> = ({
 
   return (
     <Wrapper>
-      <Title>{title}</Title>
+      <Title accessibilityRole="header">{title}</Title>
       {children}
       <FiltersContainer>
         <ScrollView
