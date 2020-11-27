@@ -13,6 +13,10 @@ jest.mock('../../contexts/authContext', () => ({
 }));
 
 describe('Wallet Modal', () => {
+  beforeEach(() => {
+    mockedOnClose.mockClear();
+  });
+
   it('should successfully create wallet', async () => {
     const {
       findByA11yRole,
