@@ -3,10 +3,11 @@ import { BorderlessButton } from 'react-native-gesture-handler';
 
 interface IFocusProps {
   autoFocus?: boolean;
+  width?: number;
 }
 
 export const Container = styled.View<IFocusProps>`
-  width: 100%;
+  width: ${({ width }) => (width ? `${width}%` : '100%')};
   flex-direction: row;
   align-items: center;
   justify-content: space-between;

@@ -1,6 +1,6 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useCallback } from 'react';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import { Platform, Modal, ActivityIndicator } from 'react-native';
+import { Platform, Modal } from 'react-native';
 import { useAuth } from '../../contexts/authContext';
 import { ThemeContext } from 'styled-components/native';
 import { useMutation, gql } from '@apollo/client';
@@ -11,12 +11,6 @@ import {
   Title,
   Form,
   FormRow,
-  InputGroup,
-  Label,
-  Input,
-  Button,
-  Gradient,
-  TextButton,
   SuggestButton,
   SuggestButtonText,
   BackIcon,
@@ -28,6 +22,10 @@ import SuggestionsModal from '../../modals/SuggestionsModal';
 import { MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
 import EditTicket from '../../components/EditTicket';
 import { ITickets } from '../Ticket';
+import Button from '../../components/Button';
+import InputForm from '../../components/InputForm';
+import TextError from '../../components/TextError';
+import { formatAveragePricePreview, formatTicket } from '../../utils/format';
 
 interface IDataParamsForm {
   ticket: ITickets;
@@ -40,19 +38,11 @@ interface ITicketForm {
   averagePrice: string;
   grade: string;
   preview: string;
-}
-
-interface IDataCreateTicket {
-  _id: string;
-  symbol: string;
-  name: string;
-  quantity: number;
-  averagePrice: number;
-  grade: number;
+  averagePreview: string;
 }
 
 interface IcreateTicket {
-  createTicket: IDataCreateTicket;
+  createTicket: ITickets;
 }
 
 const AddTicket: React.FC = () => {
@@ -70,17 +60,18 @@ const AddTicket: React.FC = () => {
 
   const isEdit = !!params?.ticket?._id;
 
-  const handleGoBack = () => {
+  const handleGoBack = useCallback(() => {
     navigation.setParams({ ticket: null });
     navigation.goBack();
-  };
+    setTicketForm({} as ITicketForm);
+  }, []);
 
-  const HandleOpenSuggestionsModal = () => {
+  const HandleOpenSuggestionsModal = useCallback(() => {
     setFocus(1);
     setHasSuggestions(true);
-  };
+  }, []);
 
-  const handleSelectTicket = (symbol: string, name: string) => {
+  const handleSelectTicket = useCallback((symbol: string, name: string) => {
     setTicketForm(ticketForm => ({
       ...ticketForm,
       symbol,
@@ -88,14 +79,24 @@ const AddTicket: React.FC = () => {
       preview: symbol,
     }));
     setHasSuggestions(false);
-  };
+  }, []);
 
   const [
     createTicket,
     { loading: mutationLoading, error: mutationError },
   ] = useMutation<IcreateTicket>(CREATE_TICKET);
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
+    if (
+      !ticketForm.symbol ||
+      !ticketForm.name ||
+      !ticketForm.quantity ||
+      !ticketForm.averagePrice ||
+      !ticketForm.grade ||
+      !wallet
+    )
+      return;
+
     const dataTicket = {
       walletID: wallet,
       symbol: ticketForm.symbol,
@@ -120,9 +121,27 @@ const AddTicket: React.FC = () => {
       setFocus(0);
       setOpenModal(true);
     } catch (err) {
-      console.error(err);
+      console.error(mutationError?.message + err);
     }
-  };
+  }, [ticketForm]);
+
+  const handleSetGrade = useCallback((grade: string) => {
+    setTicketForm(ticketForm => ({ ...ticketForm, grade }));
+  }, []);
+
+  const handleSetQuantity = useCallback((quantity: string) => {
+    setTicketForm(ticketForm => ({ ...ticketForm, quantity }));
+  }, []);
+
+  const handleSetPrice = useCallback((averagePrice: string) => {
+    const { value, preview } = formatAveragePricePreview(averagePrice);
+
+    setTicketForm(ticketForm => ({
+      ...ticketForm,
+      averagePrice: value,
+      averagePreview: preview,
+    }));
+  }, []);
 
   return (
     <>
@@ -155,80 +174,70 @@ const AddTicket: React.FC = () => {
                 </SuggestButton>
               </FormRow>
               <FormRow>
-                <InputGroup>
-                  <Label>Ativo Selecionado</Label>
-                  <Input
-                    value={ticketForm.preview}
-                    placeholder="Nenhum ativo selecionado"
-                    placeholderTextColor={color.titleNotImport}
-                    maxLength={10}
-                    editable={false}
-                  />
-                </InputGroup>
+                <InputForm
+                  label="Ativo Selecionado"
+                  value={formatTicket(ticketForm.preview)}
+                  placeholder="Nenhum ativo selecionado"
+                  autoCompleteType="off"
+                  maxLength={10}
+                  editable={false}
+                  width={60}
+                />
 
-                <InputGroup>
-                  <Label>Dê uma Nota</Label>
-                  <Input
-                    value={ticketForm.grade}
-                    returnKeyType={'next'}
-                    keyboardType="number-pad"
-                    placeholder="0 a 100"
-                    placeholderTextColor={color.titleNotImport}
-                    maxLength={3}
-                    onChangeText={grade =>
-                      setTicketForm(ticketForm => ({ ...ticketForm, grade }))
-                    }
-                    autoFocus={focus === 2}
-                    onFocus={() => setFocus(2)}
-                    onEndEditing={() => setFocus(3)}
-                  />
-                </InputGroup>
+                <InputForm
+                  label="Dê uma Nota"
+                  value={ticketForm.grade}
+                  placeholder="0 a 100"
+                  maxLength={3}
+                  keyboardType="number-pad"
+                  autoFocus={focus === 2}
+                  onFocus={() => setFocus(2)}
+                  onChangeText={handleSetGrade}
+                  onEndEditing={() => setFocus(3)}
+                  width={30}
+                />
               </FormRow>
+
               <FormRow>
-                <InputGroup>
-                  <Label>Quantidade</Label>
-                  <Input
-                    value={ticketForm.quantity}
-                    returnKeyType={'next'}
-                    keyboardType="number-pad"
-                    placeholder="Números de Ativos"
-                    placeholderTextColor={color.titleNotImport}
-                    onChangeText={quantity =>
-                      setTicketForm(ticketForm => ({ ...ticketForm, quantity }))
-                    }
-                    autoFocus={focus === 3}
-                    onFocus={() => setFocus(3)}
-                    onEndEditing={() => setFocus(4)}
-                  />
-                </InputGroup>
-                <InputGroup>
-                  <Label>Preço Médio</Label>
-                  <Input
-                    value={ticketForm.averagePrice}
-                    keyboardType="number-pad"
-                    placeholder="Preço Médio de Compra"
-                    placeholderTextColor={color.titleNotImport}
-                    onChangeText={averagePrice =>
-                      setTicketForm(ticketForm => ({
-                        ...ticketForm,
-                        averagePrice,
-                      }))
-                    }
-                    autoFocus={focus === 4}
-                    onFocus={() => setFocus(4)}
-                    onEndEditing={() => setFocus(0)}
-                  />
-                </InputGroup>
+                <InputForm
+                  label="Preço Médio"
+                  value={ticketForm.averagePreview}
+                  placeholder="Preço Médio de Compra"
+                  keyboardType="number-pad"
+                  autoFocus={focus === 3}
+                  onFocus={() => setFocus(3)}
+                  onChangeText={handleSetPrice}
+                  onEndEditing={() => setFocus(4)}
+                  width={60}
+                />
+
+                <InputForm
+                  label="Quantidade"
+                  value={ticketForm.quantity}
+                  placeholder="9999"
+                  keyboardType="number-pad"
+                  returnKeyType="send"
+                  autoFocus={focus === 4}
+                  onFocus={() => setFocus(4)}
+                  onChangeText={handleSetQuantity}
+                  onEndEditing={() => setFocus(0)}
+                  onSubmitEditing={handleSubmit}
+                  width={30}
+                />
               </FormRow>
-              <Gradient colors={gradient.darkToLightBlue} start={[1, 0.5]}>
-                <Button onPress={handleSubmit}>
-                  {mutationLoading ? (
-                    <ActivityIndicator size="small" color="#fff" />
-                  ) : (
-                    <TextButton>Adicionar Ativo</TextButton>
-                  )}
-                </Button>
-              </Gradient>
+
+              {!!mutationError && (
+                <TextError>{mutationError?.message}</TextError>
+              )}
+
+              <Button
+                colors={gradient.darkToLightBlue}
+                start={[1, 0.5]}
+                onPress={handleSubmit}
+                loading={mutationLoading}
+              >
+                Entrar
+              </Button>
             </Form>
           </FormContainer>
         )}

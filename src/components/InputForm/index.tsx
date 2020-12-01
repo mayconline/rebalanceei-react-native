@@ -8,6 +8,7 @@ import { Container, InputGroup, Label, TextInput, InputIcon } from './styles';
 interface IInputProps extends TextInputProps {
   label: string;
   isSecure?: boolean;
+  width?: number;
 }
 
 const InputForm = ({
@@ -20,17 +21,19 @@ const InputForm = ({
   editable,
   keyboardType,
   returnKeyType = 'next',
+  autoCapitalize = 'none',
   autoFocus,
   onFocus,
   onChangeText,
   onEndEditing,
   onSubmitEditing,
+  width,
 }: IInputProps) => {
   const { color } = useContext(ThemeContext);
   const [visiblePassword, setVisiblePassword] = useState(true);
 
   return (
-    <Container autoFocus={autoFocus}>
+    <Container autoFocus={autoFocus} width={width}>
       <InputGroup>
         <Label accessibilityLabel={label} autoFocus={autoFocus}>
           {label}
@@ -52,7 +55,7 @@ const InputForm = ({
           secureTextEntry={isSecure && visiblePassword}
           accessibilityValue={{ text: value }}
           autoCorrect={false}
-          autoCapitalize="none"
+          autoCapitalize={autoCapitalize}
         />
       </InputGroup>
       {isSecure && (
