@@ -1,6 +1,6 @@
 import React from 'react';
 import Ticket, { GET_TICKETS_BY_WALLET } from './index';
-import { render, fireEvent, act, waitFor } from '../../utils/testProvider';
+import { render, fireEvent, act } from '../../utils/testProvider';
 import { GraphQLError } from 'graphql';
 
 jest.mock('../../contexts/authContext', () => ({
@@ -62,6 +62,35 @@ describe('Ticket Tab', () => {
         symbol: 'SAPR4.SA',
       },
     });
+  });
+
+  it('should render empty component', async () => {
+    const { findByA11yRole, getByA11yRole, navigate } = render(<Ticket />, [
+      EMPTY_LIST_TICKETS,
+    ]);
+
+    const title = await findByA11yRole('header');
+    expect(title).toHaveProperty('children', [
+      'Adicione um ativo dando uma nota para ele.',
+    ]);
+
+    const subTitle = getByA11yRole('text');
+    expect(subTitle).toHaveProperty('children', [
+      'Usaremos essa nota para calcular a % ideal desse ativo nessa carteira.',
+    ]);
+
+    const addButton = getByA11yRole('button');
+    expect(addButton).toHaveProperty('children', ['Adicionar Ativo']);
+
+    act(() => fireEvent.press(addButton));
+
+    expect(navigate).toHaveBeenCalledWith('AddTicket');
+  });
+
+  it('should throw error', async () => {
+    const { findByText } = render(<Ticket />, [INVALID_LIST_TICKETS]);
+
+    await findByText(/Sem conexão com o banco de dados./i);
   });
 });
 
@@ -127,6 +156,7 @@ const SUCCESSFUL_LIST_TICKETS = {
 const INVALID_LIST_TICKETS = {
   request: {
     query: GET_TICKETS_BY_WALLET,
+    variables: { walletID: '5fa1d752a8c5892a48c69b35', sort: 'grade' },
   },
   result: {
     data: undefined,
@@ -137,6 +167,7 @@ const INVALID_LIST_TICKETS = {
 const EMPTY_LIST_TICKETS = {
   request: {
     query: GET_TICKETS_BY_WALLET,
+    variables: { walletID: '5fa1d752a8c5892a48c69b35', sort: 'grade' },
   },
   result: {
     data: {

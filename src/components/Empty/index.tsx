@@ -8,12 +8,10 @@ import {
   ContainerTitle,
   Subtitle,
   Footer,
-  Gradient,
-  Button,
-  TextButton,
 } from './styles';
 
 import ImageEmpty from '../../../assets/svg/ImageEmpty';
+import Button from '../../components/Button';
 
 const Empty: React.FC = () => {
   const { gradient } = useContext(ThemeContext);
@@ -26,19 +24,23 @@ const Empty: React.FC = () => {
           <ImageEmpty />
         </Image>
         <ContainerTitle>
-          <Subtitle>Adicione um ativo dando uma nota para ele.</Subtitle>
-          <Subtitle>
+          <Subtitle accessibilityRole="header">
+            Adicione um ativo dando uma nota para ele.
+          </Subtitle>
+          <Subtitle accessibilityRole="text">
             Usaremos essa nota para calcular a % ideal desse ativo nessa
             carteira.
           </Subtitle>
         </ContainerTitle>
       </Main>
       <Footer>
-        <Gradient colors={gradient.darkToLightBlue} start={[1, 0.5]}>
-          <Button onPress={() => navigation.navigate('AddTicket')}>
-            <TextButton>Adicionar Ativo</TextButton>
-          </Button>
-        </Gradient>
+        <Button
+          colors={gradient.darkToLightBlue}
+          start={[1, 0.5]}
+          onPress={() => navigation.navigate('AddTicket')}
+        >
+          Adicionar Ativo
+        </Button>
       </Footer>
     </Wrapper>
   );
