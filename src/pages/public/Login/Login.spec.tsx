@@ -27,7 +27,7 @@ describe('Login Page', () => {
     const submitButton = getByA11yRole('button');
     expect(submitButton).toHaveProperty('children', ['Entrar']);
 
-    act(() => fireEvent.press(submitButton));
+    await act(async () => fireEvent.press(submitButton));
 
     getByText(/E-mail/i);
     const inputEmail = getByPlaceholderText(/meuemail@teste.com.br/i);

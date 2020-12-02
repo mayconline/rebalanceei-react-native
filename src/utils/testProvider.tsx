@@ -4,7 +4,10 @@ import { MockedProvider } from '@apollo/client/testing';
 import { ThemeProvider } from 'styled-components/native';
 import themes from '../themes';
 import { DocumentNode, GraphQLError } from 'graphql';
-import { NavigationContext } from '@react-navigation/native';
+import {
+  NavigationContext,
+  NavigationRouteContext,
+} from '@react-navigation/native';
 
 interface IMocks {
   request: {
@@ -20,6 +23,7 @@ interface IMocks {
 export const testProvider = (
   children: JSX.Element,
   mocks: Array<IMocks> = [],
+  params?: object,
 ) => {
   const setParams = jest.fn(jest.fn());
   const navigate = jest.fn(jest.fn());
@@ -36,7 +40,11 @@ export const testProvider = (
         <NavigationContext.Provider
           value={{ setParams, navigate, goBack, ...mockNavContext }}
         >
-          {children}
+          <NavigationRouteContext.Provider
+            value={{ params, key: 'mocked_key', name: 'mocked_name' }}
+          >
+            {children}
+          </NavigationRouteContext.Provider>
         </NavigationContext.Provider>
       </ThemeProvider>
     </MockedProvider>,

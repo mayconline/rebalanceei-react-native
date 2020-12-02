@@ -45,7 +45,7 @@ interface IcreateTicket {
   createTicket: ITickets;
 }
 
-const AddTicket: React.FC = () => {
+const AddTicket = () => {
   const { wallet } = useAuth();
   const { color, gradient } = useContext(ThemeContext);
 
@@ -147,7 +147,9 @@ const AddTicket: React.FC = () => {
     <>
       <Wrapper>
         <ContainerTitle>
-          <Title>{isEdit ? 'Alterar Ativo' : 'Adicionar Ativo'}</Title>
+          <Title accessibilityRole="header">
+            {isEdit ? 'Alterar Ativo' : 'Adicionar Ativo'}
+          </Title>
           <BackIcon onPress={handleGoBack}>
             <AntDesign name="closecircleo" size={24} color={color.secondary} />
           </BackIcon>
@@ -168,7 +170,7 @@ const AddTicket: React.FC = () => {
                     size={24}
                     color={color.titleNotImport}
                   />
-                  <SuggestButtonText>
+                  <SuggestButtonText accessibilityRole="button">
                     Busque e Selecione um Ativo
                   </SuggestButtonText>
                 </SuggestButton>
@@ -236,7 +238,7 @@ const AddTicket: React.FC = () => {
                 onPress={handleSubmit}
                 loading={mutationLoading}
               >
-                Adicionar Ativo
+                Adicionar
               </Button>
             </Form>
           </FormContainer>
@@ -274,7 +276,7 @@ const AddTicket: React.FC = () => {
   );
 };
 
-const CREATE_TICKET = gql`
+export const CREATE_TICKET = gql`
   mutation createTicket(
     $walletID: ID!
     $symbol: String!

@@ -76,7 +76,7 @@ const SuggestionsModal: React.FC<ISuggestionsProps> = ({
       <ShadowBackdrop />
       <SuggestionContainer>
         <InputForm
-          label="Busque e Selecione um Ativo"
+          label="Pesquise e Selecione um Ativo"
           value={selectTicket}
           placeholder="RBLC3"
           maxLength={10}
@@ -96,7 +96,11 @@ const SuggestionsModal: React.FC<ISuggestionsProps> = ({
                     handleSelectSuggest(suggestion.symbol, suggestion.name)
                   }
                 >
-                  <SuggestionText numberOfLines={1} ellipsizeMode="tail">
+                  <SuggestionText
+                    accessibilityRole="button"
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                  >
                     {suggestion.symbol}- {suggestion.name}
                   </SuggestionText>
                 </SuggestionButton>
