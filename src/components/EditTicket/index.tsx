@@ -1,23 +1,16 @@
 import React, { useContext, useState, useCallback } from 'react';
-import { Platform, ActivityIndicator } from 'react-native';
+import { Platform } from 'react-native';
 import { ThemeContext } from 'styled-components/native';
 import { useAuth } from '../../contexts/authContext';
 import { useMutation, gql } from '@apollo/client';
-import {
-  FormContainer,
-  Form,
-  FormRow,
-  InputGroup,
-  Label,
-  Input,
-  ContainerButtons,
-  Button,
-  Gradient,
-  TextButton,
-} from './styles';
+import { FormContainer, Form, FormRow, ContainerButtons } from './styles';
 
 import { ITickets, GET_TICKETS_BY_WALLET } from '../../pages/Ticket';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import Button from '../Button';
+import InputForm from '../InputForm';
+import TextError from '../TextError';
+import { formatAveragePricePreview, formatTicket } from '../../utils/format';
 
 interface IDataForm {
   _id: string;
@@ -26,6 +19,7 @@ interface IDataForm {
   quantity: string;
   averagePrice: string;
   grade: string;
+  averagePreview: string;
 }
 
 interface IUpdateTicket {
@@ -41,11 +35,12 @@ interface IEditWalletModal {
 }
 
 const EditTicket = ({ ticket }: IEditWalletModal) => {
-  const { color, gradient } = useContext(ThemeContext);
+  const { gradient } = useContext(ThemeContext);
   const { wallet } = useAuth();
   const navigation = useNavigation();
 
   const [ticketForm, setTicketForm] = useState<IDataForm>({} as IDataForm);
+  const [focus, setFocus] = useState(0);
 
   useFocusEffect(
     useCallback(() => {
@@ -56,6 +51,7 @@ const EditTicket = ({ ticket }: IEditWalletModal) => {
         quantity: String(ticket.quantity),
         averagePrice: String(ticket.averagePrice),
         grade: String(ticket.grade),
+        averagePreview: `R$ ${ticket.averagePrice}`,
       });
     }, [ticket]),
   );
@@ -63,6 +59,7 @@ const EditTicket = ({ ticket }: IEditWalletModal) => {
   const handleGoBack = useCallback(() => {
     navigation.setParams({ ticket: null });
     navigation.goBack();
+    setTicketForm({} as IDataForm);
   }, []);
 
   const [
@@ -75,7 +72,17 @@ const EditTicket = ({ ticket }: IEditWalletModal) => {
     { loading: mutationDeleteLoading, error: mutationDeleteError },
   ] = useMutation<IDeleteTicket>(DELETE_TICKET);
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
+    if (
+      !ticketForm._id ||
+      !ticketForm.symbol ||
+      !ticketForm.name ||
+      !ticketForm.quantity ||
+      !ticketForm.averagePrice ||
+      !ticketForm.grade
+    )
+      return;
+
     const dataTicket = {
       _id: ticketForm._id,
       symbol: ticketForm.symbol,
@@ -98,11 +105,13 @@ const EditTicket = ({ ticket }: IEditWalletModal) => {
 
       handleGoBack();
     } catch (err) {
-      console.error(err);
+      console.error(mutationError?.message + err);
     }
-  };
+  }, [ticketForm]);
 
-  const handleDeleteSubmit = async () => {
+  const handleDeleteSubmit = useCallback(async () => {
+    if (!ticketForm._id || !wallet) return;
+
     try {
       await deleteTicket({
         variables: {
@@ -121,92 +130,107 @@ const EditTicket = ({ ticket }: IEditWalletModal) => {
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [ticketForm]);
+
+  const handleSetGrade = useCallback((grade: string) => {
+    setTicketForm(ticketForm => ({ ...ticketForm, grade }));
+  }, []);
+
+  const handleSetQuantity = useCallback((quantity: string) => {
+    setTicketForm(ticketForm => ({ ...ticketForm, quantity }));
+  }, []);
+
+  const handleSetPrice = useCallback((averagePrice: string) => {
+    const { value, preview } = formatAveragePricePreview(averagePrice);
+
+    setTicketForm(ticketForm => ({
+      ...ticketForm,
+      averagePrice: value,
+      averagePreview: preview,
+    }));
+  }, []);
 
   return (
     <FormContainer behavior={Platform.OS == 'ios' ? 'padding' : 'position'}>
       <Form>
         <FormRow>
-          <InputGroup>
-            <Label>Ativo Selecionado</Label>
-            <Input
-              value={ticketForm.symbol}
-              defaultValue={ticketForm.symbol}
-              placeholderTextColor={color.titleNotImport}
-              maxLength={10}
-              editable={false}
-            />
-          </InputGroup>
+          <InputForm
+            label="Ativo Selecionado"
+            value={formatTicket(ticketForm.symbol)}
+            defaultValue={formatTicket(ticketForm.symbol)}
+            maxLength={10}
+            editable={false}
+            width={60}
+          />
 
-          <InputGroup>
-            <Label>Dê uma Nota</Label>
-            <Input
-              value={ticketForm.grade}
-              defaultValue={ticketForm.grade}
-              returnKeyType={'next'}
-              keyboardType="number-pad"
-              placeholder="0 a 100"
-              placeholderTextColor={color.titleNotImport}
-              maxLength={3}
-              onChangeText={grade =>
-                setTicketForm(ticketForm => ({ ...ticketForm, grade }))
-              }
-            />
-          </InputGroup>
+          <InputForm
+            label="Dê uma Nota"
+            value={ticketForm.grade}
+            defaultValue={ticketForm.grade}
+            placeholder="0 a 100"
+            maxLength={3}
+            keyboardType="number-pad"
+            autoFocus={focus === 2}
+            onFocus={() => setFocus(2)}
+            onChangeText={handleSetGrade}
+            onEndEditing={() => setFocus(3)}
+            width={30}
+          />
         </FormRow>
         <FormRow>
-          <InputGroup>
-            <Label>Quantidade</Label>
-            <Input
-              value={ticketForm.quantity}
-              defaultValue={ticketForm.quantity}
-              returnKeyType={'next'}
-              keyboardType="number-pad"
-              placeholder="Números de Ativos"
-              placeholderTextColor={color.titleNotImport}
-              onChangeText={quantity =>
-                setTicketForm(ticketForm => ({ ...ticketForm, quantity }))
-              }
-            />
-          </InputGroup>
-          <InputGroup>
-            <Label>Preço Médio</Label>
-            <Input
-              value={ticketForm.averagePrice}
-              defaultValue={ticketForm.averagePrice}
-              keyboardType="number-pad"
-              placeholder="Preço Médio de Compra"
-              placeholderTextColor={color.titleNotImport}
-              onChangeText={averagePrice =>
-                setTicketForm(ticketForm => ({
-                  ...ticketForm,
-                  averagePrice,
-                }))
-              }
-            />
-          </InputGroup>
+          <InputForm
+            label="Preço Médio"
+            value={ticketForm.averagePreview}
+            defaultValue={ticketForm.averagePreview}
+            placeholder="Preço Médio de Compra"
+            keyboardType="number-pad"
+            autoFocus={focus === 3}
+            onFocus={() => setFocus(3)}
+            onChangeText={handleSetPrice}
+            onEndEditing={() => setFocus(4)}
+            width={60}
+          />
+
+          <InputForm
+            label="Quantidade"
+            value={ticketForm.quantity}
+            defaultValue={ticketForm.quantity}
+            placeholder="9999"
+            keyboardType="number-pad"
+            returnKeyType="send"
+            autoFocus={focus === 4}
+            onFocus={() => setFocus(4)}
+            onChangeText={handleSetQuantity}
+            onEndEditing={() => setFocus(0)}
+            onSubmitEditing={handleSubmit}
+            width={30}
+          />
         </FormRow>
 
-        <ContainerButtons>
-          <Gradient colors={gradient.lightToDarkRed} start={[1, 0.5]}>
-            <Button onPress={handleDeleteSubmit}>
-              {mutationDeleteLoading ? (
-                <ActivityIndicator size="small" color="#fff" />
-              ) : (
-                <TextButton>Deletar</TextButton>
-              )}
-            </Button>
-          </Gradient>
+        {!!mutationError && <TextError>{mutationError?.message}</TextError>}
 
-          <Gradient colors={gradient.darkToLightBlue} start={[1, 0.5]}>
-            <Button onPress={handleSubmit}>
-              {mutationLoading ? (
-                <ActivityIndicator size="small" color="#fff" />
-              ) : (
-                <TextButton>Alterar</TextButton>
-              )}
-            </Button>
-          </Gradient>
+        {!!mutationDeleteError && (
+          <TextError>{mutationDeleteError?.message}</TextError>
+        )}
+
+        <ContainerButtons>
+          <Button
+            colors={gradient.lightToDarkRed}
+            start={[1, 0.5]}
+            onPress={handleDeleteSubmit}
+            loading={mutationDeleteLoading}
+          >
+            Deletar
+          </Button>
+
+          <Button
+            colors={gradient.darkToLightBlue}
+            start={[1, 0.5]}
+            onPress={handleSubmit}
+            loading={mutationLoading}
+          >
+            Alterar
+          </Button>
         </ContainerButtons>
       </Form>
     </FormContainer>

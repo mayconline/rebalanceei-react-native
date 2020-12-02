@@ -4,12 +4,12 @@ import { LinearGradient } from 'expo-linear-gradient';
 export const Gradient = styled(LinearGradient)<any>`
   justify-content: center;
   margin-top: 4px;
-  border-radius: 24px;
+  border-radius: 12px;
 `;
 
 export const ContainerButton = styled.TouchableOpacity<any>`
   align-items: center;
-  padding: 12px 20px;
+  padding: 12px 44px;
 `;
 
 export const TextButton = styled.Text`

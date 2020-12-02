@@ -14,6 +14,7 @@ interface IInputProps extends TextInputProps {
 const InputForm = ({
   label,
   value,
+  defaultValue,
   isSecure,
   placeholder,
   autoCompleteType,
@@ -40,6 +41,7 @@ const InputForm = ({
         </Label>
         <TextInput
           value={value}
+          defaultValue={defaultValue}
           placeholder={placeholder}
           placeholderTextColor={color.titleNotImport}
           autoCompleteType={autoCompleteType}

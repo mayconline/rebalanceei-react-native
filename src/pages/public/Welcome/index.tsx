@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 import {
@@ -18,9 +18,9 @@ import RebalanceeiLogo from '../../../../assets/svg/RebalanceeiLogo';
 const Welcome = () => {
   const navigation = useNavigation();
 
-  const HandleEnter = () => {
+  const handleEnter = useCallback(() => {
     navigation.navigate('StepOne');
-  };
+  }, []);
 
   return (
     <Wrapper>
@@ -34,7 +34,7 @@ const Welcome = () => {
         </ContainerTitle>
       </Header>
       <Footer>
-        <ButtonContainer onPress={HandleEnter}>
+        <ButtonContainer onPress={handleEnter}>
           <ButtonText>Entrar</ButtonText>
         </ButtonContainer>
       </Footer>

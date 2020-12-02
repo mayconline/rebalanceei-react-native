@@ -236,7 +236,7 @@ const AddTicket: React.FC = () => {
                 onPress={handleSubmit}
                 loading={mutationLoading}
               >
-                Entrar
+                Adicionar Ativo
               </Button>
             </Form>
           </FormContainer>
