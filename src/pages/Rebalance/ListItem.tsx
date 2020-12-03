@@ -35,18 +35,35 @@ const ListItem = ({ item }: { item: IRebalances }) => {
       <Card colors={gradient.lightToGray} status={item.status}>
         <CardContent>
           <CardTitleContainer>
-            <CardTicket>{formatTicket(item.symbol)}</CardTicket>
-            <CardTitle numberOfLines={1} ellipsizeMode="tail">
+            <CardTicket
+              accessibilityLabel="Código do Ativo"
+              accessibilityValue={{ text: item.symbol }}
+            >
+              {formatTicket(item.symbol)}
+            </CardTicket>
+            <CardTitle
+              accessibilityLabel="Nome do Ativo"
+              accessibilityValue={{ text: item.longName }}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
               {' '}
               - {formatTicket(item.longName)}
             </CardTitle>
           </CardTitleContainer>
           <SubTitleContant>
             <CardSubTitle>
-              <CurrentPercent>
+              <CurrentPercent
+                accessibilityLabel="Porcentagem atual do ativo"
+                accessibilityValue={{ now: item.currentPercent }}
+              >
                 {` % Atual: ${item.currentPercent.toFixed(1)} %`}
               </CurrentPercent>
-              <TargetPercent status={item.status}>
+              <TargetPercent
+                accessibilityLabel="Porcentagem ideal do ativo"
+                accessibilityValue={{ now: item.gradePercent }}
+                status={item.status}
+              >
                 {` % Ideal: ${item.gradePercent.toFixed(1)} %`}
               </TargetPercent>
             </CardSubTitle>
@@ -60,9 +77,19 @@ const ListItem = ({ item }: { item: IRebalances }) => {
         </CardContent>
         <AmountContainer>
           <VariationContainer>
-            <Status status={item.status}>{formatStatus(item.status)}</Status>
+            <Status
+              accessibilityLabel="Status do ativo"
+              accessibilityValue={{ text: item.status }}
+              status={item.status}
+            >
+              {formatStatus(item.status)}
+            </Status>
           </VariationContainer>
-          <Amount status={item.status}>
+          <Amount
+            accessibilityLabel="Valor para rebalancear o ativo na carteira"
+            accessibilityValue={{ now: item.targetAmount }}
+            status={item.status}
+          >
             {formatNumber(item.targetAmount)}
           </Amount>
         </AmountContainer>

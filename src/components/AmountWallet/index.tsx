@@ -42,18 +42,15 @@ const AmountWallet: React.FC = () => {
     variables: { _id: wallet },
     fetchPolicy: 'cache-and-network',
   });
+
+  const isPositive =
+    data && data?.getWalletById?.percentRentabilityWallet > 0 ? true : false;
+
   return queryLoading ? (
     <ActivityIndicator size="small" color={color.bgHeaderEmpty} />
   ) : (
     <Wrapper>
-      <Card
-        colors={gradient.lightToGray}
-        isPositive={
-          data && data?.getWalletById?.percentRentabilityWallet > 0
-            ? true
-            : false
-        }
-      >
+      <Card colors={gradient.lightToGray} isPositive={isPositive}>
         <WalletContainer>
           <PreviousContainer>
             <PreviousTitle>Saldo Aplicado</PreviousTitle>
@@ -65,7 +62,7 @@ const AmountWallet: React.FC = () => {
             <CurrentTitle>Saldo Atual</CurrentTitle>
             <CurrentAmount>
               {data && formatNumber(data?.getWalletById?.sumAmountWallet)}
-              <VariationAmount>
+              <VariationAmount isPositive={isPositive}>
                 {data &&
                   formatPercent(data?.getWalletById?.percentRentabilityWallet)}
               </VariationAmount>

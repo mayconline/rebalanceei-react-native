@@ -53,8 +53,9 @@ export const CurrentAmount = styled.Text`
   padding-top: 4px;
 `;
 
-export const VariationAmount = styled.Text`
-  color: ${({ theme }) => theme.color.success};
+export const VariationAmount = styled.Text<any>`
+  color: ${({ theme, isPositive }) =>
+    isPositive ? theme.color.success : theme.color.danger};
   font: 600 16px/20px 'TitilliumWeb_600SemiBold';
   align-self: flex-end;
 `;

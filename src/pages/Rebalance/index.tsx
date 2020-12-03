@@ -100,7 +100,7 @@ const Rebalance = () => {
   );
 };
 
-const REBALANCES = gql`
+export const REBALANCES = gql`
   query rebalances($walletID: ID!, $sort: SortRebalance!) {
     rebalances(walletID: $walletID, sort: $sort) {
       _id
