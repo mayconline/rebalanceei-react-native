@@ -1,13 +1,28 @@
 import styled from 'styled-components/native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export const Wrapper = styled.SafeAreaView`
-  margin-top: 16px;
+  flex: 0;
+`;
+
+export const Card = styled(LinearGradient)<any>`
+  flex: 1;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row;
+  margin: 4px 12px;
+  border-radius: 30px;
+  padding: 12px 20px;
+  border-left-color: ${({ theme, isPositive }) =>
+    isPositive ? theme.color.success : theme.color.danger};
+  border-left-width: 2px;
 `;
 
 export const WalletContainer = styled.View`
   justify-content: space-between;
   align-items: center;
   flex-direction: row;
+  flex: 1;
 `;
 
 export const PreviousContainer = styled.View``;

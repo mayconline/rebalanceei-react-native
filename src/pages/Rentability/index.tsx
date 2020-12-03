@@ -1,28 +1,9 @@
-import React, { useContext, useState, useCallback } from 'react';
-import { FlatList } from 'react-native';
-import { ThemeContext } from 'styled-components/native';
+import React, { useState, useCallback } from 'react';
 import { useAuth } from '../../contexts/authContext';
-import { useQuery, useLazyQuery, gql } from '@apollo/client';
+import { useLazyQuery, gql } from '@apollo/client';
 import { useFocusEffect } from '@react-navigation/native';
-import {
-  Wrapper,
-  List,
-  Content,
-  CardTitleContainer,
-  CardTicket,
-  Card,
-  CardContent,
-  CardTitle,
-  SubTitleContant,
-  CardSubTitle,
-  CardSubTitleLegend,
-  AmountContainer,
-  Amount,
-  Variation,
-  VariationContainer,
-} from './styles';
 
-import { FontAwesome5 } from '@expo/vector-icons';
+import { Wrapper } from './styles';
 
 import Header from '../../components/Header';
 import SubHeader from '../../components/SubHeader';
@@ -30,8 +11,8 @@ import AmountWallet from '../../components/AmountWallet';
 import Divider from '../../components/Divider';
 import Loading from '../../components/Loading';
 import Empty from '../../components/Empty';
-
-import { formatNumber, formatPercent, formatTicket } from '../../utils/format';
+import ListTicket from '../../components/ListTicket';
+import ListItem from './ListItem';
 
 const initialFilter = [
   {
@@ -52,7 +33,7 @@ const initialFilter = [
   },
 ];
 
-interface IGetRentability {
+export interface IGetRentability {
   _id: string;
   symbol: string;
   longName: string;
@@ -69,7 +50,6 @@ interface IDataTickets {
 }
 
 const Rentability: React.FC = () => {
-  const { color, gradient } = useContext(ThemeContext);
   const [filters, setFilters] = useState(initialFilter);
   const [selectedFilter, setSelectFilter] = useState<string | undefined>(
     'variationPercent',
@@ -77,9 +57,10 @@ const Rentability: React.FC = () => {
 
   const { wallet } = useAuth();
 
-  const [getRentability, { data, loading: queryLoading, error }] = useLazyQuery<
-    IDataTickets
-  >(GET_RENTABILITY, {
+  const [
+    getRentability,
+    { data, loading: queryLoading, error: queryError },
+  ] = useLazyQuery<IDataTickets>(GET_RENTABILITY, {
     variables: { walletID: wallet, sort: selectedFilter },
     fetchPolicy: 'cache-and-network',
   });
@@ -116,67 +97,15 @@ const Rentability: React.FC = () => {
             title="Variação da carteira"
             filters={filters}
             onPress={handleChangeFilter}
-          >
-            <AmountWallet />
-            <Divider />
-          </SubHeader>
-          <List>
-            <FlatList
-              data={data?.getRentability}
-              keyExtractor={item => item._id}
-              initialNumToRender={data?.getRentability.length}
-              renderItem={({ item }) => (
-                <Content>
-                  <Card
-                    colors={gradient.lightToGray}
-                    variation={item.variationPercent}
-                  >
-                    <CardContent>
-                      <CardTitleContainer>
-                        <CardTicket>{formatTicket(item.symbol)}</CardTicket>
-                        <CardTitle numberOfLines={1} ellipsizeMode="tail">
-                          {' '}
-                          - {formatTicket(item.longName)}
-                        </CardTitle>
-                      </CardTitleContainer>
-                      <SubTitleContant>
-                        <CardSubTitle>
-                          {formatNumber(item.costAmount)}
-                        </CardSubTitle>
-                        <CardSubTitleLegend>Saldo aplicado</CardSubTitleLegend>
-                      </SubTitleContant>
-                    </CardContent>
-                    <AmountContainer>
-                      <VariationContainer>
-                        <Variation variation={item.variationPercent}>
-                          {formatPercent(item.variationPercent)}
-                        </Variation>
-                        {item.variationPercent !== 0 && (
-                          <FontAwesome5
-                            name={
-                              item.variationPercent > 0
-                                ? 'caret-up'
-                                : 'caret-down'
-                            }
-                            size={16}
-                            color={
-                              item.variationPercent > 0
-                                ? color.success
-                                : color.danger
-                            }
-                          />
-                        )}
-                      </VariationContainer>
-                      <Amount variation={item.variationPercent}>
-                        {formatNumber(item.currentAmount)}
-                      </Amount>
-                      <CardSubTitleLegend>Saldo atual</CardSubTitleLegend>
-                    </AmountContainer>
-                  </Card>
-                </Content>
-              )}
-            />
-          </List>
+          ></SubHeader>
+
+          <ListTicket
+            data={data?.getRentability}
+            extraData={!!queryLoading}
+            keyExtractor={item => item._id}
+            ListHeaderComponent={<AmountWallet />}
+            renderItem={({ item }) => <ListItem item={item} />}
+          />
         </>
       )}
     </Wrapper>

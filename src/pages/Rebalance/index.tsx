@@ -1,43 +1,18 @@
 import React, { useContext, useState, useCallback } from 'react';
-import { FlatList } from 'react-native';
 import { ThemeContext } from 'styled-components/native';
 import { useAuth } from '../../contexts/authContext';
-import { useQuery, useLazyQuery, gql } from '@apollo/client';
+import { useLazyQuery, gql } from '@apollo/client';
 import { useFocusEffect } from '@react-navigation/native';
-import {
-  Wrapper,
-  List,
-  Content,
-  Card,
-  CardContent,
-  CardTitleContainer,
-  CardTicket,
-  CardTitle,
-  SubTitleContant,
-  CardSubTitle,
-  CurrentPercent,
-  TargetPercent,
-  ProgressBar,
-  AmountContainer,
-  Amount,
-  Variation,
-  VariationContainer,
-} from './styles';
+
+import { Wrapper } from './styles';
 
 import Header from '../../components/Header';
 import SubHeader from '../../components/SubHeader';
 import Empty from '../../components/Empty';
 import Loading from '../../components/Loading';
-
-import {
-  formatNumber,
-  formatStatus,
-  formatTicket,
-  formatPercent,
-  formatProgress,
-} from '../../utils/format';
-
-import { FontAwesome5 } from '@expo/vector-icons';
+import TextError from '../../components/TextError';
+import ListTicket from '../../components/ListTicket';
+import ListItem from './ListItem';
 
 const initialFilter = [
   {
@@ -62,7 +37,7 @@ const initialFilter = [
   },
 ];
 
-interface IRebalances {
+export interface IRebalances {
   _id: string;
   symbol: string;
   longName: string;
@@ -86,9 +61,10 @@ const Rebalance: React.FC = () => {
   );
   const { wallet } = useAuth();
 
-  const [rebalances, { data, loading: queryLoading, error }] = useLazyQuery<
-    IDataTickets
-  >(REBALANCES, {
+  const [
+    rebalances,
+    { data, loading: queryLoading, error: queryError },
+  ] = useLazyQuery<IDataTickets>(REBALANCES, {
     variables: { walletID: wallet, sort: selectedFilter },
     fetchPolicy: 'cache-and-network',
   });
@@ -117,6 +93,9 @@ const Rebalance: React.FC = () => {
   ) : (
     <Wrapper>
       <Header />
+      {!!queryError && (
+        <TextError isTabs={true}>{queryError?.message}</TextError>
+      )}
       {!hasTickets ? (
         <Empty />
       ) : (
@@ -126,70 +105,12 @@ const Rebalance: React.FC = () => {
             filters={filters}
             onPress={handleChangeFilter}
           />
-          <List>
-            <FlatList
-              data={data?.rebalances}
-              keyExtractor={item => item._id}
-              initialNumToRender={data?.rebalances.length}
-              renderItem={({ item }) => (
-                <Content>
-                  <Card colors={gradient.lightToGray} status={item.status}>
-                    <CardContent>
-                      <CardTitleContainer>
-                        <CardTicket>{formatTicket(item.symbol)}</CardTicket>
-                        <CardTitle numberOfLines={1} ellipsizeMode="tail">
-                          {' '}
-                          - {formatTicket(item.longName)}
-                        </CardTitle>
-                      </CardTitleContainer>
-                      <SubTitleContant>
-                        <CardSubTitle>
-                          <CurrentPercent>
-                            {` % Atual: ${item.currentPercent.toFixed(1)} %`}
-                          </CurrentPercent>
-                          <TargetPercent status={item.status}>
-                            {` % Ideal: ${item.gradePercent.toFixed(1)} %`}
-                          </TargetPercent>
-                        </CardSubTitle>
-                        <ProgressBar
-                          styleAttr="Horizontal"
-                          indeterminate={false}
-                          progress={formatProgress(
-                            item.gradePercent,
-                            item.currentPercent,
-                          )}
-                          color={color.blue}
-                        />
-                      </SubTitleContant>
-                    </CardContent>
-                    <AmountContainer>
-                      <VariationContainer>
-                        <Variation variation={item.targetPercent}>
-                          {formatPercent(item.targetPercent)}
-                        </Variation>
-                        {item.targetPercent !== 0 && (
-                          <FontAwesome5
-                            name={
-                              item.targetPercent > 0 ? 'caret-up' : 'caret-down'
-                            }
-                            size={16}
-                            color={
-                              item.targetPercent > 0
-                                ? color.success
-                                : color.danger
-                            }
-                          />
-                        )}
-                      </VariationContainer>
-                      <Amount status={item.status}>
-                        {formatNumber(item.targetAmount)}
-                      </Amount>
-                    </AmountContainer>
-                  </Card>
-                </Content>
-              )}
-            />
-          </List>
+          <ListTicket
+            data={data?.rebalances}
+            extraData={!!queryLoading}
+            keyExtractor={item => item._id}
+            renderItem={({ item }) => <ListItem item={item} />}
+          />
         </>
       )}
     </Wrapper>

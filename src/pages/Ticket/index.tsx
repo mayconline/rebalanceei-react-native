@@ -1,10 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { FlatList, Modal } from 'react-native';
+import { Modal } from 'react-native';
 import { useAuth } from '../../contexts/authContext';
 import { useLazyQuery, gql } from '@apollo/client';
 
-import { Wrapper, List } from './styles';
+import { Wrapper } from './styles';
 
 import Header from '../../components/Header';
 import SubHeader from '../../components/SubHeader';
@@ -12,6 +12,7 @@ import Empty from '../../components/Empty';
 import Loading from '../../components/Loading';
 import TextError from '../../components/TextError';
 import WalletModal from '../../modals/WalletModal';
+import ListTicket from '../../components/ListTicket';
 import ListItem from './ListItem';
 
 const initialFilter = [
@@ -97,25 +98,17 @@ const Ticket = () => {
               filters={filters}
               onPress={handleChangeFilter}
             />
-            <List>
-              <FlatList
-                data={data?.getTicketsByWallet}
-                extraData={!!queryLoading}
-                keyExtractor={item => item._id}
-                removeClippedSubviews={false}
-                initialNumToRender={5}
-                maxToRenderPerBatch={1}
-                updateCellsBatchingPeriod={300}
-                automaticallyAdjustContentInsets={false}
-                style={{ flex: 0 }}
-                renderItem={({ item }) => (
-                  <ListItem
-                    item={item}
-                    handleOpenEditModal={handleOpenEditModal}
-                  />
-                )}
-              />
-            </List>
+            <ListTicket
+              data={data?.getTicketsByWallet}
+              extraData={!!queryLoading}
+              keyExtractor={item => item._id}
+              renderItem={({ item }) => (
+                <ListItem
+                  item={item}
+                  handleOpenEditModal={handleOpenEditModal}
+                />
+              )}
+            />
           </>
         )}
       </Wrapper>
