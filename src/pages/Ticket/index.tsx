@@ -18,11 +18,9 @@ import ListItem from './ListItem';
 const initialFilter = [
   {
     name: 'symbol',
-    focused: false,
   },
   {
     name: 'grade',
-    focused: true,
   },
 ];
 
@@ -41,7 +39,7 @@ interface IDataTickets {
 
 const Ticket = () => {
   const navigation = useNavigation();
-  const [filters, setFilters] = useState(initialFilter);
+
   const [selectedFilter, setSelectFilter] = useState<string | undefined>(
     'grade',
   );
@@ -59,17 +57,10 @@ const Ticket = () => {
   useFocusEffect(
     useCallback(() => {
       getTicketsByWallet();
-    }, []),
+    }, [wallet]),
   );
 
   const handleChangeFilter = useCallback((filterName: string) => {
-    setFilters(filters =>
-      filters.map(filter => ({
-        name: filter.name,
-        focused: filterName !== filter.name ? false : true,
-      })),
-    );
-
     setSelectFilter(filterName);
   }, []);
 
@@ -95,7 +86,8 @@ const Ticket = () => {
           <>
             <SubHeader
               title="Meus Ativos"
-              filters={filters}
+              filters={initialFilter}
+              selectedFilter={selectedFilter}
               onPress={handleChangeFilter}
             />
             <ListTicket

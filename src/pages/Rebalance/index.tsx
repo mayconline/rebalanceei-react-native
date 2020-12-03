@@ -16,23 +16,15 @@ import ListItem from './ListItem';
 const initialFilter = [
   {
     name: 'symbol',
-    focused: false,
   },
   {
     name: 'currentPercent',
-    focused: false,
   },
   {
     name: 'gradePercent',
-    focused: false,
   },
   {
     name: 'targetAmount',
-    focused: false,
-  },
-  {
-    name: 'targetPercent',
-    focused: true,
   },
 ];
 
@@ -52,10 +44,9 @@ interface IDataTickets {
   rebalances: IRebalances[];
 }
 
-const Rebalance: React.FC = () => {
-  const [filters, setFilters] = useState(initialFilter);
+const Rebalance = () => {
   const [selectedFilter, setSelectFilter] = useState<string | undefined>(
-    'targetPercent',
+    'targetAmount',
   );
   const { wallet } = useAuth();
 
@@ -73,16 +64,9 @@ const Rebalance: React.FC = () => {
     }, [selectedFilter]),
   );
 
-  const handleChangeFilter = (filterName: string) => {
-    setFilters(filters =>
-      filters.map(filter => ({
-        name: filter.name,
-        focused: filterName !== filter.name ? false : true,
-      })),
-    );
-
+  const handleChangeFilter = useCallback((filterName: string) => {
     setSelectFilter(filterName);
-  };
+  }, []);
 
   const hasTickets = wallet && !queryLoading && !!data?.rebalances?.length;
 
@@ -100,7 +84,8 @@ const Rebalance: React.FC = () => {
         <>
           <SubHeader
             title="Rebalancear"
-            filters={filters}
+            filters={initialFilter}
+            selectedFilter={selectedFilter}
             onPress={handleChangeFilter}
           />
           <ListTicket

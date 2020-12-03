@@ -14,17 +14,17 @@ import {
   ProgressBar,
   AmountContainer,
   Amount,
-  Variation,
+  Status,
   VariationContainer,
 } from './styles';
 
 import {
   formatNumber,
   formatTicket,
-  formatPercent,
+  formatStatus,
   formatProgress,
 } from '../../utils/format';
-import { FontAwesome5 } from '@expo/vector-icons';
+
 import { IRebalances } from './index';
 
 const ListItem = ({ item }: { item: IRebalances }) => {
@@ -60,16 +60,7 @@ const ListItem = ({ item }: { item: IRebalances }) => {
         </CardContent>
         <AmountContainer>
           <VariationContainer>
-            <Variation variation={item.targetPercent}>
-              {formatPercent(item.targetPercent)}
-            </Variation>
-            {item.targetPercent !== 0 && (
-              <FontAwesome5
-                name={item.targetPercent > 0 ? 'caret-up' : 'caret-down'}
-                size={16}
-                color={item.targetPercent > 0 ? color.success : color.danger}
-              />
-            )}
+            <Status status={item.status}>{formatStatus(item.status)}</Status>
           </VariationContainer>
           <Amount status={item.status}>
             {formatNumber(item.targetAmount)}

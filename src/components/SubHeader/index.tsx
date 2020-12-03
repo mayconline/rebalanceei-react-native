@@ -9,17 +9,18 @@ import { formatFilter } from '../../utils/format';
 interface ISubHeaderProps {
   title: string;
   filters?: IFilters[];
+  selectedFilter?: string;
   onPress(filter: string): void;
 }
 
 interface IFilters {
   name: string;
-  focused: boolean;
 }
 
 const SubHeader: React.FC<ISubHeaderProps> = ({
   title,
   filters,
+  selectedFilter,
   onPress,
   children,
 }) => {
@@ -43,7 +44,7 @@ const SubHeader: React.FC<ISubHeaderProps> = ({
         >
           {filters?.map(filter => (
             <Filter key={filter.name} onPress={() => onPress(filter.name)}>
-              <TextFilter focused={filter.focused}>
+              <TextFilter focused={filter.name === selectedFilter}>
                 {formatFilter(filter.name)}
               </TextFilter>
             </Filter>

@@ -4,10 +4,6 @@ interface IFormatStatus {
   status?: string;
 }
 
-interface IformatNumber {
-  variation: number;
-}
-
 export const Wrapper = styled.View`
   flex: 1;
   background-color: ${({ theme }) => theme.color.primary};
@@ -129,15 +125,4 @@ export const Status = styled.Text<IFormatStatus>`
 export const VariationContainer = styled.View`
   flex-direction: row;
   align-items: flex-end;
-`;
-
-export const Variation = styled.Text<IformatNumber>`
-  color: ${({ theme, variation }) =>
-    variation > 0
-      ? theme.color.success
-      : variation < 0
-      ? theme.color.danger
-      : theme.color.subtitle};
-  font: 600 16px/24px 'TitilliumWeb_600SemiBold';
-  padding-right: 4px;
 `;

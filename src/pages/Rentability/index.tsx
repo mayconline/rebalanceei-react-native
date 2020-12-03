@@ -8,28 +8,24 @@ import { Wrapper } from './styles';
 import Header from '../../components/Header';
 import SubHeader from '../../components/SubHeader';
 import AmountWallet from '../../components/AmountWallet';
-import Divider from '../../components/Divider';
 import Loading from '../../components/Loading';
 import Empty from '../../components/Empty';
+import TextError from '../../components/TextError';
 import ListTicket from '../../components/ListTicket';
 import ListItem from './ListItem';
 
 const initialFilter = [
   {
     name: 'symbol',
-    focused: false,
   },
   {
     name: 'costAmount',
-    focused: false,
   },
   {
     name: 'currentAmount',
-    focused: false,
   },
   {
     name: 'variationPercent',
-    focused: true,
   },
 ];
 
@@ -49,10 +45,9 @@ interface IDataTickets {
   getRentability: IGetRentability[];
 }
 
-const Rentability: React.FC = () => {
-  const [filters, setFilters] = useState(initialFilter);
+const Rentability = () => {
   const [selectedFilter, setSelectFilter] = useState<string | undefined>(
-    'variationPercent',
+    'currentAmount',
   );
 
   const { wallet } = useAuth();
@@ -71,16 +66,9 @@ const Rentability: React.FC = () => {
     }, [selectedFilter]),
   );
 
-  const handleChangeFilter = (filterName: string) => {
-    setFilters(filters =>
-      filters.map(filter => ({
-        name: filter.name,
-        focused: filterName !== filter.name ? false : true,
-      })),
-    );
-
+  const handleChangeFilter = useCallback((filterName: string) => {
     setSelectFilter(filterName);
-  };
+  }, []);
 
   const hasTickets = wallet && !queryLoading && !!data?.getRentability?.length;
 
@@ -89,13 +77,17 @@ const Rentability: React.FC = () => {
   ) : (
     <Wrapper>
       <Header />
+      {!!queryError && (
+        <TextError isTabs={true}>{queryError?.message}</TextError>
+      )}
       {!hasTickets ? (
         <Empty />
       ) : (
         <>
           <SubHeader
             title="Variação da carteira"
-            filters={filters}
+            filters={initialFilter}
+            selectedFilter={selectedFilter}
             onPress={handleChangeFilter}
           ></SubHeader>
 
