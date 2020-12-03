@@ -29,6 +29,10 @@ export const Title = styled.Text`
   padding-bottom: 8px;
 `;
 
+export const Content = styled.View`
+  flex: 0;
+`;
+
 export const Card = styled.TouchableOpacity`
   justify-content: space-between;
   flex-direction: row;

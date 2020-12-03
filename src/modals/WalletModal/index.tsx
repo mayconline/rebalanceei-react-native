@@ -1,5 +1,5 @@
 import React, { useContext, useState, useCallback } from 'react';
-import { FlatList, Modal } from 'react-native';
+import { Modal } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { ThemeContext } from 'styled-components/native';
 import { AntDesign } from '@expo/vector-icons';
@@ -8,38 +8,27 @@ import { useAuth } from '../../contexts/authContext';
 import {
   Wrapper,
   Title,
-  Card,
-  CardTitleContainer,
-  WalletTitle,
-  CardSubTitle,
-  CurrentAmount,
-  VariationPercent,
-  PercentWallet,
-  PercentTitle,
-  CurrentPercent,
   AddWalletContainer,
   Label,
   BackButtonContainer,
   BackButton,
   BackIcon,
   AddButtonContainer,
-  WalletRadioSelect,
 } from './styles';
 
-import Divider from '../../components/Divider';
 import AddButton from '../../components/AddButton';
 import ShadowBackdrop from '../../components/ShadowBackdrop';
 import Loading from '../../components/Loading';
 import TextError from '../../components/TextError';
 import AddWalletModal from '../AddWalletModal';
-
-import { formatNumber, formatPercent } from '../../utils/format';
+import ListTicket from '../../components/ListTicket';
+import ListItem from './ListItem';
 
 interface IWalletProps {
   onClose(): void;
 }
 
-interface IObjectWallet {
+export interface IObjectWallet {
   _id: string;
   description: string;
   sumCostWallet: number;
@@ -88,56 +77,16 @@ const WalletModal = ({ onClose }: IWalletProps) => {
       <ShadowBackdrop />
       <Wrapper>
         <Title accessibilityRole="header">Carteiras</Title>
-        <FlatList
+        <ListTicket
           data={data?.getWalletByUser}
+          extraData={!!queryLoading}
           keyExtractor={item => item._id}
           renderItem={({ item }) => (
-            <>
-              <Card
-                onPress={() => handleSelectWallet(item._id, item.description)}
-                accessibilityRole="radio"
-                accessibilityLabel={item.description}
-                accessibilityState={{ selected: item._id === selectedWallet }}
-              >
-                <CardTitleContainer>
-                  <WalletTitle numberOfLines={1} ellipsizeMode="tail">
-                    {item.description}
-                  </WalletTitle>
-                  <CardSubTitle>
-                    <CurrentAmount
-                      accessibilityLabel="Valor atual da carteira"
-                      accessibilityValue={{ now: item.sumAmountWallet }}
-                    >
-                      {formatNumber(item.sumAmountWallet)}
-                    </CurrentAmount>
-                    <VariationPercent
-                      value={item.percentRentabilityWallet}
-                      accessibilityLabel="Percentual de valorização da carteira"
-                      accessibilityValue={{
-                        now: item.percentRentabilityWallet,
-                      }}
-                    >
-                      {formatPercent(item.percentRentabilityWallet)}
-                    </VariationPercent>
-                  </CardSubTitle>
-                </CardTitleContainer>
-
-                <PercentWallet>
-                  <PercentTitle>% da Carteira</PercentTitle>
-                  <CurrentPercent
-                    accessibilityLabel="Porcentagem atual do valor alocado na carteira"
-                    accessibilityValue={{
-                      now: item.percentPositionWallet,
-                    }}
-                  >
-                    {`${item.percentPositionWallet.toFixed(0)}%`}
-                  </CurrentPercent>
-                </PercentWallet>
-
-                <WalletRadioSelect selected={item._id === selectedWallet} />
-              </Card>
-              <Divider />
-            </>
+            <ListItem
+              item={item}
+              handleSelectWallet={handleSelectWallet}
+              selectedWallet={selectedWallet}
+            />
           )}
         />
         {!!queryError && <TextError>{queryError?.message}</TextError>}

@@ -11,7 +11,7 @@ const ListTicket = (props: FlatListProps<any>) => {
         removeClippedSubviews={false}
         initialNumToRender={5}
         maxToRenderPerBatch={1}
-        updateCellsBatchingPeriod={300}
+        updateCellsBatchingPeriod={600}
         automaticallyAdjustContentInsets={false}
         style={{ flex: 0 }}
       />

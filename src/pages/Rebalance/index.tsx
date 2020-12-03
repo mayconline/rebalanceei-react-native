@@ -1,5 +1,4 @@
-import React, { useContext, useState, useCallback } from 'react';
-import { ThemeContext } from 'styled-components/native';
+import React, { useState, useCallback } from 'react';
 import { useAuth } from '../../contexts/authContext';
 import { useLazyQuery, gql } from '@apollo/client';
 import { useFocusEffect } from '@react-navigation/native';
@@ -54,7 +53,6 @@ interface IDataTickets {
 }
 
 const Rebalance: React.FC = () => {
-  const { color, gradient } = useContext(ThemeContext);
   const [filters, setFilters] = useState(initialFilter);
   const [selectedFilter, setSelectFilter] = useState<string | undefined>(
     'targetPercent',
