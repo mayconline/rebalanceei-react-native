@@ -63,7 +63,7 @@ const privateRoute = () => {
 
   return (
     <Tab.Navigator
-      lazy={false}
+      lazy={true}
       screenOptions={({ route, navigation }) => ({
         tabBarIcon: ({ color, size, focused }) => {
           if (route.name === 'AddTicket') {
