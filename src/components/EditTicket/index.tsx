@@ -128,7 +128,7 @@ const EditTicket = ({ ticket }: IEditWalletModal) => {
 
       handleGoBack();
     } catch (err) {
-      console.error(err);
+      console.error(mutationDeleteError?.message + err);
     }
   }, [ticketForm]);
 
@@ -237,7 +237,7 @@ const EditTicket = ({ ticket }: IEditWalletModal) => {
   );
 };
 
-const UPDATE_TICKET = gql`
+export const UPDATE_TICKET = gql`
   mutation updateTicket(
     $_id: ID!
     $symbol: String!
@@ -261,7 +261,7 @@ const UPDATE_TICKET = gql`
   }
 `;
 
-const DELETE_TICKET = gql`
+export const DELETE_TICKET = gql`
   mutation deleteTicket($_id: ID!, $walletID: ID!) {
     deleteTicket(_id: $_id, walletID: $walletID)
   }
