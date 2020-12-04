@@ -1,6 +1,6 @@
 import React from 'react';
 import Rebalance, { REBALANCES } from './index';
-import { render, fireEvent, act } from '../../utils/testProvider';
+import { render } from '../../utils/testProvider';
 import { GraphQLError } from 'graphql';
 
 jest.mock('../../contexts/authContext', () => ({
@@ -10,7 +10,7 @@ jest.mock('../../contexts/authContext', () => ({
 }));
 
 describe('Rebalance Tab', () => {
-  it('should succesfully list rebalances', async () => {
+  it('should successfully list rebalances', async () => {
     const { findByA11yRole, getAllByA11yLabel } = render(<Rebalance />, [
       SUCCESSFUL_LIST_REBALANCES,
     ]);

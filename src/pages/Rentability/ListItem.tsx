@@ -29,20 +29,39 @@ const ListItem = ({ item }: { item: IGetRentability }) => {
       <Card colors={gradient.lightToGray} variation={item.variationPercent}>
         <CardContent>
           <CardTitleContainer>
-            <CardTicket>{formatTicket(item.symbol)}</CardTicket>
-            <CardTitle numberOfLines={1} ellipsizeMode="tail">
+            <CardTicket
+              accessibilityLabel="Código do Ativo"
+              accessibilityValue={{ text: item.symbol }}
+            >
+              {formatTicket(item.symbol)}
+            </CardTicket>
+            <CardTitle
+              accessibilityLabel="Nome do Ativo"
+              accessibilityValue={{ text: item.longName }}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
               {' '}
               - {formatTicket(item.longName)}
             </CardTitle>
           </CardTitleContainer>
           <SubTitleContant>
-            <CardSubTitle>{formatNumber(item.costAmount)}</CardSubTitle>
+            <CardSubTitle
+              accessibilityLabel="Saldo aplicado no ativo"
+              accessibilityValue={{ now: item.costAmount }}
+            >
+              {formatNumber(item.costAmount)}
+            </CardSubTitle>
             <CardSubTitleLegend>Saldo aplicado</CardSubTitleLegend>
           </SubTitleContant>
         </CardContent>
         <AmountContainer>
           <VariationContainer>
-            <Variation variation={item.variationPercent}>
+            <Variation
+              accessibilityLabel="Porcentagem de variação do ativo"
+              accessibilityValue={{ now: item.variationPercent }}
+              variation={item.variationPercent}
+            >
               {formatPercent(item.variationPercent)}
             </Variation>
             {item.variationPercent !== 0 && (
@@ -53,7 +72,11 @@ const ListItem = ({ item }: { item: IGetRentability }) => {
               />
             )}
           </VariationContainer>
-          <Amount variation={item.variationPercent}>
+          <Amount
+            accessibilityLabel="Saldo atual do ativo"
+            accessibilityValue={{ now: item.currentAmount }}
+            variation={item.variationPercent}
+          >
             {formatNumber(item.currentAmount)}
           </Amount>
           <CardSubTitleLegend>Saldo atual</CardSubTitleLegend>

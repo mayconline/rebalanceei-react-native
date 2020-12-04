@@ -89,8 +89,7 @@ const Rentability = () => {
             filters={initialFilter}
             selectedFilter={selectedFilter}
             onPress={handleChangeFilter}
-          ></SubHeader>
-
+          />
           <ListTicket
             data={data?.getRentability}
             extraData={!!queryLoading}
@@ -104,7 +103,7 @@ const Rentability = () => {
   );
 };
 
-const GET_RENTABILITY = gql`
+export const GET_RENTABILITY = gql`
   query getRentability($walletID: ID!, $sort: SortRentability!) {
     getRentability(walletID: $walletID, sort: $sort) {
       _id

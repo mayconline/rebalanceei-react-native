@@ -1,7 +1,8 @@
-import React, { useContext } from 'react';
+import React, { useContext, useCallback } from 'react';
 import { ThemeContext } from 'styled-components/native';
+import { useFocusEffect } from '@react-navigation/native';
 import { ActivityIndicator } from 'react-native';
-import { useQuery, gql } from '@apollo/client';
+import { useLazyQuery, gql } from '@apollo/client';
 import { useAuth } from '../../contexts/authContext';
 import {
   Wrapper,
@@ -12,11 +13,13 @@ import {
   PreviousAmount,
   CurrentContainer,
   CurrentTitle,
+  CurrentAmountContainer,
   CurrentAmount,
   VariationAmount,
 } from './styles';
 
 import { formatNumber, formatPercent } from '../../utils/format';
+import TextError from '../TextError';
 
 interface IWallet {
   _id: string;
@@ -29,44 +32,68 @@ interface IDataTickets {
   getWalletById: IWallet;
 }
 
-const AmountWallet: React.FC = () => {
+const AmountWallet = () => {
   const { color, gradient } = useContext(ThemeContext);
 
   const { wallet } = useAuth();
 
-  const {
-    data,
-    loading: queryLoading,
-    error: queryError,
-  } = useQuery<IDataTickets>(GET_WALLET_BY_ID, {
+  const [
+    getWalletById,
+    { data, loading: queryLoading, error: queryError },
+  ] = useLazyQuery<IDataTickets>(GET_WALLET_BY_ID, {
     variables: { _id: wallet },
     fetchPolicy: 'cache-and-network',
   });
 
-  const isPositive =
-    data && data?.getWalletById?.percentRentabilityWallet > 0 ? true : false;
+  useFocusEffect(
+    useCallback(() => {
+      getWalletById();
+    }, [wallet]),
+  );
+
+  const isPositive = data && data?.getWalletById?.percentRentabilityWallet > 0;
 
   return queryLoading ? (
     <ActivityIndicator size="small" color={color.bgHeaderEmpty} />
   ) : (
     <Wrapper>
+      {!!queryError && (
+        <TextError isTabs={true}>{queryError?.message}</TextError>
+      )}
       <Card colors={gradient.lightToGray} isPositive={isPositive}>
         <WalletContainer>
           <PreviousContainer>
             <PreviousTitle>Saldo Aplicado</PreviousTitle>
-            <PreviousAmount>
+            <PreviousAmount
+              accessibilityLabel="Saldo aplicado na carteira"
+              accessibilityValue={{ now: data?.getWalletById?.sumCostWallet }}
+            >
               {data && formatNumber(data.getWalletById.sumCostWallet)}
             </PreviousAmount>
           </PreviousContainer>
           <CurrentContainer>
             <CurrentTitle>Saldo Atual</CurrentTitle>
-            <CurrentAmount>
-              {data && formatNumber(data?.getWalletById?.sumAmountWallet)}
-              <VariationAmount isPositive={isPositive}>
+            <CurrentAmountContainer>
+              <CurrentAmount
+                accessibilityLabel="Saldo atual da carteira"
+                accessibilityValue={{
+                  now: data?.getWalletById?.sumAmountWallet,
+                }}
+              >
+                {data && formatNumber(data?.getWalletById?.sumAmountWallet)}
+              </CurrentAmount>
+
+              <VariationAmount
+                accessibilityLabel="Percentual de variação da carteira"
+                accessibilityValue={{
+                  now: data?.getWalletById?.percentRentabilityWallet,
+                }}
+                isPositive={isPositive}
+              >
                 {data &&
                   formatPercent(data?.getWalletById?.percentRentabilityWallet)}
               </VariationAmount>
-            </CurrentAmount>
+            </CurrentAmountContainer>
           </CurrentContainer>
         </WalletContainer>
       </Card>
@@ -85,4 +112,4 @@ export const GET_WALLET_BY_ID = gql`
   }
 `;
 
-export default AmountWallet;
+export default React.memo(AmountWallet);

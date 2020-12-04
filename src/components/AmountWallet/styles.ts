@@ -46,6 +46,11 @@ export const PreviousAmount = styled.Text`
   padding-left: 8px;
   padding-top: 4px;
 `;
+
+export const CurrentAmountContainer = styled.View`
+  flex-direction: row;
+`;
+
 export const CurrentAmount = styled.Text`
   color: ${({ theme }) => theme.color.title};
   font: 400 16px/20px 'TitilliumWeb_400Regular';
