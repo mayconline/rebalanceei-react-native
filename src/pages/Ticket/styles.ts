@@ -1,5 +1,6 @@
 import styled from 'styled-components/native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { getClassTicket } from '../../utils/format';
 
 export const Wrapper = styled.View`
   flex: 1;
@@ -21,15 +22,7 @@ export const Card = styled(LinearGradient)<any>`
   border-radius: 30px;
   padding: 8px 20px;
   border-left-color: ${({ theme, ticket }) =>
-    ticket.slice(-2) === '34'
-      ? theme.color.ticketBDR
-      : ticket.slice(-1) === '3'
-      ? theme.color.ticketOn
-      : ticket.slice(-1) === '4'
-      ? theme.color.ticketPn
-      : ticket.slice(-2) === '11'
-      ? theme.color.ticketUnit
-      : theme.color.ticketAll};
+    theme.color[getClassTicket(ticket)]};
   border-left-width: 2px;
 `;
 

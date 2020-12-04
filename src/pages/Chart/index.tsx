@@ -1,8 +1,8 @@
-import React, { Fragment, useState, useMemo, useCallback } from 'react';
+import React, { Fragment, useState, useCallback } from 'react';
 import { PieChart, PieChartData } from 'react-native-svg-charts';
 import { Text } from 'react-native-svg';
 import { useAuth } from '../../contexts/authContext';
-import { useQuery, useLazyQuery, gql } from '@apollo/client';
+import { useLazyQuery, gql } from '@apollo/client';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { Wrapper, Content, ContainerGraph } from './styles';
@@ -10,10 +10,23 @@ import { Wrapper, Content, ContainerGraph } from './styles';
 import Header from '../../components/Header';
 import SubHeader from '../../components/SubHeader';
 
-import { formatTicket } from '../../utils/format';
+import {
+  formatTicket,
+  getClassTicket,
+  getLengthTicketPerClass,
+} from '../../utils/format';
 import Empty from '../../components/Empty';
 import Loading from '../../components/Loading';
+import TextError from '../../components/TextError';
 
+const initialFilter = [
+  {
+    name: 'Ativo',
+  },
+  {
+    name: 'Classe',
+  },
+];
 interface IRebalances {
   _id: string;
   symbol: string;
@@ -43,15 +56,19 @@ const randomDarkColor = () => {
   return rgb;
 };
 
-const Chart: React.FC = () => {
+const Chart = () => {
   const [select, setSelect] = useState('');
   const [dataGraph, setDataGraph] = useState<PieChartData[]>([]);
+  const [selectedFilter, setSelectFilter] = useState<string | undefined>(
+    'Classe',
+  );
 
   const { wallet } = useAuth();
 
-  const [rebalances, { data, loading: queryLoading, error }] = useLazyQuery<
-    IDataTickets
-  >(REBALANCES, {
+  const [
+    rebalances,
+    { data, loading: queryLoading, error: queryError },
+  ] = useLazyQuery<IDataTickets>(REBALANCES, {
     variables: { walletID: wallet, sort: 'currentPercent' },
     fetchPolicy: 'cache-and-network',
   });
@@ -61,25 +78,57 @@ const Chart: React.FC = () => {
       rebalances();
     }, []),
   );
+
+  const eachTicketChart = useCallback(() => {
+    if (data?.rebalances) {
+      let formatedPie: PieChartData[] = data.rebalances.map(item => ({
+        value: Number(item.currentPercent.toFixed(1)),
+        svg: {
+          fill: randomDarkColor(),
+          onPress: () => setSelect(item.symbol),
+        },
+        key: formatTicket(item.symbol),
+        arc: {
+          outerRadius: select === item.symbol ? '108%' : '100%',
+          cornerRadius: 8,
+        },
+      }));
+
+      return setDataGraph(formatedPie);
+    }
+  }, [select, data]);
+
+  const eachClassChart = useCallback(() => {
+    if (data?.rebalances) {
+      let formatedClass = data.rebalances.map(item => ({
+        name: getClassTicket(formatTicket(item.symbol)),
+        percent: item.currentPercent,
+      }));
+
+      let dataChart = getLengthTicketPerClass(formatedClass);
+
+      let formatedPie: PieChartData[] = dataChart.map(item => ({
+        value: Number(item.percent.toFixed(1)),
+        svg: {
+          fill: randomDarkColor(),
+          onPress: () => setSelect(item.name),
+        },
+        key: item.name,
+        arc: {
+          outerRadius: select === item.name ? '108%' : '100%',
+          cornerRadius: 8,
+        },
+      }));
+
+      return setDataGraph(formatedPie);
+    }
+  }, [select, data]);
+
   useFocusEffect(
     useCallback(() => {
-      if (data?.rebalances) {
-        let formatedPie: PieChartData[] = data.rebalances.map(item => ({
-          value: Number(item.currentPercent.toFixed(1)),
-          svg: {
-            fill: randomDarkColor(),
-            onPress: () => setSelect(item.symbol),
-          },
-          key: formatTicket(item.symbol),
-          arc: {
-            outerRadius: select === item.symbol ? '108%' : '100%',
-            cornerRadius: 8,
-          },
-        }));
-
-        setDataGraph(formatedPie);
-      }
-    }, [select, data]),
+      selectedFilter === 'Ativo' && eachTicketChart();
+      selectedFilter === 'Classe' && eachClassChart();
+    }, [eachTicketChart, selectedFilter]),
   );
 
   const hasTickets = wallet && !queryLoading && !!data?.rebalances?.length;
@@ -118,16 +167,28 @@ const Chart: React.FC = () => {
     });
   };
 
+  const handleChangeFilter = useCallback((filterName: string) => {
+    setSelectFilter(filterName);
+  }, []);
+
   return queryLoading ? (
     <Loading />
   ) : (
     <Wrapper>
       <Header />
+      {!!queryError && (
+        <TextError isTabs={true}>{queryError?.message}</TextError>
+      )}
       {!hasTickets ? (
         <Empty />
       ) : (
         <>
-          <SubHeader title="Gráficos" onPress={() => {}} />
+          <SubHeader
+            title="Gráficos"
+            filters={initialFilter}
+            selectedFilter={selectedFilter}
+            onPress={handleChangeFilter}
+          />
           <Content>
             <ContainerGraph>
               <PieChart
@@ -158,4 +219,4 @@ const REBALANCES = gql`
   }
 `;
 
-export default Chart;
+export default React.memo(Chart);
