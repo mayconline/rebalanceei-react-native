@@ -133,8 +133,8 @@ const Chart = () => {
 
   const hasTickets = wallet && !queryLoading && !!data?.rebalances?.length;
 
-  const Labels = ({ slices }) => {
-    return slices?.map(slice => {
+  const Labels = ({ slices }: { slices?: any }) => {
+    return slices?.map((slice: any) => {
       const { pieCentroid, data } = slice;
       return (
         <Fragment key={data.key}>
@@ -194,7 +194,7 @@ const Chart = () => {
               <PieChart
                 style={{ height: 284 }}
                 data={dataGraph}
-                valueAccessor={({ item }) => item.value}
+                valueAccessor={({ item }: { item?: any }) => item.value}
                 outerRadius={'92%'}
                 innerRadius={'48%'}
                 numberOfTicks={dataGraph?.length}
