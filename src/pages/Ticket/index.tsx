@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Modal } from 'react-native';
 import { useAuth } from '../../contexts/authContext';
@@ -64,7 +64,10 @@ const Ticket = () => {
     setSelectFilter(filterName);
   }, []);
 
-  const hasTickets = !queryLoading && !!data?.getTicketsByWallet?.length;
+  const hasTickets = useMemo(
+    () => !queryLoading && !!data?.getTicketsByWallet?.length,
+    [queryLoading, data],
+  );
 
   const handleOpenEditModal = useCallback((item: ITickets) => {
     navigation.setParams({ ticket: null });

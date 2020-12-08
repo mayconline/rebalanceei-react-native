@@ -23,6 +23,7 @@ describe('Wallet Modal', () => {
       getAllByA11yRole,
       getByA11yLabel,
       getAllByA11yLabel,
+      getByText,
     } = render(<WalletModal onClose={mockedOnClose} />, [
       SUCCESSFUL_LIST_WALLET,
     ]);
@@ -33,7 +34,7 @@ describe('Wallet Modal', () => {
     const radioGroup = getAllByA11yRole('radio');
     expect(radioGroup).toHaveLength(2);
 
-    const radioOptionOne = getByA11yLabel(/Nova Cart/i);
+    const radioOptionOne = getByA11yLabel('Nova cart');
     const currentAmountOne = getAllByA11yLabel('Valor atual da carteira')[0];
     expect(currentAmountOne).toHaveProperty('children', ['R$ 5807.40']);
 
@@ -47,7 +48,7 @@ describe('Wallet Modal', () => {
     )[0];
     expect(currentPercentAmountOne).toHaveProperty('children', ['99%']);
 
-    const radioOptionTwo = getByA11yLabel(/MINHA CARTEIRA ADM/i);
+    const radioOptionTwo = getByA11yLabel('MINHA CARTEIRA ADM');
     const currentAmountTwo = getAllByA11yLabel('Valor atual da carteira')[1];
     expect(currentAmountTwo).toHaveProperty('children', ['R$ 70.10']);
 
@@ -65,7 +66,7 @@ describe('Wallet Modal', () => {
     expect(radioOptionTwo.props.accessibilityState.selected).toBeFalsy();
 
     const buttons = getAllByA11yRole('button');
-    expect(buttons).toHaveLength(2);
+    expect(buttons).toHaveLength(4);
 
     act(() => fireEvent.press(radioOptionOne));
     expect(mockedHandleSetWallet).toHaveBeenCalledWith(
@@ -82,6 +83,11 @@ describe('Wallet Modal', () => {
     );
     expect(radioOptionOne.props.accessibilityState.selected).toBeFalsy();
     expect(radioOptionTwo.props.accessibilityState.selected).toBeTruthy();
+
+    const editOptionOne = getByA11yLabel('Editar carteira Nova cart');
+    act(() => fireEvent.press(editOptionOne));
+
+    getByText('Alterar Carteira');
   });
 
   it('should buttons work correctly', async () => {

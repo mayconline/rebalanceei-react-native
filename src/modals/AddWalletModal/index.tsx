@@ -1,4 +1,4 @@
-import React, { useContext, useState, useCallback } from 'react';
+import React, { useContext, useState, useCallback, useMemo } from 'react';
 import { Platform, Modal } from 'react-native';
 import { ThemeContext } from 'styled-components/native';
 import { Entypo } from '@expo/vector-icons';
@@ -19,21 +19,29 @@ import SuccessModal from '../../modals/SuccessModal';
 import Button from '../../components/Button';
 import InputForm from '../../components/InputForm';
 import TextError from '../../components/TextError';
+import { IWalletData } from '../WalletModal';
+import EditWallet from '../../components/EditWallet';
 
 interface IAddWalletModal {
   onClose(): void;
   beforeModalClose(): void;
+  walletData?: IWalletData;
+  handleResetEditWallet?(): void;
 }
 
-const AddWalletModal: React.FC<IAddWalletModal> = ({
+const AddWalletModal = ({
   onClose,
   beforeModalClose,
-}) => {
+  walletData,
+  handleResetEditWallet,
+}: IAddWalletModal) => {
   const { color, gradient } = useContext(ThemeContext);
   const [wallet, setWallet] = useState('');
   const [focus, setFocus] = useState(0);
   const [openModal, setOpenModal] = useState(false);
   const { handleSetWallet } = useAuth();
+
+  const isEdit = useMemo(() => !!walletData?._id, [walletData?._id]);
 
   const [
     createWallet,
@@ -67,6 +75,11 @@ const AddWalletModal: React.FC<IAddWalletModal> = ({
     setWallet(walletName);
   }, []);
 
+  const handleGoBack = useCallback(() => {
+    handleResetEditWallet && handleResetEditWallet();
+    onClose();
+  }, []);
+
   return (
     <>
       <Wrapper>
@@ -74,11 +87,13 @@ const AddWalletModal: React.FC<IAddWalletModal> = ({
           <Icon
             accessibilityRole="imagebutton"
             accessibilityLabel="Voltar"
-            onPress={onClose}
+            onPress={handleGoBack}
           >
             <Entypo name="chevron-left" size={32} color={color.secondary} />
           </Icon>
-          <Title accessibilityRole="header">Criar Nova Carteira</Title>
+          <Title accessibilityRole="header">
+            {isEdit ? 'Alterar Carteira' : 'Criar Nova Carteira'}
+          </Title>
         </ContainerTitle>
         <ImageAddTicket
           translateX={36}
@@ -87,34 +102,44 @@ const AddWalletModal: React.FC<IAddWalletModal> = ({
           scaleY={1.3}
         />
         <FormContainer behavior={Platform.OS == 'ios' ? 'padding' : 'position'}>
-          <Form>
-            <FormRow>
-              <InputForm
-                label="Nome da Carteira"
-                value={wallet}
-                placeholder="Minha Nova Carteira"
-                autoCompleteType="off"
-                maxLength={80}
-                keyboardType="email-address"
-                autoFocus={focus === 1}
-                onFocus={() => setFocus(1)}
-                onChangeText={handleSetName}
-                onEndEditing={() => setFocus(0)}
-                onSubmitEditing={handleSubmit}
-              />
-            </FormRow>
+          {isEdit ? (
+            <EditWallet
+              walletData={walletData}
+              handleResetEditWallet={handleResetEditWallet}
+              onClose={onClose}
+            />
+          ) : (
+            <Form>
+              <FormRow>
+                <InputForm
+                  label="Nome da Carteira"
+                  value={wallet}
+                  placeholder="Minha Nova Carteira"
+                  autoCompleteType="off"
+                  maxLength={80}
+                  keyboardType="email-address"
+                  autoFocus={focus === 1}
+                  onFocus={() => setFocus(1)}
+                  onChangeText={handleSetName}
+                  onEndEditing={() => setFocus(0)}
+                  onSubmitEditing={handleSubmit}
+                />
+              </FormRow>
 
-            {!!mutationError && <TextError>{mutationError?.message}</TextError>}
+              {!!mutationError && (
+                <TextError>{mutationError?.message}</TextError>
+              )}
 
-            <Button
-              colors={gradient.darkToLightBlue}
-              start={[1, 0.5]}
-              onPress={handleSubmit}
-              loading={mutationLoading}
-            >
-              Adicionar Carteira
-            </Button>
-          </Form>
+              <Button
+                colors={gradient.darkToLightBlue}
+                start={[1, 0.5]}
+                onPress={handleSubmit}
+                loading={mutationLoading}
+              >
+                Adicionar Carteira
+              </Button>
+            </Form>
+          )}
         </FormContainer>
       </Wrapper>
 

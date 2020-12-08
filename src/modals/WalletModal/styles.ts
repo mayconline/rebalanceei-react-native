@@ -33,10 +33,21 @@ export const Content = styled.View`
   flex: 0;
 `;
 
+export const ContainerCard = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
+
+export const IconButton = styled.TouchableOpacity`
+  padding-right: 12px;
+  padding-top: 4px;
+`;
+
 export const Card = styled.TouchableOpacity`
   justify-content: space-between;
   flex-direction: row;
   align-items: center;
+  flex: 1;
 `;
 export const CardTitleContainer = styled.View`
   flex-direction: column;

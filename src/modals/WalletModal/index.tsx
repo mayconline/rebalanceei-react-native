@@ -42,10 +42,16 @@ interface IDataWallet {
   getWalletByUser: IObjectWallet[];
 }
 
+export interface IWalletData {
+  _id: string;
+  description: string;
+}
+
 const WalletModal = ({ onClose }: IWalletProps) => {
   const { color } = useContext(ThemeContext);
   const { handleSetWallet, wallet } = useAuth();
   const [openModal, setOpenModal] = useState(false);
+  const [editWallet, setEditWallet] = useState<IWalletData>({} as IWalletData);
   const [selectedWallet, setSelectedWallet] = useState<String | null>(wallet);
 
   const [
@@ -70,6 +76,19 @@ const WalletModal = ({ onClose }: IWalletProps) => {
     [],
   );
 
+  const handleAddWallet = useCallback(() => {
+    setOpenModal(openModal => !openModal);
+  }, []);
+
+  const handleEditWallet = useCallback((_id: string, description: string) => {
+    setEditWallet({ _id, description });
+    setOpenModal(openModal => !openModal);
+  }, []);
+
+  const handleResetEditWallet = useCallback(() => {
+    setEditWallet({} as IWalletData);
+  }, []);
+
   return queryLoading ? (
     <Loading />
   ) : (
@@ -86,6 +105,7 @@ const WalletModal = ({ onClose }: IWalletProps) => {
               item={item}
               handleSelectWallet={handleSelectWallet}
               selectedWallet={selectedWallet}
+              handleEditWallet={handleEditWallet}
             />
           )}
         />
@@ -99,7 +119,7 @@ const WalletModal = ({ onClose }: IWalletProps) => {
             <BackButton accessibilityRole="button">Fechar Modal</BackButton>
           </BackButtonContainer>
 
-          <AddButtonContainer onPress={() => setOpenModal(true)}>
+          <AddButtonContainer onPress={() => handleAddWallet()}>
             <Label accessibilityRole="button">Adicionar Carteira</Label>
             <AddButton size={40} />
           </AddButtonContainer>
@@ -114,8 +134,10 @@ const WalletModal = ({ onClose }: IWalletProps) => {
           statusBarTranslucent={true}
         >
           <AddWalletModal
-            onClose={() => setOpenModal(false)}
+            onClose={handleAddWallet}
             beforeModalClose={onClose}
+            walletData={editWallet}
+            handleResetEditWallet={handleResetEditWallet}
           />
         </Modal>
       )}

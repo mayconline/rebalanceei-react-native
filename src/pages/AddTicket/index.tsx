@@ -1,4 +1,4 @@
-import React, { useContext, useState, useCallback } from 'react';
+import React, { useContext, useState, useCallback, useMemo } from 'react';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { Platform, Modal } from 'react-native';
 import { useAuth } from '../../contexts/authContext';
@@ -58,7 +58,7 @@ const AddTicket = () => {
   const params = route?.params as IDataParamsForm;
   const navigation = useNavigation();
 
-  const isEdit = !!params?.ticket?._id;
+  const isEdit = useMemo(() => !!params?.ticket?._id, [params]);
 
   const handleGoBack = useCallback(() => {
     navigation.setParams({ ticket: null });
