@@ -15,7 +15,7 @@ const InputForm = ({
   label,
   value,
   defaultValue,
-  isSecure,
+  isSecure = false,
   placeholder,
   autoCompleteType,
   maxLength,

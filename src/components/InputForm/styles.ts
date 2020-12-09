@@ -1,5 +1,4 @@
 import styled from 'styled-components/native';
-import { BorderlessButton } from 'react-native-gesture-handler';
 
 interface IFocusProps {
   autoFocus?: boolean;
@@ -34,6 +33,6 @@ export const TextInput = styled.TextInput`
   opacity: ${({ editable = true }) => (!editable ? 0.6 : 1)};
 `;
 
-export const InputIcon = styled(BorderlessButton)`
+export const InputIcon = styled.TouchableOpacity`
   padding-top: 12px;
 `;

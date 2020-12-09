@@ -1,5 +1,5 @@
 import React, { useContext, useState, useCallback } from 'react';
-import { Platform, ActivityIndicator, Alert } from 'react-native';
+import { Platform, Alert } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { ThemeContext } from 'styled-components/native';
 import { useAuth } from '../../contexts/authContext';
@@ -12,18 +12,14 @@ import {
   Title,
   Form,
   FormRow,
-  InputGroup,
-  InputIcon,
-  Label,
-  Input,
   ContainerButtons,
-  Button,
-  Gradient,
-  TextButton,
 } from './styles';
 import ImageAddTicket from '../../../assets/svg/ImageAddTicket';
-import { AntDesign, Entypo } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 import Loading from '../../components/Loading';
+import Button from '../../components/Button';
+import InputForm from '../../components/InputForm';
+import TextError from '../../components/TextError';
 
 interface IUser {
   _id: string;
@@ -48,13 +44,15 @@ interface IUpdateUserModal {
 const UpdateUserModal = ({ onClose }: IUpdateUserModal) => {
   const { color, gradient } = useContext(ThemeContext);
   const [user, setUser] = useState({} as IUser);
-  const [visiblePassword, setVisiblePassword] = useState(false);
   const { handleSignOut } = useAuth();
+  const [focus, setFocus] = useState(0);
 
   const [
     getUserByToken,
-    { data, loading: queryLoading, error },
-  ] = useLazyQuery<IGetUser>(GET_USER_BY_TOKEN);
+    { data, loading: queryLoading, error: queryError },
+  ] = useLazyQuery<IGetUser>(GET_USER_BY_TOKEN, {
+    fetchPolicy: 'cache-and-network',
+  });
 
   const [
     updateUser,
@@ -67,7 +65,7 @@ const UpdateUserModal = ({ onClose }: IUpdateUserModal) => {
     }, []),
   );
 
-  const handleDisabledSubmit = async () => {
+  const handleDisabledSubmit = useCallback(async () => {
     try {
       Alert.alert(
         'Desativar Conta',
@@ -95,16 +93,30 @@ const UpdateUserModal = ({ onClose }: IUpdateUserModal) => {
     } catch (err) {
       console.error(err);
     }
-  };
+  }, []);
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     try {
       await updateUser({ variables: user });
       onClose();
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [user]);
+
+  const handleSetEmail = useCallback((email: string) => {
+    setUser(user => ({
+      ...user,
+      email,
+    }));
+  }, []);
+
+  const handleSetPassword = useCallback((password: string) => {
+    setUser(user => ({
+      ...user,
+      password,
+    }));
+  }, []);
 
   return queryLoading || mutationLoading ? (
     <Loading />
@@ -121,76 +133,59 @@ const UpdateUserModal = ({ onClose }: IUpdateUserModal) => {
         <FormContainer behavior={Platform.OS == 'ios' ? 'padding' : 'position'}>
           <Form>
             <FormRow>
-              <InputGroup>
-                <Label>E-mail</Label>
-                <Input
-                  value={user.email}
-                  defaultValue={data?.getUserByToken?.email}
-                  placeholder="meuemail@teste.com.br"
-                  autoCompleteType="email"
-                  placeholderTextColor={color.titleNotImport}
-                  maxLength={80}
-                  onChangeText={(email: string) =>
-                    setUser(user => ({
-                      ...user,
-                      email,
-                    }))
-                  }
-                />
-              </InputGroup>
+              <InputForm
+                label="E-mail"
+                value={user.email}
+                defaultValue={data?.getUserByToken?.email}
+                placeholder="meuemail@teste.com.br"
+                autoCompleteType="email"
+                maxLength={80}
+                keyboardType="email-address"
+                autoFocus={focus === 1}
+                onFocus={() => setFocus(1)}
+                onChangeText={handleSetEmail}
+                onEndEditing={() => setFocus(2)}
+              />
             </FormRow>
 
             <FormRow>
-              <InputGroup>
-                <Label>Nova Senha</Label>
-                <Input
-                  value={user.password}
-                  placeholder="Caso queira alterar"
-                  autoCompleteType="password"
-                  secureTextEntry={!visiblePassword ? true : false}
-                  placeholderTextColor={color.titleNotImport}
-                  maxLength={32}
-                  onChangeText={(password: string) =>
-                    setUser(user => ({
-                      ...user,
-                      password,
-                    }))
-                  }
-                />
-              </InputGroup>
-              <InputIcon
-                onPress={() =>
-                  setVisiblePassword(visiblePassword => !visiblePassword)
-                }
-              >
-                <Entypo
-                  name={!visiblePassword ? 'eye-with-line' : 'eye'}
-                  size={20}
-                  color={color.titleNotImport}
-                />
-              </InputIcon>
+              <InputForm
+                label="Nova Senha"
+                value={user.password}
+                isSecure
+                placeholder="Caso queira alterar"
+                autoCompleteType="password"
+                maxLength={32}
+                returnKeyType="send"
+                autoFocus={focus === 2}
+                onFocus={() => setFocus(2)}
+                onChangeText={handleSetPassword}
+                onEndEditing={() => setFocus(0)}
+                onSubmitEditing={handleSubmit}
+              />
             </FormRow>
 
-            <ContainerButtons>
-              <Gradient colors={gradient.lightToDarkRed} start={[1, 0.5]}>
-                <Button onPress={handleDisabledSubmit}>
-                  {mutationLoading ? (
-                    <ActivityIndicator size="small" color="#fff" />
-                  ) : (
-                    <TextButton>Desativar</TextButton>
-                  )}
-                </Button>
-              </Gradient>
+            {!!mutationError && <TextError>{mutationError?.message}</TextError>}
+            {!!queryError && <TextError>{queryError?.message}</TextError>}
 
-              <Gradient colors={gradient.darkToLightBlue} start={[1, 0.5]}>
-                <Button onPress={handleSubmit}>
-                  {mutationLoading ? (
-                    <ActivityIndicator size="small" color="#fff" />
-                  ) : (
-                    <TextButton>Alterar</TextButton>
-                  )}
-                </Button>
-              </Gradient>
+            <ContainerButtons>
+              <Button
+                colors={gradient.lightToDarkRed}
+                start={[1, 0.5]}
+                onPress={handleDisabledSubmit}
+                loading={mutationLoading}
+              >
+                Desativar
+              </Button>
+
+              <Button
+                colors={gradient.darkToLightBlue}
+                start={[1, 0.5]}
+                onPress={handleSubmit}
+                loading={mutationLoading}
+              >
+                Alterar
+              </Button>
             </ContainerButtons>
           </Form>
         </FormContainer>
