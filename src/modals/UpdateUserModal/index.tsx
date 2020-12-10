@@ -124,8 +124,12 @@ const UpdateUserModal = ({ onClose }: IUpdateUserModal) => {
     <>
       <Wrapper>
         <ContainerTitle>
-          <Title>Alterar Usuário</Title>
-          <BackIcon onPress={onClose}>
+          <Title accessibilityRole="header">Alterar Usuário</Title>
+          <BackIcon
+            accessibilityRole="imagebutton"
+            accessibilityLabel="Voltar"
+            onPress={onClose}
+          >
             <AntDesign name="closecircleo" size={24} color={color.secondary} />
           </BackIcon>
         </ContainerTitle>
@@ -194,7 +198,7 @@ const UpdateUserModal = ({ onClose }: IUpdateUserModal) => {
   );
 };
 
-const UPDATE_USER = gql`
+export const UPDATE_USER = gql`
   mutation updateUser(
     $email: String
     $password: String
@@ -217,7 +221,7 @@ const UPDATE_USER = gql`
   }
 `;
 
-const GET_USER_BY_TOKEN = gql`
+export const GET_USER_BY_TOKEN = gql`
   query getUserByToken {
     getUserByToken {
       _id
