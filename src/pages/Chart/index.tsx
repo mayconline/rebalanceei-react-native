@@ -90,7 +90,8 @@ const Chart = () => {
         key: formatTicket(item.symbol),
         arc: {
           outerRadius: select === item.symbol ? '108%' : '100%',
-          cornerRadius: 8,
+          cornerRadius: 4,
+          padAngle: 0.01,
         },
       }));
 
@@ -192,7 +193,7 @@ const Chart = () => {
           <Content>
             <ContainerGraph>
               <PieChart
-                style={{ height: 284 }}
+                style={{ flex: 1 }}
                 data={dataGraph}
                 valueAccessor={({ item }: { item?: any }) => item.value}
                 outerRadius={'92%'}

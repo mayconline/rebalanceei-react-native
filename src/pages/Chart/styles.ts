@@ -7,8 +7,10 @@ export const Wrapper = styled.View`
 
 export const Content = styled.SafeAreaView`
   background-color: ${({ theme }) => theme.color.secondary};
-  padding: 4px 12px 0;
+  padding: 0 12px;
   flex: 1;
 `;
 
-export const ContainerGraph = styled.View``;
+export const ContainerGraph = styled.View`
+  flex: 1;
+`;
