@@ -82,6 +82,8 @@ export const AuthProvider: React.FC = ({ children }) => {
       '@authWallet',
       '@authWalletName',
       '@authToken',
+      '@authEmail',
+      '@authPass',
     ]);
     setSigned(false);
     setWallet(null);

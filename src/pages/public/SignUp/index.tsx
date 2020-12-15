@@ -2,7 +2,7 @@ import React, { useContext, useState, useCallback } from 'react';
 import { Switch, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useMutation, gql } from '@apollo/client';
-
+import AsyncStorage from '@react-native-community/async-storage';
 import { ThemeContext } from 'styled-components/native';
 import { useAuth } from '../../../contexts/authContext';
 
@@ -92,18 +92,22 @@ const SignUp = () => {
       .catch(err => console.error(mutationError?.message + err));
   };
 
-  const handleSetEmail = useCallback((email: string) => {
+  const handleSetEmail = useCallback(async (email: string) => {
     setAccount(account => ({
       ...account,
       email,
     }));
+
+    await AsyncStorage.setItem('@authEmail', email);
   }, []);
 
-  const handleSetPassword = useCallback((password: string) => {
+  const handleSetPassword = useCallback(async (password: string) => {
     setAccount(account => ({
       ...account,
       password,
     }));
+
+    await AsyncStorage.setItem('@authPass', password);
   }, []);
 
   return (
