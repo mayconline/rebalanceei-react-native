@@ -56,6 +56,8 @@ describe('Auth Context', () => {
       '@authWallet',
       '@authWalletName',
       '@authToken',
+      '@authEmail',
+      '@authPass',
     ]);
 
     expect(result.current.signed).toBeFalsy();
