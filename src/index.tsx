@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { AppLoading } from 'expo';
+import AppLoading from 'expo-app-loading';
 import {
   useFonts,
   TitilliumWeb_400Regular,
@@ -7,17 +7,16 @@ import {
 } from '@expo-google-fonts/titillium-web';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { useColorScheme } from 'react-native';
+import { useColorScheme, AppRegistry } from 'react-native';
 import { ThemeProvider } from 'styled-components/native';
 import themes, { themeMode, Theme } from './themes';
 import { AuthProvider } from './contexts/authContext';
-import { AppRegistry } from 'react-native';
 import { ApolloProvider } from '@apollo/client';
 import { client } from './services/apollo';
 
 import Routes from './routes';
 
-const App: React.FC = () => {
+const App = () => {
   const deviceTheme = useColorScheme() as themeMode;
   const theme: Theme = themes[deviceTheme] ?? themes.light;
 
