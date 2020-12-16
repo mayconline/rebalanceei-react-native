@@ -10,7 +10,8 @@ import { useAuth } from '../../contexts/authContext';
 import { getTerms } from '../../utils/Terms';
 import Divider from '../../components/Divider';
 import ShadowBackdrop from '../../components/ShadowBackdrop';
-import UpdateUserModal from '../../modals/UpdateUserModal';
+import UpdateUserModal from '../UpdateUserModal';
+import HelpModal from '../HelpModal';
 
 import {
   Wrapper,
@@ -62,18 +63,18 @@ interface MenuProps {
 
 const MenuModal = ({ onClose }: MenuProps) => {
   const { handleSignOut } = useAuth();
-  const [openUserModal, setOpenUserModal] = useState(false);
+  const [openModal, setOpenModal] = useState<'User' | 'Help' | null>(null);
 
   const handleClickMenu = (description: string) => {
     switch (description) {
       case 'Meus Dados':
-        return setOpenUserModal(true);
+        return setOpenModal('User');
       case 'Meu Plano Atual':
         return;
       case 'Termos de Uso':
         return getTerms();
       case 'Ajuda':
-        return;
+        return setOpenModal('Help');
       case 'Versão do APP - v0.0.1':
         return;
       case 'Sair':
@@ -117,14 +118,25 @@ const MenuModal = ({ onClose }: MenuProps) => {
         </MenuContainer>
       </Wrapper>
 
-      {openUserModal && (
+      {openModal === 'User' && (
         <Modal
           animationType="slide"
           transparent={true}
-          visible={openUserModal}
+          visible={openModal === 'User'}
           statusBarTranslucent={true}
         >
-          <UpdateUserModal onClose={() => setOpenUserModal(false)} />
+          <UpdateUserModal onClose={() => setOpenModal(null)} />
+        </Modal>
+      )}
+
+      {openModal === 'Help' && (
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={openModal === 'Help'}
+          statusBarTranslucent={true}
+        >
+          <HelpModal onClose={() => setOpenModal(null)} />
         </Modal>
       )}
     </>
