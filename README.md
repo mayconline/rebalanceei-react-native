@@ -21,4 +21,4 @@
 - [Expo SDK 40](https://docs.expo.io/versions/latest/)
 - [TypeScript 3.9](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-9.html)
 - [Styled-Components](https://styled-components.com/docs/basics#react-native)
-- [Husky Pré-commit](https://typicode.github.io/husky/#/?id=install)
+- [Husky](https://github.com/typicode/husky#readme)
