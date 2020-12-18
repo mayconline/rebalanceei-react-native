@@ -2,7 +2,7 @@ import styled from 'styled-components/native';
 
 export const Wrapper = styled.SafeAreaView`
   margin: 8px 0;
-  flex: 1;
+  flex: 0;
   border-color: ${({ theme }) => theme.color.success};
   border-width: 2px;
   border-radius: 12px;

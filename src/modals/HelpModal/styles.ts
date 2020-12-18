@@ -6,6 +6,11 @@ export const Wrapper = styled.SafeAreaView`
   elevation: 5;
 `;
 
+export const Image = styled.View`
+  height: 240px;
+  padding: 16px;
+`;
+
 export const ContainerTitle = styled.View`
   margin-top: 40px;
   flex-direction: row;
@@ -30,8 +35,6 @@ export const Container = styled.SafeAreaView`
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
 `;
-
-export const QuestionContainer = styled.ScrollView``;
 
 export const Question = styled.Text`
   color: ${({ theme }) => theme.color.subtitle};
