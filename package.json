@@ -6,8 +6,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "test": "jest --watchAll --coverage=false",
-    "postinstall": "husky install"
+    "test": "jest --watchAll --coverage=false"
   },
   "jest": {
     "preset": "jest-expo",
@@ -78,5 +77,4 @@
     "typescript-styled-plugin": "^0.15.0"
   },
   "private": true
- 
 }
