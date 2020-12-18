@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Svg, { Path, Mask, G } from 'react-native-svg';
+import Svg, { Path, G } from 'react-native-svg';
 
 function ImageLogin() {
   return (
@@ -191,4 +191,4 @@ function ImageLogin() {
   );
 }
 
-export default ImageLogin;
+export default React.memo(ImageLogin);

@@ -212,4 +212,4 @@ function ImageEmpty() {
   );
 }
 
-export default ImageEmpty;
+export default React.memo(ImageEmpty);

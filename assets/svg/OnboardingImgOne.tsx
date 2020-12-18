@@ -278,4 +278,4 @@ function OnboardingImgOne() {
   );
 }
 
-export default OnboardingImgOne;
+export default React.memo(OnboardingImgOne);

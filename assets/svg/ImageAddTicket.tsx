@@ -246,4 +246,4 @@ function ImageAddTicket({
   );
 }
 
-export default ImageAddTicket;
+export default React.memo(ImageAddTicket);

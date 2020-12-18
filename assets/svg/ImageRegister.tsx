@@ -362,4 +362,4 @@ function ImageRegister() {
   );
 }
 
-export default ImageRegister;
+export default React.memo(ImageRegister);

@@ -166,7 +166,7 @@ const AddTicket = () => {
               <FormRow>
                 <SuggestButton onPress={HandleOpenSuggestionsModal}>
                   <MaterialCommunityIcons
-                    name="file-document-box-search-outline"
+                    name="file-document-edit-outline"
                     size={24}
                     color={color.titleNotImport}
                   />

@@ -260,4 +260,4 @@ function OnboardingImgTwo() {
   );
 }
 
-export default OnboardingImgTwo;
+export default React.memo(OnboardingImgTwo);

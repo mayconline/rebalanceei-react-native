@@ -500,4 +500,4 @@ function LoadingImage() {
   );
 }
 
-export default LoadingImage;
+export default React.memo(LoadingImage);

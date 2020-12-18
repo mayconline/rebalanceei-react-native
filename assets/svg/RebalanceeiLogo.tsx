@@ -20,4 +20,4 @@ function RebalanceeiLogo() {
   );
 }
 
-export default RebalanceeiLogo;
+export default React.memo(RebalanceeiLogo);

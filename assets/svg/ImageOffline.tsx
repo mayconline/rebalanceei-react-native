@@ -145,4 +145,4 @@ function ImageOffline() {
   );
 }
 
-export default ImageOffline;
+export default React.memo(ImageOffline);

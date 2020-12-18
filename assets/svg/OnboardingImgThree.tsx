@@ -337,4 +337,4 @@ function OnboardingImgThree() {
   );
 }
 
-export default OnboardingImgThree;
+export default React.memo(OnboardingImgThree);
