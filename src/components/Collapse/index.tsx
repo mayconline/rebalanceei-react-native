@@ -16,7 +16,7 @@ const Collapse = ({ title, children }: ICollapse) => {
   return (
     <Wrapper>
       <Header onPress={handleVisible}>
-        <Title>{title}</Title>
+        <Title accessibilityRole="header">{title}</Title>
       </Header>
       {isVisible && <Body>{children}</Body>}
     </Wrapper>

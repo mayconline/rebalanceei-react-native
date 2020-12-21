@@ -17,7 +17,7 @@ describe('Wallet Modal', () => {
     mockedOnClose.mockClear();
   });
 
-  it('should successfully create wallet', async () => {
+  it('should successfully list wallet', async () => {
     const {
       findByA11yRole,
       getAllByA11yRole,
