@@ -3,6 +3,7 @@ import {
   InMemoryCache,
   createHttpLink,
   ApolloLink,
+  resetCaches,
 } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
@@ -10,7 +11,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { LOGIN } from '../pages/public/Login';
 
 const httpLink = createHttpLink({
-  uri: 'http://192.168.1.3:4000/',
+  uri: 'http://192.168.1.5:4000/',
   credentials: 'include',
 });
 
@@ -46,9 +47,11 @@ const authErrorLink = onError(({ graphQLErrors, operation, forward }) => {
             })
             .catch(async err => {
               await AsyncStorage.removeItem('@authToken');
+              resetCaches();
             });
         } else {
           await AsyncStorage.removeItem('@authToken');
+          resetCaches();
         }
 
         return forward(operation);

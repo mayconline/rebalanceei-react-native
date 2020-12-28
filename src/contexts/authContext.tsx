@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 import { useNetInfo } from '@react-native-community/netinfo';
+import { useApolloClient } from '@apollo/client';
 
 interface ISignIn {
   _id: string;
@@ -31,6 +32,7 @@ export const AuthProvider: React.FC = ({ children }) => {
   const [wallet, setWallet] = useState<string | null>(null);
   const [walletName, setWalletName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const client = useApolloClient();
 
   const { isConnected } = useNetInfo();
 
@@ -78,6 +80,7 @@ export const AuthProvider: React.FC = ({ children }) => {
   }, []);
 
   const handleSignOut = useCallback(async () => {
+    await client.clearStore();
     await AsyncStorage.multiRemove([
       '@authWallet',
       '@authWalletName',
