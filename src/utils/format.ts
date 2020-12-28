@@ -57,16 +57,46 @@ const UnitsTickets = [
   'TAEE11',
 ];
 
+const ETFTickets = [
+  'BBOV11',
+  'BBSD11',
+  'ESGB11',
+  'XBOV11',
+  'BOVB11',
+  'SMAL11',
+  'BOVA11',
+  'BRAX11',
+  'ECOO11',
+  'IVVB11',
+  'BOVV11',
+  'DIVO11',
+  'FIND11',
+  'GOVE11',
+  'MATB11',
+  'ISUS11',
+  'PIBB11',
+  'SPXI11',
+  'SMAC11',
+  'XFIX11',
+  'GOLD11',
+  'XINA11',
+];
+
 export const isUnit = (symbol: string) =>
   UnitsTickets.includes(symbol.toUpperCase());
+
+export const isETF = (symbol: string) =>
+  ETFTickets.includes(symbol.toUpperCase());
 
 export const getClassTicket = (ticket: string) =>
   ticket.slice(-2) === '34'
     ? 'BDR'
     : ticket.slice(-1) === '3' || ticket.slice(-1) === '4' || isUnit(ticket)
     ? 'Ação'
-    : ticket.slice(-2) === '11' && !isUnit(ticket)
+    : ticket.slice(-2) === '11' && !isUnit(ticket) && !isETF(ticket)
     ? 'FII'
+    : isETF(ticket)
+    ? 'ETF'
     : 'Outros';
 
 interface IGetgetLengthTicketPerClass {

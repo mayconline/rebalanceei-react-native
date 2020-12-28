@@ -17,6 +17,7 @@ export default {
     shadowBackdrop: '#000',
     Ação: '#21897E',
     FII: '#69D1C5',
+    ETF: '#69A1E5',
     BDR: '#8980F5',
     Outros: '#7EBCE6',
   },
