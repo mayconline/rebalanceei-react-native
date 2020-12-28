@@ -18,6 +18,7 @@ import {
 import ImageAddTicket from '../../../assets/svg/ImageAddTicket';
 import SuccessModal from '../../modals/SuccessModal';
 import { GET_TICKETS_BY_WALLET } from '../Ticket';
+import { GET_WALLET_BY_USER } from '../../modals/WalletModal';
 import SuggestionsModal from '../../modals/SuggestionsModal';
 import { MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
 import EditTicket from '../../components/EditTicket';
@@ -113,6 +114,13 @@ const AddTicket = () => {
           {
             query: GET_TICKETS_BY_WALLET,
             variables: { walletID: wallet, sort: 'grade' },
+          },
+          {
+            query: GET_TICKETS_BY_WALLET,
+            variables: { walletID: wallet, sort: 'symbol' },
+          },
+          {
+            query: GET_WALLET_BY_USER,
           },
         ],
       });

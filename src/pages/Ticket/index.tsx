@@ -51,13 +51,13 @@ const Ticket = () => {
     { data, loading: queryLoading, error: queryError },
   ] = useLazyQuery<IDataTickets>(GET_TICKETS_BY_WALLET, {
     variables: { walletID: wallet, sort: selectedFilter },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
   });
 
   useFocusEffect(
     useCallback(() => {
       getTicketsByWallet();
-    }, [wallet]),
+    }, [wallet, selectedFilter]),
   );
 
   const handleChangeFilter = useCallback((filterName: string) => {

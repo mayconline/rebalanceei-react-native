@@ -6,6 +6,7 @@ import { useMutation, gql } from '@apollo/client';
 import { FormContainer, Form, FormRow, ContainerButtons } from './styles';
 
 import { ITickets, GET_TICKETS_BY_WALLET } from '../../pages/Ticket';
+import { GET_WALLET_BY_USER } from '../../modals/WalletModal';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import Button from '../Button';
 import InputForm from '../InputForm';
@@ -100,6 +101,13 @@ const EditTicket = ({ ticket }: IEditWalletModal) => {
             query: GET_TICKETS_BY_WALLET,
             variables: { walletID: wallet, sort: 'grade' },
           },
+          {
+            query: GET_TICKETS_BY_WALLET,
+            variables: { walletID: wallet, sort: 'symbol' },
+          },
+          {
+            query: GET_WALLET_BY_USER,
+          },
         ],
       });
 
@@ -122,6 +130,13 @@ const EditTicket = ({ ticket }: IEditWalletModal) => {
           {
             query: GET_TICKETS_BY_WALLET,
             variables: { walletID: wallet, sort: 'grade' },
+          },
+          {
+            query: GET_TICKETS_BY_WALLET,
+            variables: { walletID: wallet, sort: 'symbol' },
+          },
+          {
+            query: GET_WALLET_BY_USER,
           },
         ],
       });

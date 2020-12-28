@@ -19,7 +19,7 @@ import SuccessModal from '../../modals/SuccessModal';
 import Button from '../../components/Button';
 import InputForm from '../../components/InputForm';
 import TextError from '../../components/TextError';
-import { IWalletData } from '../WalletModal';
+import { GET_WALLET_BY_USER, IWalletData } from '../WalletModal';
 import EditWallet from '../../components/EditWallet';
 
 interface IAddWalletModal {
@@ -56,6 +56,11 @@ const AddWalletModal = ({
         variables: {
           description: wallet,
         },
+        refetchQueries: [
+          {
+            query: GET_WALLET_BY_USER,
+          },
+        ],
       });
 
       handleSetWallet(
