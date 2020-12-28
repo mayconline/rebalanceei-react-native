@@ -34,7 +34,7 @@ describe('Add Wallet Modal', () => {
         beforeModalClose={mockedbeforeModalClose}
         onClose={mockedOnClose}
       />,
-      [SUCCESSFUL_CREATE_WALLET],
+      [SUCCESSFUL_CREATE_WALLET, SUCCESSFUL_LIST_WALLET],
     );
 
     const title = await findByA11yRole('header');

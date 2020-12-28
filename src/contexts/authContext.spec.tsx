@@ -7,6 +7,14 @@ const multiGetSpy = jest.spyOn(mockAsyncStorage, 'multiGet');
 const multiRemoveSpy = jest.spyOn(mockAsyncStorage, 'multiRemove');
 const multiSetSpy = jest.spyOn(mockAsyncStorage, 'multiSet');
 
+const mockedClearStore = jest.fn();
+
+jest.mock('@apollo/client', () => ({
+  useApolloClient: () => ({
+    clearStore: mockedClearStore,
+  }),
+}));
+
 describe('Auth Context', () => {
   it('should be able to sign in', async () => {
     const { result, waitForNextUpdate } = renderHook(() => useAuth(), {
@@ -51,6 +59,8 @@ describe('Auth Context', () => {
     act(() => result.current.handleSignOut());
 
     await waitForNextUpdate();
+
+    expect(mockedClearStore).toHaveBeenCalledTimes(1);
 
     expect(multiRemoveSpy).toHaveBeenCalledWith([
       '@authWallet',

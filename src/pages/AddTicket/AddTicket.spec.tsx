@@ -6,6 +6,7 @@ import { render, fireEvent, act, waitFor } from '../../utils/testProvider';
 import { GraphQLError } from 'graphql';
 import MockAdapter from 'axios-mock-adapter';
 import api from '../../services/api';
+import { GET_WALLET_BY_USER } from '../../modals/WalletModal';
 
 const apiMock = new MockAdapter(api);
 
@@ -41,7 +42,9 @@ describe('AddTicket Tab', () => {
       getByDisplayValue,
     } = render(<AddTicket />, [
       SUCCESSFUL_CREATE_TICKET,
-      SUCCESSFUL_LIST_TICKETS,
+      SUCCESSFUL_LIST_TICKETS('symbol'),
+      SUCCESSFUL_LIST_TICKETS('grade'),
+      SUCCESSFUL_LIST_WALLET,
     ]);
 
     const title = await findByA11yRole('header');
@@ -110,7 +113,12 @@ describe('AddTicket Tab', () => {
       setParams,
     } = render(
       <AddTicket />,
-      [SUCCESSFUL_EDIT_TICKET, SUCCESSFUL_LIST_TICKETS],
+      [
+        SUCCESSFUL_EDIT_TICKET,
+        SUCCESSFUL_LIST_TICKETS('symbol'),
+        SUCCESSFUL_LIST_TICKETS('grade'),
+        SUCCESSFUL_LIST_WALLET,
+      ],
       MOCKED_PARAMS,
     );
 
@@ -147,7 +155,12 @@ describe('AddTicket Tab', () => {
   it('should successfully delete ticket', async () => {
     const { findAllByA11yRole, goBack, setParams } = render(
       <AddTicket />,
-      [SUCCESSFUL_DELETE_TICKET, SUCCESSFUL_LIST_TICKETS],
+      [
+        SUCCESSFUL_DELETE_TICKET,
+        SUCCESSFUL_LIST_TICKETS('symbol'),
+        SUCCESSFUL_LIST_TICKETS('grade'),
+        SUCCESSFUL_LIST_WALLET,
+      ],
       MOCKED_PARAMS,
     );
 
@@ -281,10 +294,10 @@ const SUCCESSFUL_CREATE_TICKET = {
   },
 };
 
-const SUCCESSFUL_LIST_TICKETS = {
+const SUCCESSFUL_LIST_TICKETS = (sort: string) => ({
   request: {
     query: GET_TICKETS_BY_WALLET,
-    variables: { walletID: '5fa1d752a8c5892a48c69b35', sort: 'grade' },
+    variables: { walletID: '5fa1d752a8c5892a48c69b35', sort: sort },
   },
   result: {
     data: {
@@ -338,7 +351,7 @@ const SUCCESSFUL_LIST_TICKETS = {
       ],
     },
   },
-};
+});
 
 const SUCCESSFUL_EDIT_TICKET = {
   request: {
@@ -424,5 +437,37 @@ const INVALID_DELETE_TICKET = {
   result: {
     data: undefined,
     errors: [new GraphQLError('Sem conexão com o banco de dados.')],
+  },
+};
+
+const SUCCESSFUL_LIST_WALLET = {
+  request: {
+    query: GET_WALLET_BY_USER,
+  },
+  result: {
+    data: {
+      getWalletByUser: [
+        {
+          __typename: 'Wallet',
+          _id: '5fa1d752a8c5892a48c69b35',
+          description: 'Nova cart',
+          percentPositionWallet: 98.80731603572947,
+          percentRentabilityWallet: 1.59902029391182,
+          sumAmountAllWallet: 5877.5,
+          sumAmountWallet: 5807.4,
+          sumCostWallet: 5716,
+        },
+        {
+          __typename: 'Wallet',
+          _id: '5faea26914131f13ecb37538',
+          description: 'MINHA CARTEIRA ADM',
+          percentPositionWallet: 1.192683964270523,
+          percentRentabilityWallet: 13.06451612903225,
+          sumAmountAllWallet: 5877.5,
+          sumAmountWallet: 70.1,
+          sumCostWallet: 62,
+        },
+      ],
+    },
   },
 };
